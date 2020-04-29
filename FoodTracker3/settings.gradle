@@ -1,0 +1,2 @@
+rootProject.name='FoodTracker3'
+include ':app'
