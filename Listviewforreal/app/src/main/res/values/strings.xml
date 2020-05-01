@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">List view for real</string>
+
+    <string-array name="items">
+        <item>peach</item>
+        <item>tomato</item>
+        <item>apple</item>
+    </string-array>
+
+    <string-array name="prices">
+        <item>$0.99</item>
+        <item>$1.49</item>
+        <item>$0.50</item>
+    </string-array>
+
+    <string-array name="descriptions">
+        <item>Fresh peaches</item>
+        <item>Fresh tomatoes</item>
+        <item>Fresh worm in rotten apple</item>
+    </string-array>
+
+</resources>
