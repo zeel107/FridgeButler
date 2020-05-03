@@ -3,11 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="4dp">
+    app:cardCornerRadius="4dp"
+    android:layout_marginBottom="8dp"
+    android:layout_marginTop="4dp"
+    >
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="4dp"
+
         >
 
 
@@ -16,6 +20,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:padding="2dp"
+
             />
         <TextView
             android:layout_width="wrap_content"
@@ -28,6 +33,7 @@
             android:layout_toEndOf="@id/imageView"
             android:layout_toRightOf="@id/imageView"
             android:id="@+id/textView"
+            android:layout_margin="8dp"
             />
 
         <TextView
@@ -41,6 +47,7 @@
             android:layout_marginStart="8dp"
             android:layout_toRightOf="@id/imageView"
             android:layout_marginLeft="8dp"
+            android:layout_marginBottom="8dp"
             />
 
 
