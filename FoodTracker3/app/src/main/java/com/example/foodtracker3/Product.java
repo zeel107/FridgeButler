@@ -2,36 +2,36 @@ package com.example.foodtracker3;
 
 public class Product
 {
-    private int mImageResource;
-    private String mText1;
-    private String mText2;
-    private String mText3;
-    public Product(int ImageResource, String text1, String text2, String text3)
+    private int iconResource;
+    private String foodName;
+    private String foodQuantity;
+    private String expirationDate;
+    public Product(int iconResource, String foodName, String foodQuantity, String expirationDate)
     {
-        mImageResource = ImageResource;
-        mText1 = text1;
-        mText2 = text2;
-        mText3 = text3;
+        this.iconResource = iconResource;
+        this.foodName = foodName;
+        this.foodQuantity = foodQuantity;
+        this.expirationDate = expirationDate;
     }
 
-    public int getmImageResource()
+    public int getIconResource()
     {
-        return mImageResource;
+        return iconResource;
     }
 
-    public String getText1()
+    public String getFoodName()
     {
-        return mText1;
+        return foodName;
     }
 
-    public String getText2()
+    public String getFoodQuantity()
     {
-        return mText2;
+        return foodQuantity;
     }
 
-    public String getText3()
+    public String getExpirationDate()
     {
-        return mText3;
+        return expirationDate;
     }
 
 }
