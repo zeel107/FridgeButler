@@ -23,13 +23,13 @@ public class HomeFragment extends Fragment {
         RecyclerView.Adapter mAdapter;
         RecyclerView.LayoutManager mLayoutManager;
         ArrayList<Product> list = new ArrayList<>();
-        list.add(new Product(R.drawable.ic_delete,"Steak", "Expiration Date: 12/24/6793"));
-        list.add(new Product(R.drawable.ic_delete,"Steak", "Expiration Date: 12/24/6793"));
-        list.add(new Product(R.drawable.ic_delete,"Steak", "Expiration Date: 12/24/6793"));
-        list.add(new Product(R.drawable.ic_delete,"Steak", "Expiration Date: 12/24/6793"));
-        list.add(new Product(R.drawable.ic_delete,"Steak", "Expiration Date: 12/24/6793"));
-        list.add(new Product(R.drawable.ic_delete,"Steak", "Expiration Date: 12/24/6793"));
-        list.add(new Product(R.drawable.ic_delete,"Steak", "Expiration Date: 12/24/6793"));
+        list.add(new Product(R.drawable.ic_delete,"Steak", "Quantity: 10lbs", "Expiration Date: 5/10/2020"));
+        list.add(new Product(R.drawable.ic_delete,"Steak", "Quantity: 10lbs", "Expiration Date: 5/10/2020"));
+        list.add(new Product(R.drawable.ic_delete,"Steak", "Quantity: 10lbs", "Expiration Date: 5/10/2020"));
+        list.add(new Product(R.drawable.ic_delete,"Steak", "Quantity: 10lbs", "Expiration Date: 5/10/2020"));
+        list.add(new Product(R.drawable.ic_delete,"Steak", "Quantity: 10lbs", "Expiration Date: 5/10/2020"));
+        list.add(new Product(R.drawable.ic_delete,"Steak", "Quantity: 10lbs", "Expiration Date: 5/10/2020"));
+        list.add(new Product(R.drawable.ic_delete,"Steak", "Quantity: 10lbs", "Expiration Date: 5/10/2020"));
 
         mRecyclerView = view.findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);

@@ -1,110 +1,37 @@
-package com.example.db_demo_1;              // Change package
+package com.example.foodtracker3;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-
-/*
-    Class to represent a Product object.
- */
-public class Product {
-    private int idProduct;
-    private String name;
-    private int quantity;
-    private Date purchase_date;
-    private Date expiration_date;
-    private boolean expired;
-    private int idCategory;
-
-    // (ES) - May not be an ideal location for these constants, but it's fine.
-    private static final String DB_DATE_FORMAT = "yyyy-MM-dd";
-    private static final String APP_DATE_FORMAT = "MM/dd/yyyy";
-
-    // constructors
-    public Product() { }
-
-    public Product(int idProduct, String name, int quantity, Date purchase_date,
-                   Date expiration_date, boolean expired, int idCategory) {
-        this.idProduct = idProduct;
-        this.name = name;
-        this.quantity = quantity;
-        this.purchase_date = purchase_date;
-        this.expiration_date = expiration_date;
-        this.expired = expired;
-        this.idCategory = idCategory;
-    }
-
-    // getters & setters
-    public int getIdProduct() { return idProduct; }
-
-    public void setIdProduct(int idProduct) { this.idProduct = idProduct; }
-
-    public String getName() { return name; }
-
-    public void setName(String name) { this.name = name; }
-
-    public int getQuantity() { return quantity; }
-
-    public void setQuantity(int quantity) { this.quantity = quantity; }
-
-    // Format date into a string matching the current APP_DATE_FORMAT.
-    public String getPurchase_date()
+public class Product
+{
+    private int mImageResource;
+    private String mText1;
+    private String mText2;
+    private String mText3;
+    public Product(int ImageResource, String text1, String text2, String text3)
     {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(APP_DATE_FORMAT);
-        return dateFormat.format(this.purchase_date);
+        mImageResource = ImageResource;
+        mText1 = text1;
+        mText2 = text2;
+        mText3 = text3;
     }
 
-    public void setPurchase_date(String purchase_date)
+    public int getmImageResource()
     {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(DB_DATE_FORMAT);
-        try {
-            this.purchase_date = dateFormat.parse(purchase_date);          // return type is Date
-        }
-        catch (ParseException e) {
-            e.printStackTrace();
-        }
+        return mImageResource;
     }
 
-    // Format date into a string matching the current APP_DATE_FORMAT.
-    public String getExpiration_date()
+    public String getText1()
     {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(APP_DATE_FORMAT);
-        return dateFormat.format(this.expiration_date);
+        return mText1;
     }
 
-    public void setExpiration_date(String expiration_date)
+    public String getText2()
     {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(DB_DATE_FORMAT);
-        try {
-            this.expiration_date = dateFormat.parse(expiration_date);          // return type is Date
-        }
-        catch (ParseException e) {
-            e.printStackTrace();
-        }
+        return mText2;
     }
 
-    public boolean isExpired() { return expired; }
-
-    // Since BOOLEAN == INTEGER in SQLite, we convert it w/ ternary statement
-    public void setExpired(int expired) { this.expired = (expired == 1) ? true : false; }
-
-    public int getIdCategory() { return idCategory; }
-
-    public void setIdCategory(int idCategory) { this.idCategory = idCategory; }
-
-    // toString method
-    @Override
-    public String toString() {
-        return "Product{" +
-                "idProduct=" + idProduct +
-                ", name='" + name + '\'' +
-                ", quantity=" + quantity +
-                ", purchase_date=" + purchase_date +
-                ", expiration_date=" + expiration_date +
-                ", expired=" + expired +
-                ", idCategory=" + idCategory +
-                '}';
+    public String getText3()
+    {
+        return mText3;
     }
 
 }
