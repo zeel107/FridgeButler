@@ -16,6 +16,7 @@ public class Product {
     private Date expiration_date;
     private boolean expired;
     private int idCategory;
+    private static int mImage;
 
     // (ES) - May not be an ideal location for these constants, but it's fine.
     private static final String DB_DATE_FORMAT = "yyyy-MM-dd";
@@ -48,46 +49,18 @@ public class Product {
 
     public void setQuantity(int quantity) { this.quantity = quantity; }
 
-    // Format date into a string matching the current APP_DATE_FORMAT.
-    public String getPurchase_date()
-    {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(APP_DATE_FORMAT);
-        return dateFormat.format(this.purchase_date);
-    }
+    public Date getPurchase_date() { return this.purchase_date; }
 
-    public void setPurchase_date(String purchase_date)
-    {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(DB_DATE_FORMAT);
-        try {
-            this.purchase_date = dateFormat.parse(purchase_date);          // return type is Date
-        }
-        catch (ParseException e) {
-            e.printStackTrace();
-        }
-    }
+    public void setPurchase_date(Date purchase_date) { this.purchase_date = purchase_date; }
 
-    // Format date into a string matching the current APP_DATE_FORMAT.
-    public String getExpiration_date()
-    {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(APP_DATE_FORMAT);
-        return dateFormat.format(this.expiration_date);
-    }
+    public Date getExpiration_date() { return this.expiration_date; }
 
-    public void setExpiration_date(String expiration_date)
-    {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(DB_DATE_FORMAT);
-        try {
-            this.expiration_date = dateFormat.parse(expiration_date);          // return type is Date
-        }
-        catch (ParseException e) {
-            e.printStackTrace();
-        }
-    }
+    public void setExpiration_date(Date expiration_date) { this.expiration_date = expiration_date; }
 
     public boolean isExpired() { return expired; }
 
     // Since BOOLEAN == INTEGER in SQLite, we convert it w/ ternary statement
-    public void setExpired(int expired) { this.expired = (expired == 1) ? true : false; }
+    public void setExpired(boolean expired) { this.expired = expired; }
 
     public int getIdCategory() { return idCategory; }
 
@@ -105,6 +78,32 @@ public class Product {
                 ", expired=" + expired +
                 ", idCategory=" + idCategory +
                 '}';
+    }
+
+    // ---- Static Utility Methods ----
+
+    // Convert a Date to an APP_DATE_FORMAT String
+    public static String date_toAppStr(Date date)
+    {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(APP_DATE_FORMAT);
+        return dateFormat.format(date);
+    }
+
+    // Convert a Date to an DB_DATE_FORMAT String
+    public static String date_toDbStr(Date date)
+    {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DB_DATE_FORMAT);
+        return dateFormat.format(date);
+    }
+
+    // Convert a DB_DATE_FORMAT String into a Date
+    public static Date dbStr_toDate(String dateStr)
+    {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DB_DATE_FORMAT);
+        Date date = null;
+        try { date = dateFormat.parse(dateStr); }
+        catch (ParseException e) { e.printStackTrace(); }
+        return date;
     }
 
 }

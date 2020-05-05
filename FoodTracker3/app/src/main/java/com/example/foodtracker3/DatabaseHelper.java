@@ -24,8 +24,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
     // ----- DATABASE STRING CONSTANTS -----
     private static final String DB_NAME = "database.db";            // Change database name here
 
-    private static final String TABLE_ALIAS_PRODUCT = "pro";
-    private static final String TABLE_PRODUCT = "Product";
+    private static final String TABLE_ALIAS_Product = "pro";
+    private static final String TABLE_Product = "Product";
     private static final String     COLUMN_PRODUCT_id               = "id";
     private static final String     COLUMN_PRODUCT_name             = "name";
     private static final String     COLUMN_PRODUCT_quantity         = "quantity";
@@ -34,8 +34,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
     private static final String     COLUMN_PRODUCT_expired          = "expired";
     private static final String     COLUMN_PRODUCT_idCategory       = "idCategory";
 
-    private static final String TABLE_ALIAS_CATEGORY = "cat";
-    private static final String TABLE_CATEGORY = "Category";
+    private static final String TABLE_ALIAS_Category = "cat";
+    private static final String TABLE_Category = "Category";
     private static final String     COLUMN_CATEGORY_id          = "id";
     private static final String     COLUMN_CATEGORY_name        = "name";
     private static final String     COLUMN_CATEGORY_description = "description";
@@ -60,8 +60,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
         //String dropTableStatement = "DROP TABLE " + TABLE_PRODUCT + ";DROP TABLE " + TABLE_CATEGORY + ";";
         //db.execSQL(dropTableStatement);
 
-        // Create 'PRODUCT' table
-        String createTableStatement = "CREATE TABLE IF NOT EXISTS " + TABLE_PRODUCT
+        // Create 'Product' table
+        String createTableStatement = "CREATE TABLE IF NOT EXISTS " + TABLE_Product
             + " ("
                 + COLUMN_PRODUCT_id + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
                 + COLUMN_PRODUCT_name               + " TEXT, "
@@ -69,30 +69,31 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 + COLUMN_PRODUCT_purchase_date      + " DATE, "                 // Note: DATE == TEXT
                 + COLUMN_PRODUCT_expiration_date    + " DATE, "
                 + COLUMN_PRODUCT_expired            + " BOOLEAN, "              // Note: BOOLEAN == INTEGER
-                + COLUMN_PRODUCT_idCategory         + " INTEGER REFERENCES " + TABLE_CATEGORY + "(" + COLUMN_CATEGORY_id + ") "
+                + COLUMN_PRODUCT_idCategory         + " INTEGER REFERENCES " + TABLE_Category + "(" + COLUMN_CATEGORY_id + ") "
             + ");";
         db.execSQL(createTableStatement);
 
-        // Create 'CATEGORY' table
-        createTableStatement = "CREATE TABLE IF NOT EXISTS " + TABLE_CATEGORY
+        // Create 'Category' table
+        createTableStatement = "CREATE TABLE IF NOT EXISTS " + TABLE_Category
             + " ("
-                + COLUMN_CATEGORY_id + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
+                + COLUMN_CATEGORY_id + " INTEGER PRIMARY KEY AUTOINCREMENT, "               // ES - removed NOT NULL
                 + COLUMN_CATEGORY_name              + " TEXT, "
                 + COLUMN_CATEGORY_description       + " TEXT "
             + ");" ;
         db.execSQL(createTableStatement);
 
         // Add sample categories for testing
-        String addCategories = "INSERT INTO category (name, description)"
-        +"VALUES ('Bag Snacks', 'Snacks that come in a bag.');"
-        +"INSERT INTO category (name, description)"
-        +"VALUES ('Oral Hygiene', 'Products related to oral hygiene.');"
-        +"INSERT INTO category (name, description)"
-        +"VALUES ('Cereal', 'Breakfast cereals.');"
-        +"INSERT INTO category (name, description)"
-        +"VALUES ('Frozen Meals', 'Frozen entrees & side dishes.');"
-        +"INSERT INTO category (name, description)"
-        +"VALUES ('Fruit', 'Fresh fruit.');";
+        String addCategories =
+            "INSERT INTO category (name, description)"
+                +"VALUES ('Bag Snacks', 'Snacks that come in a bag.');"
+            +"INSERT INTO category (name, description)"
+                +"VALUES ('Oral Hygiene', 'Products related to oral hygiene.');"
+            +"INSERT INTO category (name, description)"
+                +"VALUES ('Cereal', 'Breakfast cereals.');"
+            +"INSERT INTO category (name, description)"
+                +"VALUES ('Frozen Meals', 'Frozen entrees & side dishes.');"
+            +"INSERT INTO category (name, description)"
+                +"VALUES ('Fruit', 'Fresh fruit.');";
         db.execSQL(addCategories);
     }
 
@@ -104,22 +105,24 @@ public class DatabaseHelper extends SQLiteOpenHelper
     }
 
     // Insert a product
-    public boolean addOne(Product product)
+    public boolean addOne(Product p)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
-        cv.put(COLUMN_PRODUCT_name, product.getName() );
-        cv.put(COLUMN_PRODUCT_quantity, product.getQuantity() );
-        cv.put(COLUMN_PRODUCT_purchase_date, product.getPurchase_date() );
-        cv.put(COLUMN_PRODUCT_expiration_date, product.getExpiration_date() );
-        cv.put(COLUMN_PRODUCT_expired, product.isExpired() );
-        cv.put(COLUMN_PRODUCT_idCategory, product.getIdCategory() );
+        cv.put(COLUMN_PRODUCT_name, p.getName() );
+        cv.put(COLUMN_PRODUCT_quantity, p.getQuantity() );
+        cv.put(COLUMN_PRODUCT_purchase_date, Product.date_toDbStr(p.getPurchase_date()) );
+        cv.put(COLUMN_PRODUCT_expiration_date, Product.date_toDbStr(p.getExpiration_date()) );
+        cv.put(COLUMN_PRODUCT_expired, p.isExpired() );
+        cv.put(COLUMN_PRODUCT_idCategory, p.getIdCategory() );
 
         long insert = -1;
-        try {
-            insert = db.insertOrThrow(TABLE_PRODUCT, null, cv);
-        } catch (SQLException e)
+        try
+        {
+            insert = db.insertOrThrow(TABLE_Product, null, cv);
+        }
+        catch (SQLException e)
         {
             if (/*com.example.db_demo_1.*/BuildConfig.DEBUG)        // Only show toast if we are debugging. Try "BuildConfig.BUILD_TYPE.equals("debug")"
             {
@@ -144,14 +147,14 @@ public class DatabaseHelper extends SQLiteOpenHelper
             WHERE pro.idCategory = cat.id
             ORDER BY expiration_date;        // ASCENDING by default == earliest expiration dates on top
          */
-        String P = TABLE_ALIAS_PRODUCT + ".";
-        String C = TABLE_ALIAS_CATEGORY + ".";
+        String P = TABLE_ALIAS_Product + ".";
+        String C = TABLE_ALIAS_Category + ".";
 
         String queryString = //  [0]                          [1]                             [2]
             "SELECT " + P + COLUMN_PRODUCT_name + ", " + P + COLUMN_PRODUCT_quantity + ", " + P + COLUMN_PRODUCT_purchase_date + ", "
             //              [3]                                 [4]                             [5]
-                + P + COLUMN_PRODUCT_expiration_date + ", " + P + COLUMN_PRODUCT_expired + ", " + C + COLUMN_CATEGORY_name +
-            " FROM " + TABLE_PRODUCT + " AS " + TABLE_ALIAS_PRODUCT + ", " + TABLE_CATEGORY + " AS " + TABLE_ALIAS_CATEGORY +
+                    + P + COLUMN_PRODUCT_expiration_date + ", " + P + COLUMN_PRODUCT_expired + ", " + C + COLUMN_CATEGORY_name +
+            " FROM " + TABLE_Product + " AS " + TABLE_ALIAS_Product + ", " + TABLE_Category + " AS " + TABLE_ALIAS_Category +
             " WHERE " + P + COLUMN_PRODUCT_idCategory + " = " + C + COLUMN_CATEGORY_id +
             " ORDER BY " + COLUMN_PRODUCT_expiration_date + ";" ;
 
@@ -166,9 +169,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 Product item = new Product();
                 item.setName(cursor.getString(0) );
                 item.setQuantity(cursor.getInt(1) );
-                item.setPurchase_date(cursor.getString(2) );
-                item.setExpiration_date(cursor.getString(3) );
-                item.setExpired(cursor.getInt(4) );
+                item.setPurchase_date(Product.dbStr_toDate(cursor.getString(2)) );
+                item.setExpiration_date(Product.dbStr_toDate(cursor.getString(3)) );
+                item.setExpired((cursor.getInt(4) == 1) ? true : false);
                 item.setIdCategory(cursor.getInt(5) );
 
                 returnList.add(item);
