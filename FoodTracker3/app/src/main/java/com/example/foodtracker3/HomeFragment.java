@@ -19,25 +19,25 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        RecyclerView mRecyclerView;
-        RecyclerView.Adapter mAdapter;
-        RecyclerView.LayoutManager mLayoutManager;
-        ArrayList<Product> list = new ArrayList<>();
-        list.add(new Product(R.drawable.ic_delete,"Steak", "Quantity: 10lbs", "Expiration Date: 5/10/2020"));
-        list.add(new Product(R.drawable.ic_delete,"Steak", "Quantity: 10lbs", "Expiration Date: 5/10/2020"));
-        list.add(new Product(R.drawable.ic_delete,"Steak", "Quantity: 10lbs", "Expiration Date: 5/10/2020"));
-        list.add(new Product(R.drawable.ic_delete,"Steak", "Quantity: 10lbs", "Expiration Date: 5/10/2020"));
-        list.add(new Product(R.drawable.ic_delete,"Steak", "Quantity: 10lbs", "Expiration Date: 5/10/2020"));
-        list.add(new Product(R.drawable.ic_delete,"Steak", "Quantity: 10lbs", "Expiration Date: 5/10/2020"));
-        list.add(new Product(R.drawable.ic_delete,"Steak", "Quantity: 10lbs", "Expiration Date: 5/10/2020"));
+        RecyclerView recyclerView;
+        RecyclerView.Adapter adapter;
+        RecyclerView.LayoutManager layoutManager;
+        ArrayList<Product> productList = new ArrayList<>();
+        productList.add(new Product(R.drawable.ic_delete,"Steak", "Quantity: 10lbs", "Expiration Date: 5/10/2020"));
+        productList.add(new Product(R.drawable.ic_delete,"Steak", "Quantity: 10lbs", "Expiration Date: 5/10/2020"));
+        productList.add(new Product(R.drawable.ic_delete,"Steak", "Quantity: 10lbs", "Expiration Date: 5/10/2020"));
+        productList.add(new Product(R.drawable.ic_delete,"Steak", "Quantity: 10lbs", "Expiration Date: 5/10/2020"));
+        productList.add(new Product(R.drawable.ic_delete,"Steak", "Quantity: 10lbs", "Expiration Date: 5/10/2020"));
+        productList.add(new Product(R.drawable.ic_delete,"Steak", "Quantity: 10lbs", "Expiration Date: 5/10/2020"));
+        productList.add(new Product(R.drawable.ic_delete,"Steak", "Quantity: 10lbs", "Expiration Date: 5/10/2020"));
 
-        mRecyclerView = view.findViewById(R.id.recyclerView);
-        mRecyclerView.setHasFixedSize(true);
+        recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
 
-        mLayoutManager = new LinearLayoutManager(getActivity());
-        mAdapter = new Adapter(list);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(mAdapter);
+        layoutManager = new LinearLayoutManager(getActivity());
+        adapter = new Adapter(productList);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
         return view;
     }
 }
