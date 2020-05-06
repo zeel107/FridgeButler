@@ -1,9 +1,10 @@
-package com.example.db_demo_1;              // Change package
+package com.example.foodtracker3;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+    //public Product(, String foodName, String foodQuantity, String expirationDate)
 
 /*
     Class to represent a Product object.
@@ -16,7 +17,7 @@ public class Product {
     private Date expiration_date;
     private boolean expired;
     private int idCategory;
-    private static int mImage;
+    private int iconResource;
 
     // (ES) - May not be an ideal location for these constants, but it's fine.
     private static final String DB_DATE_FORMAT = "yyyy-MM-dd";
@@ -26,7 +27,7 @@ public class Product {
     public Product() { }
 
     public Product(int idProduct, String name, int quantity, Date purchase_date,
-                   Date expiration_date, boolean expired, int idCategory) {
+                   Date expiration_date, boolean expired, int idCategory, int iconResource) {
         this.idProduct = idProduct;
         this.name = name;
         this.quantity = quantity;
@@ -34,6 +35,7 @@ public class Product {
         this.expiration_date = expiration_date;
         this.expired = expired;
         this.idCategory = idCategory;
+        this.iconResource = iconResource;
     }
 
     // getters & setters
@@ -59,12 +61,15 @@ public class Product {
 
     public boolean isExpired() { return expired; }
 
-    // Since BOOLEAN == INTEGER in SQLite, we convert it w/ ternary statement
     public void setExpired(boolean expired) { this.expired = expired; }
 
     public int getIdCategory() { return idCategory; }
 
     public void setIdCategory(int idCategory) { this.idCategory = idCategory; }
+
+    public int getIconResource() { return this.iconResource; }
+
+    public void setIconResource(int iconResource) { this.iconResource = iconResource; }
 
     // toString method
     @Override
@@ -81,6 +86,8 @@ public class Product {
     }
 
     // ---- Static Utility Methods ----
+    // Maybe we could put these in their own Utility class or something. These are general and don't necessarily
+    // have to be attached to the Product class.
 
     // Convert a Date to an APP_DATE_FORMAT String
     public static String date_toAppStr(Date date)
@@ -103,7 +110,7 @@ public class Product {
         Date date = null;
         try { date = dateFormat.parse(dateStr); }
         catch (ParseException e) { e.printStackTrace(); }
-        return date;
+        return date;                    // Note: May return null if DB date string is mis-formatted
     }
 
 }

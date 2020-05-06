@@ -2,6 +2,7 @@ package com.example.foodtracker3;
 
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,31 +14,27 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class HomeFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        RecyclerView mRecyclerView;
-        RecyclerView.Adapter mAdapter;
-        RecyclerView.LayoutManager mLayoutManager;
-        ArrayList<Product> list = new ArrayList<>();
-        list.add(new Product(R.drawable.ic_delete,"Steak", "Expiration Date: 12/24/6793"));
-        list.add(new Product(R.drawable.ic_delete,"Steak", "Expiration Date: 12/24/6793"));
-        list.add(new Product(R.drawable.ic_delete,"Steak", "Expiration Date: 12/24/6793"));
-        list.add(new Product(R.drawable.ic_delete,"Steak", "Expiration Date: 12/24/6793"));
-        list.add(new Product(R.drawable.ic_delete,"Steak", "Expiration Date: 12/24/6793"));
-        list.add(new Product(R.drawable.ic_delete,"Steak", "Expiration Date: 12/24/6793"));
-        list.add(new Product(R.drawable.ic_delete,"Steak", "Expiration Date: 12/24/6793"));
+        RecyclerView recyclerView;
+        RecyclerView.Adapter adapter;
+        RecyclerView.LayoutManager layoutManager;
 
-        mRecyclerView = view.findViewById(R.id.recyclerView);
-        mRecyclerView.setHasFixedSize(true);
+        DatabaseHelper dbh = new DatabaseHelper(this.getActivity() );// Possible memory leak? Store static 'context' in Application class?
+        ArrayList<Product> productList = dbh.selectAll();
 
-        mLayoutManager = new LinearLayoutManager(getActivity());
-        mAdapter = new Adapter(list);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(mAdapter);
+        recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+
+        layoutManager = new LinearLayoutManager(getActivity() );
+        adapter = new Adapter(productList);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
         return view;
     }
 }

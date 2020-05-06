@@ -1,5 +1,6 @@
 package com.example.foodtracker3;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,42 +13,47 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
-    public ArrayList<Product> mList;
+    public ArrayList<Product> list;
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public ImageView mImageView;
-        public TextView mTextView1;
-        public TextView mTextView2;
-        public ViewHolder(@NonNull View itemView) {
+        public ImageView imageView;
+        public TextView foodNameView;
+        public TextView foodQuantityView;
+        public TextView expirationView;
+        public ViewHolder(@NonNull View itemView)
+        {
             super(itemView);
-            mImageView = itemView.findViewById(R.id.imageView);
-            mTextView1 = itemView.findViewById(R.id.textView);
-            mTextView2 = itemView.findViewById(R.id.textView2);
+            imageView = itemView.findViewById(R.id.imageView);
+            foodNameView = itemView.findViewById(R.id.foodNameText);
+            foodQuantityView = itemView.findViewById(R.id.foodQuantityText);
+            expirationView = itemView.findViewById(R.id.expirationText);
 
         }
     }
     public Adapter(ArrayList<Product> list)
     {
-        mList = list;
-
+        this.list = list;
     }
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
+    {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.card, parent, false);
         ViewHolder evh = new ViewHolder(v);
         return evh;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Product currentProduct = mList.get(position);
-        holder.mImageView.setImageResource(currentProduct.getmImageResource());
-        holder.mTextView1.setText(currentProduct.getText1());
-        holder.mTextView2.setText(currentProduct.getText2());
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position)
+    {
+        Product currentProduct = list.get(position);
+        holder.imageView.setImageResource(currentProduct.getIconResource() );
+        holder.foodNameView.setText(currentProduct.getName() );
+        holder.foodQuantityView.setText(Integer.toString(currentProduct.getQuantity()) );
+        holder.expirationView.setText(Product.date_toAppStr(currentProduct.getExpiration_date()) );
     }
 
     @Override
     public int getItemCount() {
-        return mList.size();
+        return list.size();
     }
 }

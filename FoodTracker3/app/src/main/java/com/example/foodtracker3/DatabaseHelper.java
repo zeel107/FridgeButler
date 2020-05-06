@@ -1,4 +1,4 @@
-package com.example.db_demo_1;          // Change package here
+package com.example.foodtracker3;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -13,7 +13,11 @@ import androidx.annotation.Nullable;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Random;
 
 
 public class DatabaseHelper extends SQLiteOpenHelper
@@ -48,17 +52,44 @@ public class DatabaseHelper extends SQLiteOpenHelper
     }
 
     /*
-        This gets called the first time the DB gets accessed. It ensures that the necessary tables
-        exist.
-        Note: If we are closing and reopening DB connections often, we may want to move this code to
-        another method that only executes on app startup. Maybe.
+        NOTE: This method is temporary, for testing purposes only. It ensures the database gets wiped
+        when you reopen the app for the first time. So that we can test the add function without it
+        getting cluttered. We should delete this override before releasing.
+     */
+    private static boolean first = true;
+    @Override
+    public SQLiteDatabase getReadableDatabase()
+    {
+        SQLiteDatabase db = super.getReadableDatabase();
+        // /*                                            <--- UNCOMMENT to disable DB wipe on new app instance
+        if (first == true)
+        {
+            first = false;
+            String dropTableStatement = "DROP TABLE IF EXISTS " + TABLE_Product + ";";
+            db.execSQL(dropTableStatement);
+            dropTableStatement = "DROP TABLE IF EXISTS " + TABLE_Category + ";";
+            db.execSQL(dropTableStatement);
+            this.onCreate(db);
+        }
+        // */
+        return db;
+    }
+
+    /*
+        This gets called after a call to getReadableDatabase() or getWritableDatabase() ONLY if the
+        DB doesn't already exist. If the DB already exists in data/data/com.example.foodtracker3/databases,
+        then that DB will be opened and used, and this code will not be called.
     */
     @Override
     public void onCreate(SQLiteDatabase db)
     {
-        // Drop and recreate tables for testing
-        //String dropTableStatement = "DROP TABLE " + TABLE_PRODUCT + ";DROP TABLE " + TABLE_CATEGORY + ";";
-        //db.execSQL(dropTableStatement);
+        // Drop tables for testing
+        /*
+        String dropTableStatement = "DROP TABLE IF EXISTS " + TABLE_Product + ";";
+        db.execSQL(dropTableStatement);
+        dropTableStatement = "DROP TABLE IF EXISTS " + TABLE_Category + ";";
+        db.execSQL(dropTableStatement);
+        */
 
         // Create 'Product' table
         String createTableStatement = "CREATE TABLE IF NOT EXISTS " + TABLE_Product
@@ -83,16 +114,19 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.execSQL(createTableStatement);
 
         // Add sample categories for testing
-        String addCategories =
-            "INSERT INTO category (name, description)"
-                +"VALUES ('Bag Snacks', 'Snacks that come in a bag.');"
-            +"INSERT INTO category (name, description)"
-                +"VALUES ('Oral Hygiene', 'Products related to oral hygiene.');"
-            +"INSERT INTO category (name, description)"
-                +"VALUES ('Cereal', 'Breakfast cereals.');"
-            +"INSERT INTO category (name, description)"
-                +"VALUES ('Frozen Meals', 'Frozen entrees & side dishes.');"
-            +"INSERT INTO category (name, description)"
+        String addCategories = "INSERT INTO Category (name, description)"
+                +"VALUES ('Bag Snacks', 'Snacks that come in a bag.');";
+        db.execSQL(addCategories);
+        addCategories = "INSERT INTO Category (name, description)"
+                +"VALUES ('Oral Hygiene', 'Products related to oral hygiene.');";
+        db.execSQL(addCategories);
+        addCategories = "INSERT INTO Category (name, description)"
+                +"VALUES ('Cereal', 'Breakfast cereals.');";
+        db.execSQL(addCategories);
+        addCategories = "INSERT INTO Category (name, description)"
+                +"VALUES ('Frozen Meals', 'Frozen entrees & side dishes.');";
+        db.execSQL(addCategories);
+        addCategories = "INSERT INTO Category (name, description)"
                 +"VALUES ('Fruit', 'Fresh fruit.');";
         db.execSQL(addCategories);
     }
@@ -101,7 +135,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
     {
-
+        // Implement data migration methods here
     }
 
     // Insert a product
@@ -124,7 +158,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         }
         catch (SQLException e)
         {
-            if (/*com.example.db_demo_1.*/BuildConfig.DEBUG)        // Only show toast if we are debugging. Try "BuildConfig.BUILD_TYPE.equals("debug")"
+            if (com.example.foodtracker3.BuildConfig.DEBUG)        // Only show toast if we are debugging. Try "BuildConfig.BUILD_TYPE.equals("debug")"
             {
                 if (context != null)  Toast.makeText(context.get(), "addOne(): " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
@@ -136,9 +170,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
     }
 
     // Retrieve a list of all products
-    public List<Product> selectAll()
+    public ArrayList<Product> selectAll()
     {
-         List<Product> returnList = new ArrayList<>();
+         ArrayList<Product> returnList = new ArrayList<>();
 
          // Build the SQL query. Note: we can find a more efficient & readable approach later.
         /*
@@ -186,6 +220,35 @@ public class DatabaseHelper extends SQLiteOpenHelper
         cursor.close();
         db.close();
         return returnList;
+    }
+
+    // Testing method for adding x number of sample products
+    public boolean addTestProducts(int count)
+    {
+        Random rand = new Random();
+        Date date = new Date();
+        GregorianCalendar calendar = new GregorianCalendar();
+        boolean success = true;
+
+        for (int i = 0; success == true && i < count; i++)
+        {
+            Product p = new Product();
+
+            p.setName("Sample Product #" + rand.nextInt(1000));
+            p.setQuantity(rand.nextInt(100));
+            p.setPurchase_date(date);
+
+            calendar.add(Calendar.HOUR_OF_DAY, rand.nextInt(337));     // Random expiration_date within next 14 days
+            date = calendar.getTime();
+
+            p.setExpiration_date(date);
+            p.setExpired(false);
+            p.setIdCategory(rand.nextInt(6));
+
+            success = this.addOne(p);
+        }
+
+        return success;
     }
 
 
