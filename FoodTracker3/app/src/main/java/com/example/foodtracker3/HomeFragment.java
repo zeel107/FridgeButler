@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,24 +17,38 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class HomeFragment extends Fragment {
+    RecyclerView.Adapter adapter;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         RecyclerView recyclerView;
-        RecyclerView.Adapter adapter;
+        final RecyclerView.Adapter adapter;
         RecyclerView.LayoutManager layoutManager;
+        Button buttonRemove = view.findViewById(R.id.button_remove);
+        final EditText editTextRemove = view.findViewById(R.id.edittext_remove);
 
         DatabaseHelper dbh = new DatabaseHelper(this.getActivity() );// Possible memory leak? Store static 'context' in Application class?
-        ArrayList<Product> productList = dbh.getAllProducts();
-
+        final ArrayList<Product> productList = dbh.getAllProducts();
+        adapter = new Adapter(productList);
+        buttonRemove.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                int position = Integer.parseInt(editTextRemove.getText().toString());
+                removeItem(position, productList, adapter);
+            }
+        });
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
 
         layoutManager = new LinearLayoutManager(getActivity() );
-        adapter = new Adapter(productList);
+
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
         return view;
+    }
+    public void removeItem(int position, ArrayList<Product> productList, RecyclerView.Adapter adapter){
+        productList.remove(position);
+        adapter.notifyDataSetChanged();
     }
 }

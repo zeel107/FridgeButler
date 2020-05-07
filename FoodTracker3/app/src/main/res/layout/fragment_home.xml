@@ -15,6 +15,7 @@
         />
     <EditText
         android:id="@+id/edittext_remove"
+        android:inputType="number"
         android:layout_width="40dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
