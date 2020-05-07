@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.Random;
 
 
@@ -61,7 +60,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public SQLiteDatabase getReadableDatabase()
     {
         SQLiteDatabase db = super.getReadableDatabase();
-        // /*                                            <--- UNCOMMENT to disable DB wipe on new app instance
+         /*                                           //<--- to disable DB wipe on new app instance
         if (first == true)
         {
             first = false;
@@ -71,7 +70,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             db.execSQL(dropTableStatement);
             this.onCreate(db);
         }
-        // */
+        */
         return db;
     }
 
@@ -138,8 +137,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
         // Implement data migration methods here
     }
 
-    // Insert a product
-    public boolean addOne(Product p)
+    // Insert one record to the Product table
+    public boolean addProduct(Product p)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -157,7 +156,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             insert = db.insertOrThrow(TABLE_Product, null, cv);
         }
         catch (SQLException e)
-        {
+        {   // NOTE: if this line shows up as an error for you, Build --> Clean Project then Build --> Rebuild Project should fix it
             if (com.example.foodtracker3.BuildConfig.DEBUG)        // Only show toast if we are debugging. Try "BuildConfig.BUILD_TYPE.equals("debug")"
             {
                 if (context != null)  Toast.makeText(context.get(), "addOne(): " + e.getMessage(), Toast.LENGTH_LONG).show();
@@ -166,30 +165,50 @@ public class DatabaseHelper extends SQLiteOpenHelper
         }
 
         if (insert == -1)   return false;
-        else                return true;       // insert == rowID of newly inserted row
+        else
+        {
+            p.setId(insert);        // insert == rowID of newly inserted row. Not a good practice but it is safe in our case.
+            return true;            // https://www.sqlite.org/rowidtable.html
+        }
     }
 
+    // Delete one record from the Product table
+    public boolean removeProduct(Product p)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String whereClause = COLUMN_PRODUCT_id + " = " + p.getId() + ";";
+
+        int rowsAffected = db.delete(TABLE_Product, whereClause, null);
+
+        if (rowsAffected > 0)      return true;    // One row should've been affected by the DELETE
+        else                       return false;
+    }
+
+
     // Retrieve a list of all products
-    public ArrayList<Product> selectAll()
+    public ArrayList<Product> getAllProducts()
     {
          ArrayList<Product> returnList = new ArrayList<>();
 
          // Build the SQL query. Note: we can find a more efficient & readable approach later.
         /*
-            SELECT pro.name, pro.quantity, pro.purchase_date, pro.expiration_date, pro.expired, cat.name
+            SELECT pro.id, pro.name, pro.quantity, pro.purchase_date, pro.expiration_date, pro.expired, cat.name
             FROM product AS pro, category AS cat
             WHERE pro.idCategory = cat.id
             ORDER BY expiration_date;        // ASCENDING by default == earliest expiration dates on top
          */
         String P = TABLE_ALIAS_Product + ".";
-        String C = TABLE_ALIAS_Category + ".";
+        //String C = TABLE_ALIAS_Category + ".";
 
-        String queryString = //  [0]                          [1]                             [2]
-            "SELECT " + P + COLUMN_PRODUCT_name + ", " + P + COLUMN_PRODUCT_quantity + ", " + P + COLUMN_PRODUCT_purchase_date + ", "
-            //              [3]                                 [4]                             [5]
-                    + P + COLUMN_PRODUCT_expiration_date + ", " + P + COLUMN_PRODUCT_expired + ", " + C + COLUMN_CATEGORY_name +
-            " FROM " + TABLE_Product + " AS " + TABLE_ALIAS_Product + ", " + TABLE_Category + " AS " + TABLE_ALIAS_Category +
-            " WHERE " + P + COLUMN_PRODUCT_idCategory + " = " + C + COLUMN_CATEGORY_id +
+        // Note: Table aliases are now unnecessary because we are only accessing a single table. I left them here in case that changes next sprint.
+        String queryString = //[0]                           [1]                              [2]
+            "SELECT "   + P + COLUMN_PRODUCT_id + ", " + P + COLUMN_PRODUCT_name + ", " + P + COLUMN_PRODUCT_quantity + ", "
+                    //        [3]                                       [4]                                         [5]
+                        + P + COLUMN_PRODUCT_purchase_date + ", " + P + COLUMN_PRODUCT_expiration_date + ", " + P + COLUMN_PRODUCT_expired + ", "
+                    //        [6]
+                        + P + COLUMN_PRODUCT_idCategory +
+            " FROM "    + TABLE_Product + " AS " + TABLE_ALIAS_Product +
             " ORDER BY " + COLUMN_PRODUCT_expiration_date + ";" ;
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -201,15 +220,17 @@ public class DatabaseHelper extends SQLiteOpenHelper
             do
             {
                 Product item = new Product();
-                item.setName(cursor.getString(0) );
-                item.setQuantity(cursor.getInt(1) );
-                item.setPurchase_date(Product.dbStr_toDate(cursor.getString(2)) );
-                item.setExpiration_date(Product.dbStr_toDate(cursor.getString(3)) );
-                item.setExpired((cursor.getInt(4) == 1) ? true : false);
-                item.setIdCategory(cursor.getInt(5) );
+                item.setId(cursor.getInt(0));
+                item.setName(cursor.getString(1));
+                item.setQuantity(cursor.getInt(2));
+                item.setPurchase_date(Product.dbStr_toDate(cursor.getString(3)) );
+                item.setExpiration_date(Product.dbStr_toDate(cursor.getString(4)) );
+                item.setExpired(cursor.getInt(5) == 1);
+                item.setIdCategory(cursor.getInt(6));
+                item.setIconResource(R.drawable.ic_delete);
 
                 returnList.add(item);
-            } while (cursor.moveToNext());
+            } while (cursor.moveToNext() );
         }
         else
         {
@@ -245,11 +266,10 @@ public class DatabaseHelper extends SQLiteOpenHelper
             p.setExpired(false);
             p.setIdCategory(rand.nextInt(6));
 
-            success = this.addOne(p);
+            success = this.addProduct(p);
         }
 
         return success;
     }
-
 
 }

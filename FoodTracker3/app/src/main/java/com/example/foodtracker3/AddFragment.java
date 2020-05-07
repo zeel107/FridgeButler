@@ -1,18 +1,30 @@
 package com.example.foodtracker3;
 
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.util.Date;
+
 public class AddFragment extends Fragment {
+
+    // View control objects --- Defining them here instead of in onCreateView(), so they can be accessed by validateInput() method.
+    Button btn_add;
+    EditText et_productName;
+    EditText et_productQuantity;
+    EditText et_expirationDate;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
@@ -20,20 +32,46 @@ public class AddFragment extends Fragment {
         // Inflate the xml which gives us a view
         View view = inflater.inflate(R.layout.fragment_add, container, false);
 
-        Button btn_add = view.findViewById(R.id.add_button);
-
+        // ES - I'm not sure what's ideal, as far as where to declare and initialize these variables, but this works.
+        btn_add = view.findViewById(R.id.add_button);
+        et_productName = view.findViewById(R.id.name_input);
+        et_productQuantity = view.findViewById(R.id.quantity_input);
+        et_expirationDate = view.findViewById(R.id.expiration_input);
 
         btn_add.setOnClickListener(new View.OnClickListener()
             {
                 @Override
                 public void onClick(View v)
                 {
+                    if (validateInput() == false)   return;
+
                     DatabaseHelper dbh = new DatabaseHelper(v.getContext() );
 
-                    // Add one test product
-                    if (dbh.addTestProducts(1))
+                    Date pur = new Date();
+                    // In case date format is incorrect and it doesn't parse
+                    Date exp = Product.appStr_toDate(et_expirationDate.getText().toString());
+                    if (exp == null)    exp = new Date();
+
+                    Product p = new Product
+                    (
+                        -1,
+                        et_productName.getText().toString(),
+                        Integer.parseInt(et_productQuantity.getText().toString() ),
+                        pur,
+                        exp,
+                        pur.after(exp),             // Determine if item is already expired
+                        1,
+                        R.drawable.ic_delete
+                    );
+
+                    // Insert the record
+                    if (dbh.addProduct(p) )                 // dbh.addTestProducts(1))
                     {
                         Toast.makeText(v.getContext(), "Record inserted", Toast.LENGTH_SHORT).show();
+                        // Clear text boxes after successful insert
+                        et_productName.getText().clear();
+                        et_productQuantity.getText().clear();
+                        et_expirationDate.getText().clear();
                     }
                     else
                     {
@@ -43,12 +81,37 @@ public class AddFragment extends Fragment {
                 }
             });
 
-        // Get the item in the adapter
-
-
-
-
-
         return view;
     }
+
+    // However we decide to validate input later on, we can add it here. Or we can add it up above
+    // to onCreateView(), but this seemed less cluttered.
+    public boolean validateInput()
+    {
+        boolean valid = true;
+
+        // Check name
+        if (TextUtils.isEmpty(et_productName.getText().toString()) )
+        {
+            et_productName.setError("Name cannot be blank.");
+            valid = false;
+        }
+
+        // Check quantity
+        if (TextUtils.isEmpty(et_productQuantity.getText().toString()) )
+        {
+            et_productQuantity.setError("Quantity cannot be blank.");
+            valid = false;
+        }
+
+        // Check expiration_date
+        if (TextUtils.isEmpty(et_expirationDate.getText().toString()) )
+        {
+            et_expirationDate.setError("Expiration date cannot be blank.");
+            valid = false;
+        }
+
+        return valid;
+    }
+
 }

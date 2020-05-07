@@ -10,13 +10,14 @@ import java.util.Date;
     Class to represent a Product object.
  */
 public class Product {
-    private int idProduct;
+    private long id;
     private String name;
     private int quantity;
     private Date purchase_date;
     private Date expiration_date;
     private boolean expired;
     private int idCategory;
+
     private int iconResource;
 
     // (ES) - May not be an ideal location for these constants, but it's fine.
@@ -26,9 +27,9 @@ public class Product {
     // constructors
     public Product() { }
 
-    public Product(int idProduct, String name, int quantity, Date purchase_date,
+    public Product(long id, String name, int quantity, Date purchase_date,
                    Date expiration_date, boolean expired, int idCategory, int iconResource) {
-        this.idProduct = idProduct;
+        this.id = id;
         this.name = name;
         this.quantity = quantity;
         this.purchase_date = purchase_date;
@@ -39,9 +40,9 @@ public class Product {
     }
 
     // getters & setters
-    public int getIdProduct() { return idProduct; }
+    public long getId() { return id; }
 
-    public void setIdProduct(int idProduct) { this.idProduct = idProduct; }
+    public void setId(long id) { this.id = id; }
 
     public String getName() { return name; }
 
@@ -75,7 +76,7 @@ public class Product {
     @Override
     public String toString() {
         return "Product{" +
-                "idProduct=" + idProduct +
+                "idProduct=" + id +
                 ", name='" + name + '\'' +
                 ", quantity=" + quantity +
                 ", purchase_date=" + purchase_date +
@@ -107,6 +108,16 @@ public class Product {
     public static Date dbStr_toDate(String dateStr)
     {
         SimpleDateFormat dateFormat = new SimpleDateFormat(DB_DATE_FORMAT);
+        Date date = null;
+        try { date = dateFormat.parse(dateStr); }
+        catch (ParseException e) { e.printStackTrace(); }
+        return date;                    // Note: May return null if DB date string is mis-formatted
+    }
+
+    // Convert a APP_DATE_FORMAT String into a Date
+    public static Date appStr_toDate(String dateStr)
+    {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(APP_DATE_FORMAT);
         Date date = null;
         try { date = dateFormat.parse(dateStr); }
         catch (ParseException e) { e.printStackTrace(); }

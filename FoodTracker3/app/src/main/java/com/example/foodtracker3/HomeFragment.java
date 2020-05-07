@@ -2,7 +2,6 @@ package com.example.foodtracker3;
 
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class HomeFragment extends Fragment {
     @Nullable
@@ -26,7 +24,7 @@ public class HomeFragment extends Fragment {
         RecyclerView.LayoutManager layoutManager;
 
         DatabaseHelper dbh = new DatabaseHelper(this.getActivity() );// Possible memory leak? Store static 'context' in Application class?
-        ArrayList<Product> productList = dbh.selectAll();
+        ArrayList<Product> productList = dbh.getAllProducts();
 
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);

@@ -51,10 +51,10 @@
         android:id="@+id/quantity_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:text="" />
+        android:inputType="number"
+        android:text=""
+        android:textColor="@android:color/white" />
 
     <TextView
         android:id="@+id/expiration_text"
