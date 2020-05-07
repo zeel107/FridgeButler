@@ -23,7 +23,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         RecyclerView recyclerView;
-        final RecyclerView.Adapter adapter;
+        final Adapter adapter;
         RecyclerView.LayoutManager layoutManager;
         Button buttonRemove = view.findViewById(R.id.button_remove);
         final EditText editTextRemove = view.findViewById(R.id.edittext_remove);
@@ -45,9 +45,22 @@ public class HomeFragment extends Fragment {
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+        adapter.setOnItemClickListener(new Adapter.OnItemClickListener() {
+            @Override
+            public void onDeleteClick(int position) {
+                //removeItem(position);
+            }
+
+            @Override
+            public void onItemClick(int position) {
+                productList.get(position).setName(productList.get(position).getName() + " is selected");
+
+                adapter.notifyItemChanged(position);
+            }
+        });
         return view;
     }
-    public void removeItem(int position, ArrayList<Product> productList, RecyclerView.Adapter adapter, DatabaseHelper dbh){
+    public void removeItem(int position, ArrayList<Product> productList, Adapter adapter, DatabaseHelper dbh){
         dbh.removeProduct(productList.get(position));
         productList.remove(position);
         adapter.notifyItemRemoved(position);
