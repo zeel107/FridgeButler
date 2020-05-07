@@ -48,9 +48,7 @@ public class AddFragment extends Fragment {
                     DatabaseHelper dbh = new DatabaseHelper(v.getContext() );
 
                     Date pur = new Date();
-                    // In case date format is incorrect and it doesn't parse
                     Date exp = Product.appStr_toDate(et_expirationDate.getText().toString());
-                    if (exp == null)    exp = new Date();
 
                     Product p = new Product
                     (
@@ -108,6 +106,12 @@ public class AddFragment extends Fragment {
         if (TextUtils.isEmpty(et_expirationDate.getText().toString()) )
         {
             et_expirationDate.setError("Expiration date cannot be blank.");
+            valid = false;
+        }
+        // Check date format (there's probably a more efficient way to do this)
+        else if (Product.appStr_toDate(et_expirationDate.getText().toString()) == null)
+        {
+            et_expirationDate.setError("Invalid date format. (eg. 12/25/2020)");
             valid = false;
         }
 
