@@ -28,14 +28,14 @@ public class HomeFragment extends Fragment {
         Button buttonRemove = view.findViewById(R.id.button_remove);
         final EditText editTextRemove = view.findViewById(R.id.edittext_remove);
 
-        DatabaseHelper dbh = new DatabaseHelper(this.getActivity() );// Possible memory leak? Store static 'context' in Application class?
+        final DatabaseHelper dbh = new DatabaseHelper(this.getActivity() );// Possible memory leak? Store static 'context' in Application class?
         final ArrayList<Product> productList = dbh.getAllProducts();
         adapter = new Adapter(productList);
         buttonRemove.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 int position = Integer.parseInt(editTextRemove.getText().toString());
-                removeItem(position, productList, adapter);
+                removeItem(position, productList, adapter, dbh);
             }
         });
         recyclerView = view.findViewById(R.id.recyclerView);
@@ -47,8 +47,9 @@ public class HomeFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         return view;
     }
-    public void removeItem(int position, ArrayList<Product> productList, RecyclerView.Adapter adapter){
+    public void removeItem(int position, ArrayList<Product> productList, RecyclerView.Adapter adapter, DatabaseHelper dbh){
+        dbh.removeProduct(productList.get(position));
         productList.remove(position);
-        adapter.notifyDataSetChanged();
+        adapter.notifyItemRemoved(position);
     }
 }
