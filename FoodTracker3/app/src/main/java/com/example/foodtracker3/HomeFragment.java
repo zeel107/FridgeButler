@@ -17,12 +17,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class HomeFragment extends Fragment {
+    RecyclerView.Adapter adapter;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         RecyclerView recyclerView;
         RecyclerView.LayoutManager layoutManager;
+        Button buttonRemove = view.findViewById(R.id.button_remove);
+        final EditText editTextRemove = view.findViewById(R.id.edittext_remove);
 
         final DatabaseHelper dbh = new DatabaseHelper(this.getActivity() );// Possible memory leak? Store static 'context' in Application class?
         final ArrayList<Product> productList = dbh.getAllProducts();
