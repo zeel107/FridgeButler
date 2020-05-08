@@ -24,10 +24,10 @@ public class HomeFragment extends Fragment {
         RecyclerView recyclerView;
         RecyclerView.LayoutManager layoutManager;
 
-        DatabaseHelper dbh = new DatabaseHelper(this.getActivity() );// Possible memory leak? Store static 'context' in Application class?
+        final DatabaseHelper dbh = new DatabaseHelper(this.getActivity() );// Possible memory leak? Store static 'context' in Application class?
         final ArrayList<Product> productList = dbh.getAllProducts();
 
-        final RecyclerView.Adapter adapter;
+        final Adapter adapter;
         adapter = new Adapter(productList);
         Button buttonRemove = view.findViewById(R.id.button_remove);
         final EditText editTextRemove = view.findViewById(R.id.edittext_remove);
@@ -36,7 +36,7 @@ public class HomeFragment extends Fragment {
             @Override
                     public void onClick(View v) {
                         int position = Integer.parseInt(editTextRemove.getText().toString());
-                        removeItem(position, productList, adapter);
+                        removeItem(position, productList, adapter, dbh);
             }
         });
 
@@ -46,10 +46,24 @@ public class HomeFragment extends Fragment {
         layoutManager = new LinearLayoutManager(getActivity() );
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+
+        adapter.setOnItemClickListener(new Adapter.OnItemClickListener(){
+            @Override
+            public void onDeleteClick(int position) {
+                removeItem(position, productList, adapter, dbh);
+            }
+
+            @Override
+            public void onItemClick(int position) {
+                productList.get(position).setName(productList.get(position).getName()+" (SELECTED)");
+                adapter.notifyItemChanged(position);
+            }
+        });
         return view;
     }
-    public void removeItem(int position, ArrayList<Product> list, RecyclerView.Adapter adapter) {
+    public void removeItem(int position, ArrayList<Product> list, RecyclerView.Adapter adapter, DatabaseHelper dbh) {
+        dbh.removeProduct(list.get(position));
         list.remove(position);
-        adapter.notifyDataSetChanged();
+        adapter.notifyItemRemoved(position);
     }
 }
