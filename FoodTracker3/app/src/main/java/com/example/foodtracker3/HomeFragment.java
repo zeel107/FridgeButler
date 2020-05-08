@@ -24,24 +24,14 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         RecyclerView recyclerView;
         RecyclerView.LayoutManager layoutManager;
-        Button buttonRemove = view.findViewById(R.id.button_remove);
-        final EditText editTextRemove = view.findViewById(R.id.edittext_remove);
+        
 
         final DatabaseHelper dbh = new DatabaseHelper(this.getActivity() );// Possible memory leak? Store static 'context' in Application class?
         final ArrayList<Product> productList = dbh.getAllProducts();
 
         final Adapter adapter;
         adapter = new Adapter(productList);
-        Button buttonRemove = view.findViewById(R.id.button_remove);
-        final EditText editTextRemove = view.findViewById(R.id.edittext_remove);
 
-        buttonRemove.setOnClickListener(new View.OnClickListener() {
-            @Override
-                    public void onClick(View v) {
-                        int position = Integer.parseInt(editTextRemove.getText().toString());
-                        removeItem(position, productList, adapter, dbh);
-            }
-        });
 
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
