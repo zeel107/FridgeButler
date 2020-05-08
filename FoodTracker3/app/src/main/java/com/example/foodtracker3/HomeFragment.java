@@ -48,7 +48,7 @@ public class HomeFragment extends Fragment {
         adapter.setOnItemClickListener(new Adapter.OnItemClickListener() {
             @Override
             public void onDeleteClick(int position) {
-                //removeItem(position);
+                removeItem(position, productList, adapter, dbh);
             }
 
             @Override
