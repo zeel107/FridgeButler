@@ -23,29 +23,34 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         RecyclerView recyclerView;
-        final Adapter adapter;
         RecyclerView.LayoutManager layoutManager;
         Button buttonRemove = view.findViewById(R.id.button_remove);
         final EditText editTextRemove = view.findViewById(R.id.edittext_remove);
 
         final DatabaseHelper dbh = new DatabaseHelper(this.getActivity() );// Possible memory leak? Store static 'context' in Application class?
         final ArrayList<Product> productList = dbh.getAllProducts();
+
+        final Adapter adapter;
         adapter = new Adapter(productList);
-        buttonRemove.setOnClickListener(new View.OnClickListener(){
+        Button buttonRemove = view.findViewById(R.id.button_remove);
+        final EditText editTextRemove = view.findViewById(R.id.edittext_remove);
+
+        buttonRemove.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                int position = Integer.parseInt(editTextRemove.getText().toString());
-                removeItem(position, productList, adapter, dbh);
+                    public void onClick(View v) {
+                        int position = Integer.parseInt(editTextRemove.getText().toString());
+                        removeItem(position, productList, adapter, dbh);
             }
         });
+
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
 
         layoutManager = new LinearLayoutManager(getActivity() );
-
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
-        adapter.setOnItemClickListener(new Adapter.OnItemClickListener() {
+
+        adapter.setOnItemClickListener(new Adapter.OnItemClickListener(){
             @Override
             public void onDeleteClick(int position) {
                 removeItem(position, productList, adapter, dbh);
@@ -53,16 +58,14 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onItemClick(int position) {
-                productList.get(position).setName(productList.get(position).getName() + " is selected");
-
                 adapter.notifyItemChanged(position);
             }
         });
         return view;
     }
-    public void removeItem(int position, ArrayList<Product> productList, Adapter adapter, DatabaseHelper dbh){
-        dbh.removeProduct(productList.get(position));
-        productList.remove(position);
+    public void removeItem(int position, ArrayList<Product> list, RecyclerView.Adapter adapter, DatabaseHelper dbh) {
+        dbh.removeProduct(list.get(position));
+        list.remove(position);
         adapter.notifyItemRemoved(position);
     }
 }

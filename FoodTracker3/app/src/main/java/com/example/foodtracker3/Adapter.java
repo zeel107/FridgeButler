@@ -15,15 +15,16 @@ import java.util.ArrayList;
 public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     public ArrayList<Product> list;
     private OnItemClickListener listener;
+
     public interface OnItemClickListener {
         void onItemClick(int position);
         void onDeleteClick(int position);
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener)
-    {
+    public void setOnItemClickListener(OnItemClickListener listener){
         this.listener = listener;
     }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView imageView;
         public ImageView DeleteImage;
@@ -39,33 +40,26 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
             expirationView = itemView.findViewById(R.id.expirationText);
 
             itemView.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View v) {
+                   if (listener != null) {
+                       int position = getAdapterPosition();
+                       if (position != RecyclerView.NO_POSITION);
+                        listener.onItemClick(position);
+                   }
+               }
+            });
+
+            imageView.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    if(listener != null){
+                    if (listener != null) {
                         int position = getAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION)
-                        {
-                            listener.onItemClick(position);
-                        }
-
+                        if (position != RecyclerView.NO_POSITION) ;
+                        listener.onDeleteClick(position);
                     }
                 }
             });
-
-            DeleteImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(listener != null){
-                        int position = getAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION)
-                        {
-                            listener.onDeleteClick(position);
-                        }
-
-                    }
-                }
-            });
-
         }
     }
     public Adapter(ArrayList<Product> list)
