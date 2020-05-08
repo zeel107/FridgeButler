@@ -12,7 +12,7 @@
         android:paddingTop="15dp"
         android:textSize="23sp"
         android:textColor="@android:color/white"
-        android:text="Add a Food"
+        android:text="Add Item"
         android:layout_gravity="center"
          />
 
