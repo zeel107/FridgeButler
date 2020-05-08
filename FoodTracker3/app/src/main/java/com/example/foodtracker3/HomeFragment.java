@@ -55,7 +55,6 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onItemClick(int position) {
-                productList.get(position).setName(productList.get(position).getName()+" (SELECTED)");
                 adapter.notifyItemChanged(position);
             }
         });
