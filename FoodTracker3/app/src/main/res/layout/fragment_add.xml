@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/standardBackground"
     android:orientation="vertical">
 
@@ -67,13 +68,15 @@
         android:layout_gravity="center"
         />
 
-    <EditText
+    <com.santalu.maskedittext.MaskEditText
         android:id="@+id/expiration_input"
         android:layout_width="match_parent"
-        android:textColor="@android:color/white"
         android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
         android:ems="10"
-        android:inputType="date" />
+        android:inputType="number"
+        app:met_mask="##/##/####" />
+
 
     <Button
         android:id="@+id/add_button"
