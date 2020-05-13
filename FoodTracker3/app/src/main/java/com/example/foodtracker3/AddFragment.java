@@ -42,7 +42,7 @@ public class AddFragment extends Fragment {
         et_productName = view.findViewById(R.id.name_input);
         et_productQuantity = view.findViewById(R.id.quantity_input);
         et_expirationDate = view.findViewById(R.id.expiration_input);
-        //et_expirationDate.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_DATE); // fix no slash in keyboard?
+        //et_expirationDate.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_DATE); // fix no slash in keyboard? didn't work
 
         btn_add.setOnClickListener(new View.OnClickListener()
             {
