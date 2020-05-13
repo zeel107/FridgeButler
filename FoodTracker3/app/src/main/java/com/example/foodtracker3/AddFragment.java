@@ -1,6 +1,7 @@
 package com.example.foodtracker3;
 
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+
+import com.santalu.maskedittext.MaskEditText;
+
+import java.util.Calendar;
 import java.util.Date;
 
 public class AddFragment extends Fragment {
@@ -23,7 +28,7 @@ public class AddFragment extends Fragment {
     Button btn_add;
     EditText et_productName;
     EditText et_productQuantity;
-    EditText et_expirationDate;
+    MaskEditText et_expirationDate;
 
     @Nullable
     @Override
@@ -110,10 +115,21 @@ public class AddFragment extends Fragment {
             valid = false;
         }
         // Check date format (there's probably a more efficient way to do this)
-        else if (Product.appStr_toDate(et_expirationDate.getText().toString()) == null)
+        else
         {
-            et_expirationDate.setError("Invalid date format. (eg. 12/25/2020)");
-            valid = false;
+            String dateStr = et_expirationDate.getText().toString();
+            Date date = Product.appStr_toDate(dateStr);
+            if (date == null)
+            {
+                et_expirationDate.setError("Invalid date format. (eg. 12/25/2020)");
+                valid = false;
+            }
+            else if (Integer.parseInt(dateStr.substring(0,2)) > 12 || Integer.parseInt(dateStr.substring(3,5)) > 31
+            || (Integer.parseInt(dateStr.substring(6)) < Calendar.getInstance().get(Calendar.YEAR)) )
+            {
+                et_expirationDate.setError("Invalid date.");
+                valid = false;
+            }
         }
 
         return valid;
