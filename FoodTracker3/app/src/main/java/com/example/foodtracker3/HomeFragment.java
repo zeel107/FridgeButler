@@ -21,12 +21,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class HomeFragment extends Fragment {
-    RecyclerView.Adapter adapter;
+    Adapter adapter = null;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
         setHasOptionsMenu(true);
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
+
+
         RecyclerView recyclerView;
         RecyclerView.LayoutManager layoutManager;
         
@@ -34,7 +37,7 @@ public class HomeFragment extends Fragment {
         final DatabaseHelper dbh = new DatabaseHelper(this.getActivity() );// Possible memory leak? Store static 'context' in Application class?
         final ArrayList<Product> productList = dbh.getAllProducts();
 
-        final Adapter adapter;
+
         adapter = new Adapter(productList);
 
 
@@ -63,9 +66,9 @@ public class HomeFragment extends Fragment {
         list.remove(position);
         adapter.notifyItemRemoved(position);
     }
-    public boolean onCreateOptionsMenu(Menu menu, final Adapter adapter)
+
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        MenuInflater inflater = getActivity().getMenuInflater();
         inflater.inflate(R.menu.search_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
 
@@ -84,6 +87,5 @@ public class HomeFragment extends Fragment {
                 return false;
             }
         });
-        return true;
     }
 }
