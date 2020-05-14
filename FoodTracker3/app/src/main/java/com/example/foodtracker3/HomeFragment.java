@@ -26,6 +26,7 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+        setHasOptionsMenu(true);
         RecyclerView recyclerView;
         RecyclerView.LayoutManager layoutManager;
         
@@ -66,6 +67,8 @@ public class HomeFragment extends Fragment {
     {
         MenuInflater inflater = getActivity().getMenuInflater();
         inflater.inflate(R.menu.search_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView)searchItem.getActionView();
 
