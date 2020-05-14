@@ -4,6 +4,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -11,9 +13,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
+public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements Filterable {
     public ArrayList<Product> list;
+    public ArrayList<Product> listFull;
     private OnItemClickListener listener;
 
     public interface OnItemClickListener {
@@ -64,7 +68,9 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     }
     public Adapter(ArrayList<Product> list)
     {
+
         this.list = list;
+        listFull = new ArrayList<>(list);
     }
     @NonNull
     @Override
@@ -89,4 +95,37 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     public int getItemCount() {
         return list.size();
     }
+    public Filter getFilter()
+    {
+        return filter;
+    }
+    private Filter filter = new Filter()
+    {
+        protected FilterResults performFiltering(CharSequence constraint)
+        {
+            List<Product> filteredList = new ArrayList<>();
+            if(constraint == null || constraint.length() == 0)
+            {
+                filteredList.addAll(listFull);
+            }else{
+                String filterPattern = constraint.toString().toLowerCase().trim();
+
+                for(Product item: listFull){
+                    if(item.getName().toLowerCase().contains(filterPattern))
+                    {
+                        filteredList.add(item);
+                    }
+                }
+            }
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+            return results;
+        }
+        protected void publishResults(CharSequence contraint, FilterResults results)
+        {
+            list.clear();
+            list.addAll((List)results.values);
+            notifyDataSetChanged();
+        }
+    };
 }
