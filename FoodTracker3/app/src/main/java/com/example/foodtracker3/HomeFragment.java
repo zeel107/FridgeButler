@@ -69,9 +69,9 @@ public class HomeFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
 
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView)searchItem.getActionView();
+        androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView)searchItem.getActionView();
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;
