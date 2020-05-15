@@ -64,6 +64,22 @@
             android:text="Line 3"
             android:textSize="15sp" />
 
+        <ImageView
+            android:id="@+id/expiredImageView"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+
+            android:layout_marginLeft="140dp"
+            android:layout_marginTop="63dp"
+            android:layout_marginEnd="213dp"
+            android:layout_marginRight="213dp"
+            android:padding="2dp"
+            app:srcCompat="@drawable/ic_error_outline" />
+
 
     </RelativeLayout>
 

@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements Filterable {
@@ -32,6 +33,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView imageView;
         public ImageView DeleteImage;
+        public ImageView expiredImageView;
         public TextView foodNameView;
         public TextView foodQuantityView;
         public TextView expirationView;
@@ -42,6 +44,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
             foodNameView = itemView.findViewById(R.id.foodNameText);
             foodQuantityView = itemView.findViewById(R.id.foodQuantityText);
             expirationView = itemView.findViewById(R.id.expirationText);
+            expiredImageView = itemView.findViewById(R.id.expiredImageView);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                @Override
@@ -89,6 +92,18 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
         holder.foodNameView.setText(currentProduct.getName() );
         holder.foodQuantityView.setText(Integer.toString(currentProduct.getQuantity()) );
         holder.expirationView.setText(Product.date_toAppStr(currentProduct.getExpiration_date()) );
+
+        Date today = new Date();
+        if(today.after(currentProduct.getExpiration_date())) {     // if expires today, or already expired
+            holder.expiredImageView.setImageResource(R.drawable.ic_error_outline);
+        } else {
+
+            if(currentProduct.getExpiration_date().getTime() - today.getTime() <= 345600000) {        // 4 days
+                holder.expiredImageView.setImageResource(R.drawable.ic_warning);
+            } else {
+                holder.expiredImageView.setImageResource(0);
+            }
+        }
     }
 
     @Override
