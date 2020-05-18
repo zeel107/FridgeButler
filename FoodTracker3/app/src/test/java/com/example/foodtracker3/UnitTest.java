@@ -87,7 +87,7 @@ public class UnitTest {
         long x = cal.getTimeInMillis();
         Date expected = new Date(x);
 
-        Date result = instance.appStr_toDate("7/10/2000");
+        Date result = instance.appStr_toDate("07/10/2000");
         assertEquals(expected, result);
 
     }

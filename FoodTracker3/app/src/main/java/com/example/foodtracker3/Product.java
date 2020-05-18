@@ -4,8 +4,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-    //public Product(, String foodName, String foodQuantity, String expirationDate)
-
 /*
     Class to represent a Product object.
  */
@@ -13,10 +11,12 @@ public class Product {
     private long id;
     private String name;
     private int quantity;
+    private long idUnit;
+    private double unit_amount;
     private Date purchase_date;
     private Date expiration_date;
     private boolean expired;
-    private int idCategory;
+    private long idCategory;
 
     private int iconResource;
 
@@ -27,11 +27,13 @@ public class Product {
     // constructors
     public Product() { }
 
-    public Product(long id, String name, int quantity, Date purchase_date,
-                   Date expiration_date, boolean expired, int idCategory, int iconResource) {
+    public Product(long id, String name, int quantity, long idUnit, double unit_amount, Date purchase_date,
+                   Date expiration_date, boolean expired, long idCategory, int iconResource) {
         this.id = id;
         this.name = name;
         this.quantity = quantity;
+        this.idUnit = idUnit;
+        this.unit_amount = unit_amount;
         this.purchase_date = purchase_date;
         this.expiration_date = expiration_date;
         this.expired = expired;
@@ -52,6 +54,14 @@ public class Product {
 
     public void setQuantity(int quantity) { this.quantity = quantity; }
 
+    public long getIdUnit() { return idUnit; }
+
+    public void setIdUnit(int idUnit) { this.idUnit = idUnit; }
+
+    public double getUnit_amount() { return unit_amount; }
+
+    public void setUnit_amount(double unit_amount) { this.unit_amount = unit_amount; }
+
     public Date getPurchase_date() { return this.purchase_date; }
 
     public void setPurchase_date(Date purchase_date) { this.purchase_date = purchase_date; }
@@ -64,7 +74,7 @@ public class Product {
 
     public void setExpired(boolean expired) { this.expired = expired; }
 
-    public int getIdCategory() { return idCategory; }
+    public long getIdCategory() { return idCategory; }
 
     public void setIdCategory(int idCategory) { this.idCategory = idCategory; }
 
@@ -79,6 +89,8 @@ public class Product {
                 "idProduct=" + id +
                 ", name='" + name + '\'' +
                 ", quantity=" + quantity +
+                ", idUnit=" + idUnit +
+                ", unit_amount=" + unit_amount +
                 ", purchase_date=" + purchase_date +
                 ", expiration_date=" + expiration_date +
                 ", expired=" + expired +

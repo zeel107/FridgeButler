@@ -7,8 +7,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,8 +21,10 @@ import androidx.fragment.app.Fragment;
 
 import com.santalu.maskedittext.MaskEditText;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class AddFragment extends Fragment {
 
@@ -28,7 +32,9 @@ public class AddFragment extends Fragment {
     Button btn_add;
     EditText et_productName;
     EditText et_productQuantity;
+    EditText et_unitAmount;
     MaskEditText et_expirationDate;
+    Spinner sp_unit;
 
     @Nullable
     @Override
@@ -41,8 +47,19 @@ public class AddFragment extends Fragment {
         btn_add = view.findViewById(R.id.add_button);
         et_productName = view.findViewById(R.id.name_input);
         et_productQuantity = view.findViewById(R.id.quantity_input);
+        et_unitAmount = view.findViewById(R.id.unitAmount_input);
         et_expirationDate = view.findViewById(R.id.expiration_input);
+        sp_unit = view.findViewById(R.id.unit_input);
         //et_expirationDate.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_DATE); // fix no slash in keyboard? didn't work
+
+        // Populate Unit list from DB. Maybe this should be stored somewhere else, where it can be accessible globally, and only repopulated when needed.
+        DatabaseHelper dbh = new DatabaseHelper(getContext());      // is getContext() reliable, or will it sometimes return null? Research it more
+        final ArrayList<Unit> units = dbh.getAllUnits();
+        List<String> spList_unit = new ArrayList<>();
+        for (Unit i : units)    spList_unit.add(i.getAbbrev());     // Add unit abbreviations to spinner
+        ArrayAdapter<String> unitAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, spList_unit);
+        unitAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sp_unit.setAdapter(unitAdapter);
 
         btn_add.setOnClickListener(new View.OnClickListener()
             {
@@ -51,7 +68,7 @@ public class AddFragment extends Fragment {
                 {
                     if (validateInput() == false)   return;
 
-                    DatabaseHelper dbh = new DatabaseHelper(v.getContext() );
+                    DatabaseHelper dbh = new DatabaseHelper(v.getContext());
 
                     Date pur = new Date();
                     Date exp = Product.appStr_toDate(et_expirationDate.getText().toString());
@@ -60,7 +77,9 @@ public class AddFragment extends Fragment {
                     (
                         -1,
                         et_productName.getText().toString(),
-                        Integer.parseInt(et_productQuantity.getText().toString() ),
+                        Integer.parseInt(et_productQuantity.getText().toString()),
+                        units.get(sp_unit.getSelectedItemPosition()).getId(),
+                        Double.parseDouble(et_unitAmount.getText().toString()),
                         pur,
                         exp,
                         pur.after(exp),             // Determine if item is already expired
@@ -81,9 +100,38 @@ public class AddFragment extends Fragment {
                     {
                         Toast.makeText(v.getContext(), "Insert failed", Toast.LENGTH_SHORT).show();
                     }
-
                 }
-            });
+            }
+        );
+
+        // Unit Amount default value of 1
+        et_productQuantity.setOnFocusChangeListener(new View.OnFocusChangeListener()
+            {
+
+                public void onFocusChange(View v, boolean hasFocus)
+                {
+                    if (!hasFocus)
+                    {
+                        if (et_productQuantity.getText().toString().isEmpty())       et_productQuantity.setText("1");
+                    }
+                }
+            }
+        );
+
+        // Unit Amount default value of 1
+        et_unitAmount.setOnFocusChangeListener(new View.OnFocusChangeListener()
+            {
+
+                public void onFocusChange(View v, boolean hasFocus)
+                {
+                    if (!hasFocus)
+                    {
+                        if (et_unitAmount.getText().toString().isEmpty())       et_unitAmount.setText("1");
+                    }
+                }
+            }
+        );
+
 
         return view;
     }

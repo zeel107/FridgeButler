@@ -32,6 +32,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
     private static final String     COLUMN_PRODUCT_id               = "id";
     private static final String     COLUMN_PRODUCT_name             = "name";
     private static final String     COLUMN_PRODUCT_quantity         = "quantity";
+    private static final String     COLUMN_PRODUCT_idUnit           = "idUnit";
+    private static final String     COLUMN_PRODUCT_unit_amount      = "unit_amount";
     private static final String     COLUMN_PRODUCT_purchase_date    = "purchase_date";
     private static final String     COLUMN_PRODUCT_expiration_date  = "expiration_date";
     private static final String     COLUMN_PRODUCT_expired          = "expired";
@@ -42,6 +44,12 @@ public class DatabaseHelper extends SQLiteOpenHelper
     private static final String     COLUMN_CATEGORY_id          = "id";
     private static final String     COLUMN_CATEGORY_name        = "name";
     private static final String     COLUMN_CATEGORY_description = "description";
+
+    private static final String TABLE_ALIAS_Unit = "uni";
+    private static final String TABLE_Unit = "Unit";
+    private static final String     COLUMN_UNIT_id      = "id";
+    private static final String     COLUMN_UNIT_name    = "name";
+    private static final String     COLUMN_UNIT_abbrev  = "abbrev";
 
 
     public DatabaseHelper(@Nullable Context context)
@@ -60,7 +68,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public SQLiteDatabase getReadableDatabase()
     {
         SQLiteDatabase db = super.getReadableDatabase();
-         /*                                           //<--- to disable DB wipe on new app instance
+                                                    //<--- to disable DB wipe on new app instance
         if (first == true)
         {
             first = false;
@@ -68,9 +76,11 @@ public class DatabaseHelper extends SQLiteOpenHelper
             db.execSQL(dropTableStatement);
             dropTableStatement = "DROP TABLE IF EXISTS " + TABLE_Category + ";";
             db.execSQL(dropTableStatement);
+            dropTableStatement = "DROP TABLE IF EXISTS " + TABLE_Unit + ";";
+            db.execSQL(dropTableStatement);
             this.onCreate(db);
         }
-        */
+
         return db;
     }
 
@@ -96,6 +106,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 + COLUMN_PRODUCT_id + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
                 + COLUMN_PRODUCT_name               + " TEXT, "
                 + COLUMN_PRODUCT_quantity           + " INTEGER, "
+                + COLUMN_PRODUCT_idUnit             + " INTEGER REFERENCES " + TABLE_Unit + "(" + COLUMN_UNIT_id + "), "
+                + COLUMN_PRODUCT_unit_amount        + " REAL, "
                 + COLUMN_PRODUCT_purchase_date      + " DATE, "                 // Note: DATE == TEXT
                 + COLUMN_PRODUCT_expiration_date    + " DATE, "
                 + COLUMN_PRODUCT_expired            + " BOOLEAN, "              // Note: BOOLEAN == INTEGER
@@ -106,10 +118,19 @@ public class DatabaseHelper extends SQLiteOpenHelper
         // Create 'Category' table
         createTableStatement = "CREATE TABLE IF NOT EXISTS " + TABLE_Category
             + " ("
-                + COLUMN_CATEGORY_id + " INTEGER PRIMARY KEY AUTOINCREMENT, "               // ES - removed NOT NULL
-                + COLUMN_CATEGORY_name              + " TEXT, "
-                + COLUMN_CATEGORY_description       + " TEXT "
+                + COLUMN_CATEGORY_id            + " INTEGER PRIMARY KEY AUTOINCREMENT, "            // ES - removed NOT NULL
+                + COLUMN_CATEGORY_name          + " TEXT, "
+                + COLUMN_CATEGORY_description   + " TEXT "
             + ");" ;
+        db.execSQL(createTableStatement);
+
+        // Create 'Unit' table
+        createTableStatement = "CREATE TABLE IF NOT EXISTS " + TABLE_Unit
+                + " ("
+                    + COLUMN_UNIT_id        + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + COLUMN_UNIT_name      + " TEXT, "
+                    + COLUMN_UNIT_abbrev    + " TEXT "
+                + ");" ;
         db.execSQL(createTableStatement);
 
         // Add sample categories for testing
@@ -128,6 +149,22 @@ public class DatabaseHelper extends SQLiteOpenHelper
         addCategories = "INSERT INTO Category (name, description)"
                 +"VALUES ('Fruit', 'Fresh fruit.');";
         db.execSQL(addCategories);
+
+        // Add sample units
+        String addUnits = "INSERT INTO Unit (id, name, abbrev) VALUES (1, 'count', 'ct');";
+        db.execSQL(addUnits);
+        addUnits = "INSERT INTO Unit (id, name, abbrev) VALUES (2, 'ounce(s)', 'oz');";
+        db.execSQL(addUnits);
+        addUnits = "INSERT INTO Unit (id, name, abbrev) VALUES (3, 'liter(s)', 'lt');";
+        db.execSQL(addUnits);
+        addUnits = "INSERT INTO Unit (id, name, abbrev) VALUES (4, 'milliliter(s)', 'mL');";
+        db.execSQL(addUnits);
+        addUnits = "INSERT INTO Unit (id, name, abbrev) VALUES (5, 'box(es)', 'bx');";
+        db.execSQL(addUnits);
+        addUnits = "INSERT INTO Unit (id, name, abbrev) VALUES (6, 'bag(s)', 'bg');";
+        db.execSQL(addUnits);
+        addUnits = "INSERT INTO Unit (id, name, abbrev) VALUES (7, 'package(s)', 'pkg');";
+        db.execSQL(addUnits);
     }
 
     // Called if the DB version number changes. It prevents previous user's apps from breaking when you change DB design
@@ -145,6 +182,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
         cv.put(COLUMN_PRODUCT_name, p.getName() );
         cv.put(COLUMN_PRODUCT_quantity, p.getQuantity() );
+        cv.put(COLUMN_PRODUCT_idUnit, p.getIdUnit() );
+        cv.put(COLUMN_PRODUCT_unit_amount, p.getUnit_amount() );
         cv.put(COLUMN_PRODUCT_purchase_date, Product.date_toDbStr(p.getPurchase_date()) );
         cv.put(COLUMN_PRODUCT_expiration_date, Product.date_toDbStr(p.getExpiration_date()) );
         cv.put(COLUMN_PRODUCT_expired, p.isExpired() );
@@ -161,7 +200,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             {
                 if (context != null)  Toast.makeText(context.get(), "addOne(): " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
-            Log.e("DatabaseHelper.addOne()", e.getMessage(), e );           // Log the error
+            Log.e("DBH.addProduct()", e.getMessage(), e );           // Log the error
         }
 
         if (insert == -1)   return false;
@@ -189,11 +228,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
     // Retrieve a list of all products
     public ArrayList<Product> getAllProducts()
     {
-         ArrayList<Product> returnList = new ArrayList<>();
-
          // Build the SQL query. Note: we can find a more efficient & readable approach later.
         /*
-            SELECT pro.id, pro.name, pro.quantity, pro.purchase_date, pro.expiration_date, pro.expired, cat.name
+            SELECT pro.id, pro.name, pro.quantity, pro.idUnit, pro.unit_amount, pro.purchase_date, pro.expiration_date, pro.expired, cat.name
             FROM product AS pro, category AS cat
             WHERE pro.idCategory = cat.id
             ORDER BY expiration_date;        // ASCENDING by default == earliest expiration dates on top
@@ -204,18 +241,19 @@ public class DatabaseHelper extends SQLiteOpenHelper
         // Note: Table aliases are now unnecessary because we are only accessing a single table. I left them here in case that changes next sprint.
         String queryString = //[0]                           [1]                              [2]
             "SELECT "   + P + COLUMN_PRODUCT_id + ", " + P + COLUMN_PRODUCT_name + ", " + P + COLUMN_PRODUCT_quantity + ", "
-                    //        [3]                                       [4]                                         [5]
-                        + P + COLUMN_PRODUCT_purchase_date + ", " + P + COLUMN_PRODUCT_expiration_date + ", " + P + COLUMN_PRODUCT_expired + ", "
-                    //        [6]
-                        + P + COLUMN_PRODUCT_idCategory +
+                    //        [3]                                [4]                                     [5]
+                        + P + COLUMN_PRODUCT_idUnit + ", " + P + COLUMN_PRODUCT_unit_amount + ", " + P + COLUMN_PRODUCT_purchase_date + ", "
+                    //        [6]                                         [7]                                 [8]
+                        + P + COLUMN_PRODUCT_expiration_date + ", " + P + COLUMN_PRODUCT_expired + ", " + P + COLUMN_PRODUCT_idCategory +
+
             " FROM "    + TABLE_Product + " AS " + TABLE_ALIAS_Product +
             " ORDER BY " + COLUMN_PRODUCT_expiration_date + ";" ;
 
         SQLiteDatabase db = this.getReadableDatabase();
-
         Cursor cursor = db.rawQuery(queryString, null);
+        ArrayList<Product> returnList = new ArrayList<>();
 
-        if (cursor.moveToFirst() )
+        if (cursor.moveToFirst())
         {
             do
             {
@@ -223,18 +261,61 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 item.setId(cursor.getInt(0));
                 item.setName(cursor.getString(1));
                 item.setQuantity(cursor.getInt(2));
-                item.setPurchase_date(Product.dbStr_toDate(cursor.getString(3)) );
-                item.setExpiration_date(Product.dbStr_toDate(cursor.getString(4)) );
-                item.setExpired(cursor.getInt(5) == 1);
-                item.setIdCategory(cursor.getInt(6));
+                item.setIdUnit(cursor.getInt(3));
+                item.setUnit_amount(cursor.getDouble(4));
+                item.setPurchase_date(Product.dbStr_toDate(cursor.getString(5)) );
+                item.setExpiration_date(Product.dbStr_toDate(cursor.getString(6)) );
+                item.setExpired(cursor.getInt(7) == 1);
+                item.setIdCategory(cursor.getInt(8));
                 item.setIconResource(R.drawable.ic_delete);
 
                 returnList.add(item);
-            } while (cursor.moveToNext() );
+            } while (cursor.moveToNext());
         }
         else
         {
             // Query failed/returned no items?
+        }
+
+        // Close cursor and DB when finished
+        cursor.close();
+        db.close();
+        return returnList;
+    }
+
+    // Retrieve a list of all units
+    public ArrayList<Unit> getAllUnits()
+    {
+        /*
+            SELECT id, name, abbrev
+            FROM Unit
+            ORDER BY id;
+         */
+
+        String queryString = //[0]                    [1]                       [2]
+            "SELECT "       + COLUMN_UNIT_id + ", " + COLUMN_UNIT_name + ", " + COLUMN_UNIT_abbrev +
+            " FROM " + TABLE_Unit +
+            " ORDER BY " + COLUMN_UNIT_id + ";" ;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(queryString, null);
+        ArrayList<Unit> returnList = new ArrayList<>();
+
+        if (cursor.moveToFirst())
+        {
+            do
+            {
+                Unit unit = new Unit();
+                unit.setId(cursor.getInt(0));
+                unit.setName(cursor.getString(1));
+                unit.setAbbrev(cursor.getString(2));
+
+                returnList.add(unit);
+            } while (cursor.moveToNext());
+        }
+        else
+        {
+            // Do something if query returns no items?
         }
 
         // Close cursor and DB when finished
