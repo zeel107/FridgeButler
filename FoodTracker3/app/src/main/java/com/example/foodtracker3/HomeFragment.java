@@ -46,7 +46,8 @@ public class HomeFragment extends Fragment {
 
         adapter.setOnItemClickListener(new Adapter.OnItemClickListener(){
             @Override
-            public void onDeleteClick(int position) {
+            public void onDeleteClick(int position)
+            {
                 removeItem(position, productList, adapter, dbh);
             }
 
@@ -57,7 +58,8 @@ public class HomeFragment extends Fragment {
         });
         return view;
     }
-    public void removeItem(int position, ArrayList<Product> list, RecyclerView.Adapter adapter, DatabaseHelper dbh) {
+    public void removeItem(int position, ArrayList<Product> list, RecyclerView.Adapter adapter, DatabaseHelper dbh)
+    {
         dbh.removeProduct(list.get(position));
         list.remove(position);
         adapter.notifyItemRemoved(position);
