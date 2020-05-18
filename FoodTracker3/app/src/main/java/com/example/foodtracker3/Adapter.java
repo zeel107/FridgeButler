@@ -72,6 +72,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
                    }
                    //---------------------------------------------------------------------------------
                    sendOnChannel1(v);
+                   sendOnChannel2(v);
                    //---------------------------------------------------------------------------------
                }
             });
@@ -182,7 +183,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
         String message = "Message #1";
 
         Notification notification = new NotificationCompat.Builder(v.getContext(), expFood)
-                .setSmallIcon(R.drawable.ic_kitchen)
+                .setSmallIcon(R.drawable.ic_one)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -191,7 +192,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
         notificationManager.notify(1, notification);
    }
 
-    public void sendOnChannel2(View v)
+    public static void sendOnChannel2(View v)
     {
         //String title = editTextTitle.getText().toString();
         //String message = editTextMessage.getText().toString();
@@ -199,7 +200,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
         String message = "Message #2";
 
         Notification notification = new NotificationCompat.Builder(v.getContext(), expDate_Warning)
-                .setSmallIcon(R.drawable.ic_kitchen)
+                .setSmallIcon(R.drawable.ic_two)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
