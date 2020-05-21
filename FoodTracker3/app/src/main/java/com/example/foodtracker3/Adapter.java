@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -24,19 +25,21 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
     public interface OnItemClickListener {
         void onItemClick(int position);
         void onDeleteClick(int position);
+
     }
 
     public void setOnItemClickListener(OnItemClickListener listener){
         this.listener = listener;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView imageView;
         public ImageView DeleteImage;
         public ImageView expiredImageView;
         public TextView foodNameView;
         public TextView foodQuantityView;
         public TextView expirationView;
+        public ConstraintLayout expandableLayout;
         public ViewHolder(@NonNull View itemView, final OnItemClickListener listener)
         {
             super(itemView);
@@ -45,6 +48,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
             foodQuantityView = itemView.findViewById(R.id.foodQuantityText);
             expirationView = itemView.findViewById(R.id.expirationText);
             expiredImageView = itemView.findViewById(R.id.expiredImageView);
+            expandableLayout = itemView.findViewById(R.id.expandableLayout);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                @Override
@@ -93,6 +97,8 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
         holder.foodQuantityView.setText(Integer.toString(currentProduct.getQuantity()) );
         holder.expirationView.setText(Product.date_toAppStr(currentProduct.getExpiration_date()) );
 
+
+
         Date today = new Date();
         if(today.after(currentProduct.getExpiration_date())) {     // if expires today, or already expired
             holder.expiredImageView.setImageResource(R.drawable.ic_error_outline);
@@ -104,6 +110,10 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
                 holder.expiredImageView.setImageResource(0);
             }
         }
+
+        boolean isExpanded = currentProduct.getExpanded();
+        holder.expandableLayout.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
+
     }
 
     @Override

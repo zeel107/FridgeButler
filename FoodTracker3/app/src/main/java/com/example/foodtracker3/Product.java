@@ -18,6 +18,10 @@ public class Product {
     private boolean expired;
     private long idCategory;
 
+
+
+    private boolean expanded;
+
     private int iconResource;
 
     // (ES) - May not be an ideal location for these constants, but it's fine.
@@ -39,6 +43,7 @@ public class Product {
         this.expired = expired;
         this.idCategory = idCategory;
         this.iconResource = iconResource;
+        this.expanded = false;
     }
 
     // getters & setters
@@ -81,6 +86,10 @@ public class Product {
     public int getIconResource() { return this.iconResource; }
 
     public void setIconResource(int iconResource) { this.iconResource = iconResource; }
+
+    public boolean getExpanded() { return expanded; }
+
+    public void setExpanded(boolean expanded) { this.expanded = expanded; }
 
     // toString method
     @Override

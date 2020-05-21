@@ -63,7 +63,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         when you reopen the app for the first time. So that we can test the add function without it
         getting cluttered. We should delete this override before releasing.
      */
-    private static boolean first = false;
+    private static boolean first = true;
     @Override
     public SQLiteDatabase getReadableDatabase()
     {

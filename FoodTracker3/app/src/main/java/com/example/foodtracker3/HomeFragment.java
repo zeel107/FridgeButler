@@ -52,8 +52,11 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onItemClick(int position) {
+                Product currentProduct = productList.get(position);
+                currentProduct.setExpanded(!currentProduct.getExpanded());
                 adapter.notifyItemChanged(position);
             }
+
         });
         return view;
     }
