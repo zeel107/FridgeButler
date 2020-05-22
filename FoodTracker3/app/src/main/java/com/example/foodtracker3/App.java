@@ -24,14 +24,14 @@ public class App extends Application
         {
             NotificationChannel channel1 = new NotificationChannel(
                     expFood,
-                    "Food Expired!",
+                    "Food_Expired!",
                     NotificationManager.IMPORTANCE_HIGH
             );
             channel1.setDescription("This pushes a notification on the expiration date and after");
 
             NotificationChannel channel2 = new NotificationChannel(
                     expDate_Warning,
-                    "Food about to Expired!",
+                    "Food_about_to_Expired!",
                     NotificationManager.IMPORTANCE_DEFAULT
             );
             channel2.setDescription("This pushes a notification a few days before the expiration date");

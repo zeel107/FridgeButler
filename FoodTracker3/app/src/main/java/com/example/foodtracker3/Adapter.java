@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -198,29 +199,62 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
                 .setColor(Color.RED)
                 .setAutoCancel(true) //dismiss notification after tap
                 .setContentIntent(contentIntent)
+                .setGroup("expired_foods")
                 .build();
-        notificationManager.notify(1, notification);
+
+        Notification summaryNotification = new NotificationCompat.Builder(v.getContext(),expFood)
+                .setSmallIcon(R.drawable.ic_error)
+                .setStyle(new NotificationCompat.InboxStyle()
+                        .addLine(title + " " + message)
+                        .setBigContentTitle("Expired Warning")
+                        .setSummaryText("Expired Foods"))
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setColor(Color.RED)
+                .setGroup("expired_foods")
+                .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
+                .setGroupSummary(true)
+                .build();
+        notificationManager.notify((int) currProduct.getId(), notification); //NEED FIX FOR LONG AS INT
+        notificationManager.notify(-1, summaryNotification);
     }
 
     public static void sendOnChannel2(View v, Product currProduct)
     {
+        String title = currProduct.getName() +  " expiring!";
+        String message = currProduct.getName() + " will expire on " + Product.date_toAppStr(currProduct.getExpiration_date()) + "!";
+
         //defines action when clicked on
         Intent activityIntent = new Intent(v.getContext(), MainActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(v.getContext(), 0, activityIntent, 0);
 
-        String title = currProduct.getName() +  " EXPIRED!";
-        String message = currProduct.getName() + " has expired as of " + Product.date_toAppStr(currProduct.getExpiration_date()) + "!";
-
         Notification notification = new NotificationCompat.Builder(v.getContext(), expDate_Warning)
-                .setSmallIcon(R.drawable.ic_warning)
+                .setSmallIcon(R.drawable.ic_watch)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
                 .setColor(Color.YELLOW)
                 .setAutoCancel(true) //dismiss notification after tap
                 .setContentIntent(contentIntent)
+                .setGroup("about_to_expire")
                 .build();
-        notificationManager.notify(2, notification);
+
+        Notification summaryNotification = new NotificationCompat.Builder(v.getContext(),expDate_Warning)
+                .setSmallIcon(R.drawable.ic_warning)
+                .setStyle(new NotificationCompat.InboxStyle()
+                        .addLine(title + " " + message)
+                        .setBigContentTitle("Expiration Warning")
+                        .setSummaryText("Foods expiration approaching "))
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setColor(Color.YELLOW)
+                .setGroup("about_to_expire")
+                .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
+                .setGroupSummary(true)
+                .build();
+        //notificationManager.notify(1, notification);
+        notificationManager.notify((int) currProduct.getId(), notification); //NEED FIX FOR LONG AS INT
+        notificationManager.notify(0, summaryNotification);
+
     }
     //-----------------------------------------------------------------------------------
 }//end Adapter
