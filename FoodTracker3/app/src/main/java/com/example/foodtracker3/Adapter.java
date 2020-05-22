@@ -251,7 +251,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
                 .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
                 .setGroupSummary(true)
                 .build();
-        //notificationManager.notify(1, notification);
+
         notificationManager.notify((int) currProduct.getId(), notification); //NEED FIX FOR LONG AS INT
         notificationManager.notify(0, summaryNotification);
 
