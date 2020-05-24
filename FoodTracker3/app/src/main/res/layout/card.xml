@@ -48,11 +48,12 @@
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
 
+                android:layout_marginTop="34dp"
                 android:padding="2dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/foodNameText"
-                app:layout_constraintVertical_bias="0.169"
+                app:layout_constraintTop_toTopOf="@+id/foodNameText"
+                app:layout_constraintVertical_bias="0.466"
                 app:srcCompat="@drawable/ic_error_outline" />
 
             <TextView
