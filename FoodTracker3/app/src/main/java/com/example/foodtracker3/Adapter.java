@@ -113,8 +113,8 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
         Product currentProduct = list.get(position);
         holder.imageView.setImageResource(currentProduct.getIconResource() );
         holder.foodNameView.setText(currentProduct.getName() );
-        holder.foodQuantityView.setText(Integer.toString(currentProduct.getQuantity()) );
-        holder.expirationView.setText(Product.date_toAppStr(currentProduct.getExpiration_date()) );
+        holder.foodQuantityView.setText("Quantity: " + Integer.toString(currentProduct.getQuantity()));
+        holder.expirationView.setText("Expires on "+Product.date_toAppStr(currentProduct.getExpiration_date()) );
 
 
 
