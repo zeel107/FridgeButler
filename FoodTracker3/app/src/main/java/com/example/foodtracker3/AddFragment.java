@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -43,6 +44,8 @@ public class AddFragment extends Fragment {
         // Inflate the xml which gives us a view
         View view = inflater.inflate(R.layout.fragment_add, container, false);
 
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING); // fix keyboard/button issue (now button will stay put)
+
         // ES - I'm not sure what's ideal, as far as where to declare and initialize these variables, but this works.
         btn_add = view.findViewById(R.id.add_button);
         et_productName = view.findViewById(R.id.name_input);
@@ -52,14 +55,21 @@ public class AddFragment extends Fragment {
         sp_unit = view.findViewById(R.id.unit_input);
         //et_expirationDate.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_DATE); // fix no slash in keyboard? didn't work
 
-        // Populate Unit list from DB. Maybe this should be stored somewhere else, where it can be accessible globally, and only repopulated when needed.
-        DatabaseHelper dbh = new DatabaseHelper(getContext());      // is getContext() reliable, or will it sometimes return null? Research it more
-        final ArrayList<Unit> units = dbh.getAllUnits();
-        List<String> spList_unit = new ArrayList<>();
-        for (Unit i : units)    spList_unit.add(i.getAbbrev());     // Add unit abbreviations to spinner
-        ArrayAdapter<String> unitAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, spList_unit);
+        final DatabaseHelper dbh = new DatabaseHelper(getContext());      // is getContext() reliable, or will it sometimes return null? Research it more
+
+        // Units setup
+        final ArrayList<Unit> units = dbh.getUnits();
+        List<String> spList_unitAbbrevs = new ArrayList<>();
+
+        for (Unit i : units)    // Add unit abbreviation strings to spinner list
+        {
+            spList_unitAbbrevs.add(i.getAbbrev());
+        }
+
+        ArrayAdapter<String> unitAdapter = new ArrayAdapter<>(getContext(), R.layout.spinner_item, spList_unitAbbrevs);
         unitAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sp_unit.setAdapter(unitAdapter);
+        sp_unit.setSelection(1);    // units[0] == "n/a", units[1] == "ct" (the default)
 
         btn_add.setOnClickListener(new View.OnClickListener()
             {
@@ -68,23 +78,22 @@ public class AddFragment extends Fragment {
                 {
                     if (validateInput() == false)   return;
 
-                    DatabaseHelper dbh = new DatabaseHelper(v.getContext());
-
                     Date pur = new Date();
                     Date exp = Product.appStr_toDate(et_expirationDate.getText().toString());
+                    long unitId = units.get(sp_unit.getSelectedItemPosition()).getId();
 
                     Product p = new Product
                     (
                         -1,
                         et_productName.getText().toString(),
                         Integer.parseInt(et_productQuantity.getText().toString()),
-                        units.get(sp_unit.getSelectedItemPosition()).getId(),
+                        unitId,
                         Double.parseDouble(et_unitAmount.getText().toString()),
                         pur,
                         exp,
                         pur.after(exp),             // Determine if item is already expired
                         1,
-                        R.drawable.ic_delete
+                        dbh.getUnit(unitId)
                     );
 
                     // Insert the record
@@ -104,7 +113,7 @@ public class AddFragment extends Fragment {
             }
         );
 
-        // Unit Amount default value of 1
+        // Quantity default value of 1
         et_productQuantity.setOnFocusChangeListener(new View.OnFocusChangeListener()
             {
 
@@ -132,6 +141,7 @@ public class AddFragment extends Fragment {
             }
         );
 
+        dbh.close();
 
         return view;
     }

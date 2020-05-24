@@ -21,7 +21,8 @@ public class HomeFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
+    {
         setHasOptionsMenu(true);
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
@@ -30,7 +31,7 @@ public class HomeFragment extends Fragment {
         RecyclerView.LayoutManager layoutManager;
         
 
-        final DatabaseHelper dbh = new DatabaseHelper(this.getActivity() );// Possible memory leak? Store static 'context' in Application class?
+        final DatabaseHelper dbh = new DatabaseHelper(this.getContext());
         final ArrayList<Product> productList = dbh.getAllProducts();
 
 
@@ -58,9 +59,13 @@ public class HomeFragment extends Fragment {
             }
 
         });
+
+        dbh.close();
         return view;
     }
-    public void removeItem(int position, ArrayList<Product> list, RecyclerView.Adapter adapter, DatabaseHelper dbh) {
+
+    public void removeItem(int position, ArrayList<Product> list, RecyclerView.Adapter adapter, DatabaseHelper dbh)
+    {
         dbh.removeProduct(list.get(position));
 
 
@@ -82,7 +87,8 @@ public class HomeFragment extends Fragment {
         MenuItem searchItem = menu.findItem(R.id.action_search);
         androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView)searchItem.getActionView();
 
-        searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
+        searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener()
+        {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;

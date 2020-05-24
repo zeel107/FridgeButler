@@ -5,21 +5,24 @@
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/standardBackground">
+    android:background="@color/standardBackground"
+    android:gravity="bottom">
 
     <EditText
         android:id="@+id/unitAmount_input"
         android:layout_width="105dp"
         android:layout_height="41dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="number|numberDecimal"
         android:text="1"
         android:textColor="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/quantity_input"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.213"
+        app:layout_constraintHorizontal_bias="0.212"
         app:layout_constraintStart_toEndOf="@+id/quantity_input"
-        app:layout_constraintTop_toBottomOf="@+id/unit_text" />
+        app:layout_constraintTop_toBottomOf="@+id/unit_text"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/unit_text"
@@ -28,40 +31,48 @@
         android:text="Unit Amount"
         android:textColor="@android:color/white"
         android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/quantity_text"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.72"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/quantity_text" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/unitAmount_input"
+        app:layout_constraintTop_toTopOf="@+id/quantity_text"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/title_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:fontFamily="@font/coiny"
         android:text="Add Item"
-        android:textColor="@android:color/white"
-        android:textSize="23sp"
+        android:textColor="@android:color/holo_blue_light"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/name_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="24dp"
         android:text="Name"
         android:textColor="@android:color/white"
         android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title_text" />
+        app:layout_constraintTop_toBottomOf="@+id/title_text"
+        app:layout_constraintVertical_bias="0.0" />
 
     <EditText
         android:id="@+id/name_input"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:text=""
@@ -74,26 +85,35 @@
         android:id="@+id/quantity_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="24dp"
         android:text="Quantity"
         android:textColor="@android:color/white"
         android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.047"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name_input" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/quantity_input"
+        app:layout_constraintTop_toBottomOf="@+id/name_input"
+        app:layout_constraintVertical_bias="0.0" />
 
     <EditText
         android:id="@+id/quantity_input"
         android:layout_width="105dp"
         android:layout_height="41dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="number"
         android:text="1"
         android:textColor="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/quantity_text" />
+        app:layout_constraintTop_toBottomOf="@+id/quantity_text"
+        app:layout_constraintVertical_bias="0.0" />
+
 
     <TextView
         android:id="@+id/expiration_text"
@@ -103,50 +123,58 @@
         android:text="Expiration Date"
         android:textColor="@android:color/white"
         android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/quantity_input" />
+        app:layout_constraintTop_toBottomOf="@+id/quantity_input"
+        app:layout_constraintVertical_bias="0.0" />
 
     <com.santalu.maskedittext.MaskEditText
         android:id="@+id/expiration_input"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="319dp"
-        android:layout_marginBottom="321dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="number"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/name_text"
+        app:layout_constraintTop_toBottomOf="@+id/expiration_text"
+        app:layout_constraintVertical_bias="0.0"
         app:met_mask="##/##/####" />
-
 
     <Button
         android:id="@+id/add_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
         android:text="Add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/expiration_input"
-        app:layout_constraintVertical_bias="0.098" />
+        app:layout_constraintVertical_bias="0.37" />
 
     <Spinner
         android:id="@+id/unit_input"
+        style="@android:style/Widget.Material.Spinner.Underlined"
         android:layout_width="127dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="24dp"
+        android:layout_height="50dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:background="@color/standardBackground"
         android:spinnerMode="dropdown"
+        app:layout_constraintBottom_toBottomOf="@+id/unitAmount_input"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/unit_text" />
+        app:layout_constraintHorizontal_bias="0.529"
+        app:layout_constraintStart_toEndOf="@+id/unitAmount_input"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- android:background="@color/standardBackground" -->

@@ -7,7 +7,9 @@ import java.util.Date;
 /*
     Class to represent a Product object.
  */
-public class Product {
+public class Product
+{
+    // Fields corresponding to 'Product' table attributes
     private long id;
     private String name;
     private int quantity;
@@ -18,10 +20,10 @@ public class Product {
     private boolean expired;
     private long idCategory;
 
-
+    // Additional fields for the app
+    private Unit unit;
 
     private boolean expanded;
-
     private int iconResource;
 
     // (ES) - May not be an ideal location for these constants, but it's fine.
@@ -31,8 +33,8 @@ public class Product {
     // constructors
     public Product() { }
 
-    public Product(long id, String name, int quantity, long idUnit, double unit_amount, Date purchase_date,
-                   Date expiration_date, boolean expired, long idCategory, int iconResource) {
+    public Product(long id, String name, int quantity, long idUnit, double unit_amount,Date purchase_date,
+                   Date expiration_date, boolean expired, long idCategory, Unit unit) {
         this.id = id;
         this.name = name;
         this.quantity = quantity;
@@ -42,7 +44,10 @@ public class Product {
         this.expiration_date = expiration_date;
         this.expired = expired;
         this.idCategory = idCategory;
-        this.iconResource = iconResource;
+
+        this.unit = unit;
+
+        this.iconResource = R.drawable.ic_delete;
         this.expanded = false;
     }
 
@@ -62,6 +67,10 @@ public class Product {
     public long getIdUnit() { return idUnit; }
 
     public void setIdUnit(int idUnit) { this.idUnit = idUnit; }
+
+    public Unit getUnit() { return unit; }
+
+    public void setUnit(Unit unit) { this.unit = unit; }
 
     public double getUnit_amount() { return unit_amount; }
 

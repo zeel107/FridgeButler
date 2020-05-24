@@ -3,7 +3,8 @@ package com.example.foodtracker3;
 /*
     Class to represent a Unit object.
  */
-public class Unit {
+public class Unit
+{
     private long id;            // consider changing to short int, place cap on max custom units
     private String name;
     private String abbrev;
@@ -11,7 +12,8 @@ public class Unit {
     // constructors
     public Unit() { }
 
-    public Unit(long id, String name, String abbrev) {
+    public Unit(long id, String name, String abbrev)
+    {
         this.id = id;
         this.name = name;
         this.abbrev = abbrev;

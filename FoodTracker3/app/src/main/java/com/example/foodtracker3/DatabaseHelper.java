@@ -24,6 +24,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
     // Note: use WeakReference to prevent memory leaks. This reference won't prevent the context from
     // being sent to the garbage collector, if user switches views etc.
     WeakReference<Context> context;
+    ArrayList<Unit> units;
+
     // ----- DATABASE STRING CONSTANTS -----
     private static final String DB_NAME = "database.db";            // Change database name here
 
@@ -37,7 +39,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
     private static final String     COLUMN_PRODUCT_purchase_date    = "purchase_date";
     private static final String     COLUMN_PRODUCT_expiration_date  = "expiration_date";
     private static final String     COLUMN_PRODUCT_expired          = "expired";
-    private static final String     COLUMN_PRODUCT_idCategory       = "idCategory";
 
     private static final String TABLE_ALIAS_Category = "cat";
     private static final String TABLE_Category = "Category";
@@ -45,17 +46,24 @@ public class DatabaseHelper extends SQLiteOpenHelper
     private static final String     COLUMN_CATEGORY_name        = "name";
     private static final String     COLUMN_CATEGORY_description = "description";
 
+    private static final String TABLE_ALIAS_Product_Category = TABLE_ALIAS_Product + "_" + TABLE_ALIAS_Category;
+    private static final String TABLE_Product_Category = "Product_Category";
+    private static final String     COLUMN_PRODUCT_CATEGORY_idProduct   = "idProduct";
+    private static final String     COLUMN_PRODUCT_CATEGORY_idCategory  = "idCategory";
+
     private static final String TABLE_ALIAS_Unit = "uni";
     private static final String TABLE_Unit = "Unit";
     private static final String     COLUMN_UNIT_id      = "id";
     private static final String     COLUMN_UNIT_name    = "name";
     private static final String     COLUMN_UNIT_abbrev  = "abbrev";
+    private static final String     COLUMN_UNIT_plural  = "plural"; // Necessary if at any point we want to display the full unit name instead of just the abbrev
 
 
     public DatabaseHelper(@Nullable Context context)
     {
         super(context, DB_NAME, null, 1);
         this.context = new WeakReference<Context>(context);
+        this.units = this.getUnits();
     }
 
     /*
@@ -63,7 +71,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
         when you reopen the app for the first time. So that we can test the add function without it
         getting cluttered. We should delete this override before releasing.
      */
-    private static boolean first = false;
+
+    private static boolean first = true;
     @Override
     public SQLiteDatabase getReadableDatabase()
     {
@@ -72,9 +81,12 @@ public class DatabaseHelper extends SQLiteOpenHelper
         if (first == true)
         {
             first = false;
-            String dropTableStatement = "DROP TABLE IF EXISTS " + TABLE_Product + ";";
+            String dropTableStatement;
+            dropTableStatement = "DROP TABLE IF EXISTS " + TABLE_Product + ";";
             db.execSQL(dropTableStatement);
             dropTableStatement = "DROP TABLE IF EXISTS " + TABLE_Category + ";";
+            db.execSQL(dropTableStatement);
+            dropTableStatement = "DROP TABLE IF EXISTS " + TABLE_Product_Category + ";";
             db.execSQL(dropTableStatement);
             dropTableStatement = "DROP TABLE IF EXISTS " + TABLE_Unit + ";";
             db.execSQL(dropTableStatement);
@@ -92,14 +104,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
     @Override
     public void onCreate(SQLiteDatabase db)
     {
-        // Drop tables for testing
-        /*
-        String dropTableStatement = "DROP TABLE IF EXISTS " + TABLE_Product + ";";
-        db.execSQL(dropTableStatement);
-        dropTableStatement = "DROP TABLE IF EXISTS " + TABLE_Category + ";";
-        db.execSQL(dropTableStatement);
-        */
-
         // Create 'Product' table
         String createTableStatement = "CREATE TABLE IF NOT EXISTS " + TABLE_Product
             + " ("
@@ -110,8 +114,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 + COLUMN_PRODUCT_unit_amount        + " REAL, "
                 + COLUMN_PRODUCT_purchase_date      + " DATE, "                 // Note: DATE == TEXT
                 + COLUMN_PRODUCT_expiration_date    + " DATE, "
-                + COLUMN_PRODUCT_expired            + " BOOLEAN, "              // Note: BOOLEAN == INTEGER
-                + COLUMN_PRODUCT_idCategory         + " INTEGER REFERENCES " + TABLE_Category + "(" + COLUMN_CATEGORY_id + ") "
+                + COLUMN_PRODUCT_expired            + " BOOLEAN "              // Note: BOOLEAN == INTEGER
             + ");";
         db.execSQL(createTableStatement);
 
@@ -124,47 +127,63 @@ public class DatabaseHelper extends SQLiteOpenHelper
             + ");" ;
         db.execSQL(createTableStatement);
 
+        // Create 'Product_Category' table
+        createTableStatement = "CREATE TABLE IF NOT EXISTS " + TABLE_Product_Category
+                + " ("
+                    + COLUMN_PRODUCT_CATEGORY_idProduct     + " INTEGER REFERENCES " + TABLE_Product + "(" + COLUMN_PRODUCT_id + "), "
+                    + COLUMN_PRODUCT_CATEGORY_idCategory    + " INTEGER REFERENCES " + TABLE_Category + "(" + COLUMN_CATEGORY_id + "), "
+                    + "PRIMARY KEY (" + COLUMN_PRODUCT_CATEGORY_idProduct + ", " + COLUMN_PRODUCT_CATEGORY_idCategory + ")"
+                + ");" ;
+        db.execSQL(createTableStatement);
+
         // Create 'Unit' table
         createTableStatement = "CREATE TABLE IF NOT EXISTS " + TABLE_Unit
                 + " ("
                     + COLUMN_UNIT_id        + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                     + COLUMN_UNIT_name      + " TEXT, "
-                    + COLUMN_UNIT_abbrev    + " TEXT "
+                    + COLUMN_UNIT_abbrev    + " TEXT, "
+                    + COLUMN_UNIT_plural    + " TEXT "
                 + ");" ;
         db.execSQL(createTableStatement);
 
+        String sampleInsert;
+        
         // Add sample categories for testing
-        String addCategories = "INSERT INTO Category (name, description)"
-                +"VALUES ('Bag Snacks', 'Snacks that come in a bag.');";
-        db.execSQL(addCategories);
-        addCategories = "INSERT INTO Category (name, description)"
-                +"VALUES ('Oral Hygiene', 'Products related to oral hygiene.');";
-        db.execSQL(addCategories);
-        addCategories = "INSERT INTO Category (name, description)"
-                +"VALUES ('Cereal', 'Breakfast cereals.');";
-        db.execSQL(addCategories);
-        addCategories = "INSERT INTO Category (name, description)"
-                +"VALUES ('Frozen Meals', 'Frozen entrees & side dishes.');";
-        db.execSQL(addCategories);
-        addCategories = "INSERT INTO Category (name, description)"
-                +"VALUES ('Fruit', 'Fresh fruit.');";
-        db.execSQL(addCategories);
+        sampleInsert = "INSERT INTO Category (name, description) VALUES ('Bag Snacks', 'Snacks that come in a bag.');";
+        db.execSQL(sampleInsert);
+        sampleInsert = "INSERT INTO Category (name, description) VALUES ('Oral Hygiene', 'Products related to oral hygiene.');";
+        db.execSQL(sampleInsert);
+        sampleInsert = "INSERT INTO Category (name, description) VALUES ('Cereal', 'Breakfast cereals.');";
+        db.execSQL(sampleInsert);
+        sampleInsert = "INSERT INTO Category (name, description) VALUES ('Frozen Meals', 'Frozen entrees & side dishes.');";
+        db.execSQL(sampleInsert);
+        sampleInsert = "INSERT INTO Category (name, description) VALUES ('Fruit', 'Fresh fruit.');";
+        db.execSQL(sampleInsert);
 
         // Add sample units
-        String addUnits = "INSERT INTO Unit (id, name, abbrev) VALUES (1, 'count', 'ct');";
-        db.execSQL(addUnits);
-        addUnits = "INSERT INTO Unit (id, name, abbrev) VALUES (2, 'ounce(s)', 'oz');";
-        db.execSQL(addUnits);
-        addUnits = "INSERT INTO Unit (id, name, abbrev) VALUES (3, 'liter(s)', 'lt');";
-        db.execSQL(addUnits);
-        addUnits = "INSERT INTO Unit (id, name, abbrev) VALUES (4, 'milliliter(s)', 'mL');";
-        db.execSQL(addUnits);
-        addUnits = "INSERT INTO Unit (id, name, abbrev) VALUES (5, 'box(es)', 'bx');";
-        db.execSQL(addUnits);
-        addUnits = "INSERT INTO Unit (id, name, abbrev) VALUES (6, 'bag(s)', 'bg');";
-        db.execSQL(addUnits);
-        addUnits = "INSERT INTO Unit (id, name, abbrev) VALUES (7, 'package(s)', 'pkg');";
-        db.execSQL(addUnits);
+        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (0, 'n/a', 'n/a', '');";
+        db.execSQL(sampleInsert);
+        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (1, 'count', 'ct', '');";
+        db.execSQL(sampleInsert);
+        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (2, 'ounce', 'oz', 's');";
+        db.execSQL(sampleInsert);
+        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (3, 'gram', 'g', 's');";
+        db.execSQL(sampleInsert);
+        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (4, 'pound', 'lb', 's');";
+        db.execSQL(sampleInsert);
+        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (5, 'liter', 'lt', 's');";
+        db.execSQL(sampleInsert);
+        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (6, 'milliliter', 'mL', 's');";
+        db.execSQL(sampleInsert);
+        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (7, 'quart', 'qt', 's');";
+        db.execSQL(sampleInsert);
+        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (8, 'box', 'box', 'es');";
+        db.execSQL(sampleInsert);
+        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (9, 'bag', 'bag', 's');";
+        db.execSQL(sampleInsert);
+        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (10, 'package', 'pkg', 's');";
+        db.execSQL(sampleInsert);
+
     }
 
     // Called if the DB version number changes. It prevents previous user's apps from breaking when you change DB design
@@ -187,7 +206,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
         cv.put(COLUMN_PRODUCT_purchase_date, Product.date_toDbStr(p.getPurchase_date()) );
         cv.put(COLUMN_PRODUCT_expiration_date, Product.date_toDbStr(p.getExpiration_date()) );
         cv.put(COLUMN_PRODUCT_expired, p.isExpired() );
-        cv.put(COLUMN_PRODUCT_idCategory, p.getIdCategory() );
 
         long insert = -1;
         try
@@ -243,8 +261,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
             "SELECT "   + P + COLUMN_PRODUCT_id + ", " + P + COLUMN_PRODUCT_name + ", " + P + COLUMN_PRODUCT_quantity + ", "
                     //        [3]                                [4]                                     [5]
                         + P + COLUMN_PRODUCT_idUnit + ", " + P + COLUMN_PRODUCT_unit_amount + ", " + P + COLUMN_PRODUCT_purchase_date + ", "
-                    //        [6]                                         [7]                                 [8]
-                        + P + COLUMN_PRODUCT_expiration_date + ", " + P + COLUMN_PRODUCT_expired + ", " + P + COLUMN_PRODUCT_idCategory +
+                    //        [6]                                         [7]
+                        + P + COLUMN_PRODUCT_expiration_date + ", " + P + COLUMN_PRODUCT_expired +
 
             " FROM "    + TABLE_Product + " AS " + TABLE_ALIAS_Product +
             " ORDER BY " + COLUMN_PRODUCT_expiration_date + ";" ;
@@ -257,19 +275,20 @@ public class DatabaseHelper extends SQLiteOpenHelper
         {
             do
             {
-                Product item = new Product();
-                item.setId(cursor.getInt(0));
-                item.setName(cursor.getString(1));
-                item.setQuantity(cursor.getInt(2));
-                item.setIdUnit(cursor.getInt(3));
-                item.setUnit_amount(cursor.getDouble(4));
-                item.setPurchase_date(Product.dbStr_toDate(cursor.getString(5)) );
-                item.setExpiration_date(Product.dbStr_toDate(cursor.getString(6)) );
-                item.setExpired(cursor.getInt(7) == 1);
-                item.setIdCategory(cursor.getInt(8));
-                item.setIconResource(R.drawable.ic_delete);
+                Product p = new Product();
+                p.setId(cursor.getInt(0));
+                p.setName(cursor.getString(1));
+                p.setQuantity(cursor.getInt(2));
+                p.setIdUnit(cursor.getInt(3));
+                p.setUnit_amount(cursor.getDouble(4));
+                p.setPurchase_date(Product.dbStr_toDate(cursor.getString(5)) );
+                p.setExpiration_date(Product.dbStr_toDate(cursor.getString(6)) );
+                p.setExpired(cursor.getInt(7) == 1);
 
-                returnList.add(item);
+                p.setUnit(getUnit(p.getIdUnit()) );
+                p.setIconResource(R.drawable.ic_delete);
+
+                returnList.add(p);
             } while (cursor.moveToNext());
         }
         else
@@ -283,9 +302,18 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return returnList;
     }
 
-    // Retrieve a list of all units
-    public ArrayList<Unit> getAllUnits()
+    // Retrieve a unit by ID from 'units' list
+    public Unit getUnit(long id)
     {
+        if (units == null)  getUnits();
+        return units.get((int)id);
+    }
+
+    // Retrieve a list of all units
+    public ArrayList<Unit> getUnits()
+    {
+        if (units != null)  return units;       // May want to force requery in the future, if we allow customizing units.
+
         /*
             SELECT id, name, abbrev
             FROM Unit
@@ -294,12 +322,12 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
         String queryString = //[0]                    [1]                       [2]
             "SELECT "       + COLUMN_UNIT_id + ", " + COLUMN_UNIT_name + ", " + COLUMN_UNIT_abbrev +
-            " FROM " + TABLE_Unit +
-            " ORDER BY " + COLUMN_UNIT_id + ";" ;
+            " FROM "        + TABLE_Unit +
+            " ORDER BY "    + COLUMN_UNIT_id + ";" ;
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(queryString, null);
-        ArrayList<Unit> returnList = new ArrayList<>();
+        ArrayList<Unit> unitList = new ArrayList<>();
 
         if (cursor.moveToFirst())
         {
@@ -310,7 +338,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 unit.setName(cursor.getString(1));
                 unit.setAbbrev(cursor.getString(2));
 
-                returnList.add(unit);
+                unitList.add(unit);
             } while (cursor.moveToNext());
         }
         else
@@ -321,7 +349,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
         // Close cursor and DB when finished
         cursor.close();
         db.close();
-        return returnList;
+
+        this.units = unitList;
+        return this.units;
     }
 
     // Testing method for adding x number of sample products
