@@ -33,7 +33,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
     private static NotificationManagerCompat notificationManager;
     //-----------------------------------------------------------------------------------
     public ArrayList<Product> list;
-    public ArrayList<Product> listFull;
+    public static ArrayList<Product> listFull;
     private OnItemClickListener listener;
 
     public interface OnItemClickListener {
