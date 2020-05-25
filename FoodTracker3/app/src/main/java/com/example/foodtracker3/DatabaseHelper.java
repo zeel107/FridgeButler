@@ -72,6 +72,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         getting cluttered. We should delete this override before releasing.
      */
 
+    /*
     private static boolean first = true;
     @Override
     public SQLiteDatabase getReadableDatabase()
@@ -94,7 +95,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         }
 
         return db;
-    }
+    }*/
 
     /*
         This gets called after a call to getReadableDatabase() or getWritableDatabase() ONLY if the

@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.util.Log;
@@ -26,7 +27,16 @@ public class ExpJobService extends JobService
     //tag for log messages
     private static final String TAG = "ExpDateJobService";
     private boolean jobCancelled = false;
-    private DatabaseHelper db = new DatabaseHelper(this);
+    private DatabaseHelper db;
+    Context context;
+
+    @Override
+    public void onCreate()
+    {
+        super.onCreate();
+        context = this;
+        //db = new DatabaseHelper(this);
+    }
 
     @Override
     public  boolean onStartJob(JobParameters params)
@@ -46,6 +56,7 @@ public class ExpJobService extends JobService
             @Override
             public void run()
             {
+                db = new DatabaseHelper(context);
                 for (int i = 0; i < 10; i++)
                 {
                     Log.d(TAG, "run: " + i);
@@ -112,10 +123,10 @@ public class ExpJobService extends JobService
         String message = currProduct.getName() + " has expired as of " + Product.date_toAppStr(currProduct.getExpiration_date()) + "!";
 
         //defines action when clicked on
-        Intent activityIntent = new Intent(this, MainActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, activityIntent, 0);
+        Intent activityIntent = new Intent(context, MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, activityIntent, 0);
 
-        Notification notification = new NotificationCompat.Builder(this, expFood)
+        Notification notification = new NotificationCompat.Builder(context, expFood)
                 .setSmallIcon(R.drawable.ic_error_outline)
                 .setContentTitle(title)
                 .setContentText(message)
@@ -127,7 +138,7 @@ public class ExpJobService extends JobService
                 .setGroup("expired_foods")
                 .build();
 
-        Notification summaryNotification = new NotificationCompat.Builder(this,expFood)
+        Notification summaryNotification = new NotificationCompat.Builder(context,expFood)
                 .setSmallIcon(R.drawable.ic_error)
                 .setStyle(new NotificationCompat.InboxStyle()
                         .addLine(title + " " + message)
@@ -149,10 +160,10 @@ public class ExpJobService extends JobService
         String message = currProduct.getName() + " will expire on " + Product.date_toAppStr(currProduct.getExpiration_date()) + "!";
 
         //defines action when clicked on
-        Intent activityIntent = new Intent(this, MainActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, activityIntent, 0);
+        Intent activityIntent = new Intent(context, MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, activityIntent, 0);
 
-        Notification notification = new NotificationCompat.Builder(this, expDate_Warning)
+        Notification notification = new NotificationCompat.Builder(context, expDate_Warning)
                 .setSmallIcon(R.drawable.ic_watch)
                 .setContentTitle(title)
                 .setContentText(message)
@@ -164,7 +175,7 @@ public class ExpJobService extends JobService
                 .setGroup("about_to_expire")
                 .build();
 
-        Notification summaryNotification = new NotificationCompat.Builder(this, expDate_Warning)
+        Notification summaryNotification = new NotificationCompat.Builder(context, expDate_Warning)
                 .setSmallIcon(R.drawable.ic_warning)
                 .setStyle(new NotificationCompat.InboxStyle()
                         .addLine(title + " " + message)
