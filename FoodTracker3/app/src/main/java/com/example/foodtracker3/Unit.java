@@ -1,7 +1,7 @@
 package com.example.foodtracker3;
 
 /*
-    Class to represent a Unit object.
+    Class to represent a Unit.
  */
 public class Unit
 {

@@ -22,6 +22,7 @@ public class Product
 
     // Additional fields for the app
     private Unit unit;
+    private Category category;
 
     private boolean expanded;
     private int iconResource;
@@ -34,7 +35,7 @@ public class Product
     public Product() { }
 
     public Product(long id, String name, int quantity, long idUnit, double unit_amount,Date purchase_date,
-                   Date expiration_date, boolean expired, long idCategory, Unit unit) {
+                   Date expiration_date, boolean expired, long idCategory, Unit unit, Category category) {
         this.id = id;
         this.name = name;
         this.quantity = quantity;
@@ -46,6 +47,7 @@ public class Product
         this.idCategory = idCategory;
 
         this.unit = unit;
+        this.category = category;
 
         this.iconResource = R.drawable.ic_delete;
         this.expanded = false;
@@ -91,6 +93,10 @@ public class Product
     public long getIdCategory() { return idCategory; }
 
     public void setIdCategory(int idCategory) { this.idCategory = idCategory; }
+
+    public Category getCategory() { return category; }
+
+    public void setCategory(Category category) { this.category = category; }
 
     public int getIconResource() { return this.iconResource; }
 

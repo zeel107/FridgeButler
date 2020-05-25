@@ -36,6 +36,7 @@ public class AddFragment extends Fragment {
     EditText et_unitAmount;
     MaskEditText et_expirationDate;
     Spinner sp_unit;
+    Spinner sp_category;
 
     @Nullable
     @Override
@@ -53,6 +54,7 @@ public class AddFragment extends Fragment {
         et_unitAmount = view.findViewById(R.id.unitAmount_input);
         et_expirationDate = view.findViewById(R.id.expiration_input);
         sp_unit = view.findViewById(R.id.unit_input);
+        sp_category = view.findViewById(R.id.category_input);
         //et_expirationDate.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_DATE); // fix no slash in keyboard? didn't work
 
         final DatabaseHelper dbh = new DatabaseHelper(getContext());      // is getContext() reliable, or will it sometimes return null? Research it more
@@ -69,7 +71,23 @@ public class AddFragment extends Fragment {
         ArrayAdapter<String> unitAdapter = new ArrayAdapter<>(getContext(), R.layout.spinner_item, spList_unitAbbrevs);
         unitAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sp_unit.setAdapter(unitAdapter);
-        sp_unit.setSelection(1);    // units[0] == "n/a", units[1] == "ct" (the default)
+        sp_unit.setSelection(1);    // units[0] == "n/a", units[1] == "ct" (the default selection)
+
+        // Categories setup
+        // Categories setup
+        final ArrayList<Category> categories = dbh.getCategories();
+        List<String> spList_categoryNames = new ArrayList<>();
+
+        for (Category i : categories)
+        {
+            spList_categoryNames.add(i.getName());
+        }
+
+        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(getContext(), R.layout.spinner_item, spList_categoryNames);
+        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sp_category.setAdapter(categoryAdapter);
+        sp_category.setSelection(0);    // categories[0] == "None" (the default selection)
+
 
         btn_add.setOnClickListener(new View.OnClickListener()
             {
@@ -81,6 +99,7 @@ public class AddFragment extends Fragment {
                     Date pur = new Date();
                     Date exp = Product.appStr_toDate(et_expirationDate.getText().toString());
                     long unitId = units.get(sp_unit.getSelectedItemPosition()).getId();
+                    long categoryId = categories.get(sp_category.getSelectedItemPosition()).getId();
 
                     Product p = new Product
                     (
@@ -93,7 +112,8 @@ public class AddFragment extends Fragment {
                         exp,
                         pur.after(exp),             // Determine if item is already expired
                         1,
-                        dbh.getUnit(unitId)
+                        dbh.getUnit(unitId),
+                        dbh.getCategory(categoryId)
                     );
 
                     // Insert the record
@@ -106,6 +126,7 @@ public class AddFragment extends Fragment {
                         et_unitAmount.setText("1");
                         et_expirationDate.getText().clear();
                         sp_unit.setSelection(1);
+                        sp_category.setSelection(0);
                     }
                     else
                     {
