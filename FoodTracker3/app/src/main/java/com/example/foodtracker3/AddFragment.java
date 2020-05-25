@@ -102,8 +102,10 @@ public class AddFragment extends Fragment {
                         Toast.makeText(v.getContext(), "Record inserted", Toast.LENGTH_SHORT).show();
                         // Clear text boxes after successful insert
                         et_productName.getText().clear();
-                        et_productQuantity.getText().clear();
+                        et_productQuantity.setText("1");
+                        et_unitAmount.setText("1");
                         et_expirationDate.getText().clear();
+                        sp_unit.setSelection(1);
                     }
                     else
                     {
