@@ -2,14 +2,21 @@ package com.example.foodtracker3;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
 public class MainActivity extends AppCompatActivity
 {
+    private static final String TAG = "MainAct_Notifi_Job";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -19,6 +26,8 @@ public class MainActivity extends AppCompatActivity
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
         bottomNavigation.setOnNavigationItemSelectedListener(navigationListener);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+
+        scheduleJob();
     }
 
 
@@ -39,6 +48,35 @@ public class MainActivity extends AppCompatActivity
                             break;
                     }
                     return true;
-                }//method
+                }//method onNavigationItemSelected
             };
+
+//**********************************************************************************************************************************
+    public void scheduleJob()
+    {
+        ComponentName componentName = new ComponentName(this, ExpJobService.class);
+        JobInfo info = new JobInfo.Builder(123, componentName)
+                .setPersisted(true) //keeps job alive even on reboot
+                .setPeriodic(15 * 60 * 1000) //43200000 = 12h
+                .build();
+
+        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        int resultCode = scheduler.schedule(info);
+
+        if (resultCode == JobScheduler.RESULT_SUCCESS)
+        {
+            Log.d(TAG, "Job scheduled");
+        }
+        else {
+            Log.d(TAG, "Job scheduling failed");
+        }
+    }//method schedulejob
+
+    public void cancelJob()
+    {
+        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        scheduler.cancel(123);
+        Log.d(TAG, "Job cancelled");
+    }//method cancelJob
+//**********************************************************************************************************************************
 }//end MainActivity

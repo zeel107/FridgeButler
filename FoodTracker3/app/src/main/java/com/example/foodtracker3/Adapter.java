@@ -29,9 +29,6 @@ import static com.example.foodtracker3.App.expFood;
 
 public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements Filterable
 {
-    //-----------------------------------------------------------------------------------
-    private static NotificationManagerCompat notificationManager;
-    //-----------------------------------------------------------------------------------
     public ArrayList<Product> list;
     public static ArrayList<Product> listFull;
     private OnItemClickListener listener;
@@ -64,10 +61,6 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
             expirationView = itemView.findViewById(R.id.expirationText);
             expiredImageView = itemView.findViewById(R.id.expiredImageView);
             expandableLayout = itemView.findViewById(R.id.expandableLayout);
-
-            //-----------------------------------------------------------------------------------
-            notificationManager = NotificationManagerCompat.from(itemView.getContext());
-            //-----------------------------------------------------------------------------------
 
             itemView.setOnClickListener(new View.OnClickListener() {
                @Override
@@ -122,16 +115,10 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
         Date today = new Date();
         if(today.after(currentProduct.getExpiration_date())) {     // if expires today, or already expired
             holder.expiredImageView.setImageResource(R.drawable.ic_error_outline);
-            //------------------------------------------------------------------------------
-            sendOnChannel1(holder.itemView, currentProduct);
-            //------------------------------------------------------------------------------
         } else {
 
             if(currentProduct.getExpiration_date().getTime() - today.getTime() <= 345600000) {        // 4 days
                 holder.expiredImageView.setImageResource(R.drawable.ic_warning);
-                //------------------------------------------------------------------------------
-                sendOnChannel2(holder.itemView, currentProduct);
-                //------------------------------------------------------------------------------
             } else {
                 holder.expiredImageView.setImageResource(0);
             }
@@ -180,82 +167,5 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
         }
     };
 
-    //-----------------------------------------------------------------------------------
 
-    public static void sendOnChannel1(View v, Product currProduct)
-    {
-        String title = currProduct.getName() +  " EXPIRED!";
-        String message = currProduct.getName() + " has expired as of " + Product.date_toAppStr(currProduct.getExpiration_date()) + "!";
-
-        //defines action when clicked on
-        Intent activityIntent = new Intent(v.getContext(), MainActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(v.getContext(), 0, activityIntent, 0);
-
-        Notification notification = new NotificationCompat.Builder(v.getContext(), expFood)
-                .setSmallIcon(R.drawable.ic_error_outline)
-                .setContentTitle(title)
-                .setContentText(message)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-                .setColor(Color.RED)
-                .setAutoCancel(true) //dismiss notification after tap
-                .setContentIntent(contentIntent)
-                .setGroup("expired_foods")
-                .build();
-
-        Notification summaryNotification = new NotificationCompat.Builder(v.getContext(),expFood)
-                .setSmallIcon(R.drawable.ic_error)
-                .setStyle(new NotificationCompat.InboxStyle()
-                        .addLine(title + " " + message)
-                        .setBigContentTitle("Expired Warning")
-                        .setSummaryText("Expired Foods"))
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setColor(Color.RED)
-                .setGroup("expired_foods")
-                .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
-                .setGroupSummary(true)
-                .build();
-        notificationManager.notify((int) currProduct.getId(), notification); //NEED FIX FOR LONG AS INT
-        notificationManager.notify(-1, summaryNotification);
-    }
-
-    public static void sendOnChannel2(View v, Product currProduct)
-    {
-        String title = currProduct.getName() +  " expiring!";
-        String message = currProduct.getName() + " will expire on " + Product.date_toAppStr(currProduct.getExpiration_date()) + "!";
-
-        //defines action when clicked on
-        Intent activityIntent = new Intent(v.getContext(), MainActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(v.getContext(), 0, activityIntent, 0);
-
-        Notification notification = new NotificationCompat.Builder(v.getContext(), expDate_Warning)
-                .setSmallIcon(R.drawable.ic_watch)
-                .setContentTitle(title)
-                .setContentText(message)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-                .setColor(Color.YELLOW)
-                .setAutoCancel(true) //dismiss notification after tap
-                .setContentIntent(contentIntent)
-                .setGroup("about_to_expire")
-                .build();
-
-        Notification summaryNotification = new NotificationCompat.Builder(v.getContext(),expDate_Warning)
-                .setSmallIcon(R.drawable.ic_warning)
-                .setStyle(new NotificationCompat.InboxStyle()
-                        .addLine(title + " " + message)
-                        .setBigContentTitle("Expiration Warning")
-                        .setSummaryText("Foods expiration approaching "))
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setColor(Color.YELLOW)
-                .setGroup("about_to_expire")
-                .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
-                .setGroupSummary(true)
-                .build();
-
-        notificationManager.notify((int) currProduct.getId(), notification); //NEED FIX FOR LONG AS INT
-        notificationManager.notify(0, summaryNotification);
-
-    }
-    //-----------------------------------------------------------------------------------
 }//end Adapter
