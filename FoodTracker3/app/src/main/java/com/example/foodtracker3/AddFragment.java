@@ -1,5 +1,6 @@
 package com.example.foodtracker3;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -34,7 +36,7 @@ public class AddFragment extends Fragment {
     EditText et_productName;
     EditText et_productQuantity;
     EditText et_unitAmount;
-    MaskEditText et_expirationDate;
+    EditText et_expirationDate;
     Spinner sp_unit;
     Spinner sp_category;
 
@@ -52,10 +54,9 @@ public class AddFragment extends Fragment {
         et_productName = view.findViewById(R.id.name_input);
         et_productQuantity = view.findViewById(R.id.quantity_input);
         et_unitAmount = view.findViewById(R.id.unitAmount_input);
-        et_expirationDate = view.findViewById(R.id.expiration_input);
+        et_expirationDate = view.findViewById(R.id.tv_expirationDate);
         sp_unit = view.findViewById(R.id.unit_input);
         sp_category = view.findViewById(R.id.category_input);
-        //et_expirationDate.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_DATE); // fix no slash in keyboard? didn't work
 
         final DatabaseHelper dbh = new DatabaseHelper(getContext());      // is getContext() reliable, or will it sometimes return null? Research it more
 
@@ -74,7 +75,6 @@ public class AddFragment extends Fragment {
         sp_unit.setSelection(1);    // units[0] == "n/a", units[1] == "ct" (the default selection)
 
         // Categories setup
-        // Categories setup
         final ArrayList<Category> categories = dbh.getCategories();
         List<String> spList_categoryNames = new ArrayList<>();
 
@@ -88,85 +88,113 @@ public class AddFragment extends Fragment {
         sp_category.setAdapter(categoryAdapter);
         sp_category.setSelection(0);    // categories[0] == "None" (the default selection)
 
+        et_expirationDate.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+               showDatePickerDialog();
+            }
+        });
+
 
         btn_add.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
             {
-                @Override
-                public void onClick(View v)
-                {
-                    if (validateInput() == false)   return;
+                if (validateInput() == false)   return;
 
-                    Date pur = new Date();
-                    Date exp = Product.appStr_toDate(et_expirationDate.getText().toString());
-                    long unitId = units.get(sp_unit.getSelectedItemPosition()).getId();
-                    long categoryId = categories.get(sp_category.getSelectedItemPosition()).getId();
+                Date pur = new Date();  // default purchaseDate value is current date
+                Date exp = Product.appStr_toDate(et_expirationDate.getText().toString());
+                long unitId = units.get(sp_unit.getSelectedItemPosition()).getId();
+                long categoryId = categories.get(sp_category.getSelectedItemPosition()).getId();
 
-                    Product p = new Product
-                    (
-                        -1,
-                        et_productName.getText().toString(),
-                        Integer.parseInt(et_productQuantity.getText().toString()),
-                        unitId,
-                        Double.parseDouble(et_unitAmount.getText().toString()),
-                        pur,
-                        exp,
-                        pur.after(exp),             // Determine if item is already expired
-                        1,
-                        dbh.getUnit(unitId),
-                        dbh.getCategory(categoryId)
-                    );
+                Product p = new Product
+                (
+                    -1,
+                    et_productName.getText().toString(),
+                    Integer.parseInt(et_productQuantity.getText().toString()),
+                    unitId,
+                    Double.parseDouble(et_unitAmount.getText().toString()),
+                    pur,
+                    exp,
+                    pur.after(exp),             // Determine if item is already expired
+                    1,
+                    dbh.getUnit(unitId),
+                    dbh.getCategory(categoryId)
+                );
 
                     // Insert the record
-                    if (dbh.addProduct(p) )                 // dbh.addTestProducts(1))
-                    {
-                        Toast.makeText(v.getContext(), "Record inserted", Toast.LENGTH_SHORT).show();
-                        // Clear text boxes after successful insert
-                        et_productName.getText().clear();
-                        et_productQuantity.setText("1");
-                        et_unitAmount.setText("1");
-                        et_expirationDate.getText().clear();
-                        sp_unit.setSelection(1);
-                        sp_category.setSelection(0);
-                    }
-                    else
-                    {
-                        Toast.makeText(v.getContext(), "Insert failed", Toast.LENGTH_SHORT).show();
-                    }
+                if (dbh.addProduct(p))
+                {
+                    Toast.makeText(v.getContext(), "Record inserted", Toast.LENGTH_SHORT).show();
+                    // Clear text boxes after successful insert
+                    et_productName.getText().clear();
+                    et_productQuantity.setText("1");
+                    et_unitAmount.setText("1");
+                    et_expirationDate.setText("");
+                    sp_unit.setSelection(1);
+                    sp_category.setSelection(0);
+                }
+                else
+                {
+                    Toast.makeText(v.getContext(), "Insert failed", Toast.LENGTH_SHORT).show();
                 }
             }
-        );
+        });
 
         // Quantity default value of 1
         et_productQuantity.setOnFocusChangeListener(new View.OnFocusChangeListener()
+        {
+            public void onFocusChange(View v, boolean hasFocus)
             {
-
-                public void onFocusChange(View v, boolean hasFocus)
+                if (!hasFocus)
                 {
-                    if (!hasFocus)
-                    {
-                        if (et_productQuantity.getText().toString().isEmpty())       et_productQuantity.setText("1");
-                    }
+                    if (et_productQuantity.getText().toString().isEmpty())       et_productQuantity.setText("1");
                 }
             }
-        );
+        });
 
         // Unit Amount default value of 1
         et_unitAmount.setOnFocusChangeListener(new View.OnFocusChangeListener()
+        {
+            public void onFocusChange(View v, boolean hasFocus)
             {
-
-                public void onFocusChange(View v, boolean hasFocus)
+                if (!hasFocus)
                 {
-                    if (!hasFocus)
-                    {
-                        if (et_unitAmount.getText().toString().isEmpty())       et_unitAmount.setText("1");
-                    }
+                    if (et_unitAmount.getText().toString().isEmpty())       et_unitAmount.setText("1");
                 }
             }
-        );
+        });
 
         dbh.close();
 
         return view;
+    }
+
+    // Creates Spinner-style DatePicker dialog
+    private void showDatePickerDialog()
+    {
+        DatePickerDialog expDateDialog = new DatePickerDialog
+        (
+            getContext(),
+            R.style.CustomDatePickerDialogTheme,
+            new DatePickerDialog.OnDateSetListener()
+            {
+                @Override
+                public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth)
+                {
+                    String date = month + 1 + "/" + dayOfMonth + "/" + year;
+                    et_expirationDate.setText(date);
+                    if (!date.isEmpty())    et_expirationDate.setError(null);   // Reset input validation error icon
+                }
+            },
+             Calendar.getInstance().get(Calendar.YEAR),
+             Calendar.getInstance().get(Calendar.MONTH),
+             Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+        );
+        expDateDialog.show();
     }
 
     // However we decide to validate input later on, we can add it here. Or we can add it up above
@@ -195,7 +223,7 @@ public class AddFragment extends Fragment {
             et_expirationDate.setError("Expiration date cannot be blank.");
             valid = false;
         }
-        // Check date format (there's probably a more efficient way to do this)
+        /* // Check date format (there's probably a more efficient way to do this)
         else
         {
             String dateStr = et_expirationDate.getText().toString();
@@ -206,12 +234,12 @@ public class AddFragment extends Fragment {
                 valid = false;
             }
             else if (Integer.parseInt(dateStr.substring(0,2)) > 12 || Integer.parseInt(dateStr.substring(3,5)) > 31
-            || (Integer.parseInt(dateStr.substring(6)) < Calendar.getInstance().get(Calendar.YEAR)) )
+                    || (Integer.parseInt(dateStr.substring(6)) < Calendar.getInstance().get(Calendar.YEAR)) )
             {
                 et_expirationDate.setError("Invalid date.");
                 valid = false;
             }
-        }
+        }*/
 
         return valid;
     }

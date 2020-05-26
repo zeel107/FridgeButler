@@ -70,12 +70,12 @@ public class DatabaseHelper extends SQLiteOpenHelper
         getting cluttered. We should delete this override before releasing.
      */
 
-    private static boolean first = true;
+    private static boolean first = false;   //<--- set FALSE to disable DB wipe on new app instance
     @Override
     public SQLiteDatabase getReadableDatabase()
     {
         SQLiteDatabase db = super.getReadableDatabase();
-                                                    //<--- to disable DB wipe on new app instance
+
         if (first == true)
         {
             first = false;
