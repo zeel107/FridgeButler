@@ -1,11 +1,5 @@
 package com.example.foodtracker3;
 
-import android.app.Notification;
-import android.app.PendingIntent;
-import android.content.Intent;
-import android.graphics.Color;
-import android.os.SystemClock;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,16 +10,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import static com.example.foodtracker3.App.expDate_Warning;
-import static com.example.foodtracker3.App.expFood;
 
 public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements Filterable
 {
@@ -106,8 +95,9 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
         Product currentProduct = list.get(position);
         holder.imageView.setImageResource(currentProduct.getIconResource() );
         holder.foodNameView.setText(currentProduct.getName() );
-        holder.foodQuantityView.setText("Quantity: " + Integer.toString(currentProduct.getQuantity()));
-        holder.expirationView.setText("Expires on "+Product.date_toAppStr(currentProduct.getExpiration_date()) );
+        holder.foodQuantityView.setText("Quantity: " + currentProduct.getQuantity() + "  (" + (int) currentProduct.getUnit_amount()
+                                                     + " " + currentProduct.getUnit().getAbbrev() + " ea.)");
+        holder.expirationView.setText("Expires on "+ DatabaseHelper.date_toAppStr(currentProduct.getExpiration_date()) );
         // currentProduct.getUnit().getAbbrev();    // use this to get abbrev string
 
 

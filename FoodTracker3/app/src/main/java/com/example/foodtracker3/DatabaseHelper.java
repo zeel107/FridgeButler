@@ -12,20 +12,23 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import java.lang.ref.WeakReference;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Random;
 
 
 public class DatabaseHelper extends SQLiteOpenHelper
 {
+    // (ES) - May not be an ideal location for these constants, but it's fine.
     // Note: use WeakReference to prevent memory leaks. This reference won't prevent the context from
     // being sent to the garbage collector, if user switches views etc.
     WeakReference<Context> context;
     ArrayList<Unit> units;
     ArrayList<Category> categories;
+
+    private static final String DB_DATE_FORMAT = "yyyy-MM-dd";
+    private static final String APP_DATE_FORMAT = "MM/dd/yyyy";
 
     // ----- DATABASE STRING CONSTANTS -----
     private static final String DB_NAME = "database.db";            // Change database name here
@@ -64,18 +67,36 @@ public class DatabaseHelper extends SQLiteOpenHelper
         this.categories = this.getCategories();
     }
 
+    // Private constructor that creates a DB with an alternate name
+    private DatabaseHelper(@Nullable Context context, String alternateDbName)
+    {
+        super(context, alternateDbName, null, 1);
+        this.context = new WeakReference<Context>(context);
+        this.units = this.getUnits();
+        this.categories = this.getCategories();
+    }
+
+    // Currently used in test class to create temporary (in-memory) database, for testing.
+    // This DB ceases to exist once the connection to it is closed. --> https://www.sqlite.org/inmemorydb.html
+    public static DatabaseHelper createTempDB(@Nullable Context context)
+    {
+        return new DatabaseHelper(context, ":memory:");
+    }
+
     /*
         NOTE: This method is temporary, for testing purposes only. It ensures the database gets wiped
         when you reopen the app for the first time. So that we can test the add function without it
         getting cluttered. We should delete this override before releasing.
      */
 
-   /* private static boolean first = true;
+   /* 
+    private static boolean first = false;   //<--- set FALSE to disable DB wipe on new app instance
+
     @Override
     public SQLiteDatabase getReadableDatabase()
     {
         SQLiteDatabase db = super.getReadableDatabase();
-                                                    //<--- to disable DB wipe on new app instance
+
         if (first == true)
         {
             first = false;
@@ -137,41 +158,41 @@ public class DatabaseHelper extends SQLiteOpenHelper
         String sampleInsert;
         
         // Add sample categories for testing
-        sampleInsert = "INSERT INTO Category (name, description) VALUES ('None', '');";
+        sampleInsert = "INSERT INTO Category (id, name, description) VALUES (0, 'None', '');";
         db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Category (name, description) VALUES ('Bag Snacks', 'Snacks that come in a bag.');";
+        sampleInsert = "INSERT INTO Category (id, name, description) VALUES (1, 'Bag Snacks', 'Snacks that come in a bag.');";
         db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Category (name, description) VALUES ('Oral Hygiene', 'Products related to oral hygiene.');";
+        sampleInsert = "INSERT INTO Category (id, name, description) VALUES (2, 'Oral Hygiene', 'Products related to oral hygiene.');";
         db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Category (name, description) VALUES ('Cereal', 'Breakfast cereals.');";
+        sampleInsert = "INSERT INTO Category (id, name, description) VALUES (3, 'Cereal', 'Breakfast cereals.');";
         db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Category (name, description) VALUES ('Frozen Meals', 'Frozen entrees & side dishes.');";
+        sampleInsert = "INSERT INTO Category (id, name, description) VALUES (4, 'Frozen Meals', 'Frozen entrees & side dishes.');";
         db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Category (name, description) VALUES ('Fruit', 'Fresh fruit.');";
+        sampleInsert = "INSERT INTO Category (id, name, description) VALUES (5, 'Fruit', 'Fresh fruit.');";
         db.execSQL(sampleInsert);
 
         // Add sample units
-        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (0, 'n/a', 'n/a', '');";
+        //sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (0, 'n/a', '', '');";
+        //db.execSQL(sampleInsert);
+        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (0, 'count', 'ct', '');";
         db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (1, 'count', 'ct', '');";
+        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (1, 'ounce', 'oz', 's');";
         db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (2, 'ounce', 'oz', 's');";
+        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (2, 'gram', 'g', 's');";
         db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (3, 'gram', 'g', 's');";
+        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (3, 'pound', 'lb', 's');";
         db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (4, 'pound', 'lb', 's');";
+        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (4, 'liter', 'lt', 's');";
         db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (5, 'liter', 'lt', 's');";
+        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (5, 'milliliter', 'mL', 's');";
         db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (6, 'milliliter', 'mL', 's');";
+        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (6, 'quart', 'qt', 's');";
         db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (7, 'quart', 'qt', 's');";
+        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (7, 'box', 'box', 'es');";
         db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (8, 'box', 'box', 'es');";
+        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (8, 'bag', 'bag', 's');";
         db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (9, 'bag', 'bag', 's');";
-        db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (10, 'package', 'pkg', 's');";
+        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (9, 'package', 'pkg', 's');";
         db.execSQL(sampleInsert);
 
     }
@@ -193,8 +214,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
         cv.put(COLUMN_PRODUCT_quantity, p.getQuantity());
         cv.put(COLUMN_PRODUCT_idUnit, p.getIdUnit());
         cv.put(COLUMN_PRODUCT_unit_amount, p.getUnit_amount());
-        cv.put(COLUMN_PRODUCT_purchase_date, Product.date_toDbStr(p.getPurchase_date()) );
-        cv.put(COLUMN_PRODUCT_expiration_date, Product.date_toDbStr(p.getExpiration_date()) );
+        cv.put(COLUMN_PRODUCT_purchase_date, date_toDbStr(p.getPurchase_date()) );
+        cv.put(COLUMN_PRODUCT_expiration_date, date_toDbStr(p.getExpiration_date()) );
         cv.put(COLUMN_PRODUCT_expired, p.isExpired());
         cv.put(COLUMN_PRODUCT_idCategory, p.getIdCategory());
 
@@ -272,8 +293,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 p.setQuantity(cursor.getInt(2));
                 p.setIdUnit(cursor.getInt(3));
                 p.setUnit_amount(cursor.getDouble(4));
-                p.setPurchase_date(Product.dbStr_toDate(cursor.getString(5)) );
-                p.setExpiration_date(Product.dbStr_toDate(cursor.getString(6)) );
+                p.setPurchase_date(dbStr_toDate(cursor.getString(5)) );
+                p.setExpiration_date(dbStr_toDate(cursor.getString(6)) );
                 p.setExpired(cursor.getInt(7) == 1);
                 p.setIdCategory(cursor.getInt(8));
 
@@ -401,33 +422,79 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return this.categories;
     }
 
-    // Testing method for adding x number of sample products
-    public boolean addTestProducts(int count)
+    /*
+        ---- Static Utility Methods ----
+     */
+
+    // Convert a Date to an APP_DATE_FORMAT String
+    public static String date_toAppStr(Date date)
     {
-        Random rand = new Random();
-        Date date = new Date();
-        GregorianCalendar calendar = new GregorianCalendar();
-        boolean success = true;
+        String dateStr = "";
+        SimpleDateFormat dateFormat = new SimpleDateFormat(APP_DATE_FORMAT);
 
-        for (int i = 0; success == true && i < count; i++)
+        try
         {
-            Product p = new Product();
-
-            p.setName("Sample Product #" + rand.nextInt(1000));
-            p.setQuantity(rand.nextInt(100));
-            p.setPurchase_date(date);
-
-            calendar.add(Calendar.HOUR_OF_DAY, rand.nextInt(337));     // Random expiration_date within next 14 days
-            date = calendar.getTime();
-
-            p.setExpiration_date(date);
-            p.setExpired(false);
-            p.setIdCategory(rand.nextInt(6));
-
-            success = this.addProduct(p);
+            dateStr = dateFormat.format(date);
+        }
+        catch (NullPointerException e)
+        {
+            e.printStackTrace();
         }
 
-        return success;
+        return dateStr;
+    }
+
+    // Convert a Date to an DB_DATE_FORMAT String
+    public static String date_toDbStr(Date date)
+    {
+        String dateStr = "";
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DB_DATE_FORMAT);
+        try
+        {
+            dateStr = dateFormat.format(date);
+        }
+        catch (NullPointerException e)
+        {
+            e.printStackTrace();
+        }
+
+        return dateStr;
+    }
+
+    // Convert a DB_DATE_FORMAT String into a Date
+    public static Date dbStr_toDate(String dateStr)
+    {
+        Date date = null;
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DB_DATE_FORMAT);
+
+        try
+        {
+            date = dateFormat.parse(dateStr);
+        }
+        catch (ParseException | NullPointerException e)
+        {
+            e.printStackTrace();
+        }
+
+        return date;                    // Note: May return null if DB date string is mis-formatted
+    }
+
+    // Convert a APP_DATE_FORMAT String into a Date
+    public static Date appStr_toDate(String dateStr)
+    {
+        Date date = null;
+        SimpleDateFormat dateFormat = new SimpleDateFormat(APP_DATE_FORMAT);
+
+        try
+        {
+            date = dateFormat.parse(dateStr);
+        }
+        catch (ParseException | NullPointerException e)
+        {
+            e.printStackTrace();
+        }
+
+        return date;                    // Note: May return null if DB date string is mis-formatted
     }
 
 }
