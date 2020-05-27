@@ -67,7 +67,7 @@ public class AddFragment extends Fragment {
         ArrayAdapter<String> unitAdapter = new ArrayAdapter<>(getContext(), R.layout.spinner_item, spList_unitAbbrevs);
         unitAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sp_unit.setAdapter(unitAdapter);
-        sp_unit.setSelection(1);    // units[0] == "n/a", units[1] == "ct" (the default selection)
+        sp_unit.setSelection(0);    // unitAbbrevs[0] == "ct" (the default selection)
 
         // Categories setup
         final ArrayList<Category> categories = dbh.getCategories();
@@ -115,7 +115,7 @@ public class AddFragment extends Fragment {
                     pur,
                     exp,
                     pur.after(exp),             // Determine if item is already expired
-                    1,
+                    categoryId,
                     dbh.getUnit(unitId),
                     dbh.getCategory(categoryId)
                 );
@@ -129,7 +129,7 @@ public class AddFragment extends Fragment {
                     et_productQuantity.setText("1");
                     et_unitAmount.setText("1");
                     et_expirationDate.setText("");
-                    sp_unit.setSelection(1);
+                    sp_unit.setSelection(0);
                     sp_category.setSelection(0);
                 }
                 else

@@ -171,27 +171,27 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.execSQL(sampleInsert);
 
         // Add sample units
-        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (0, 'n/a', 'n/a', '');";
+        //sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (0, 'n/a', '', '');";
+        //db.execSQL(sampleInsert);
+        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (0, 'count', 'ct', '');";
         db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (1, 'count', 'ct', '');";
+        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (1, 'ounce', 'oz', 's');";
         db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (2, 'ounce', 'oz', 's');";
+        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (2, 'gram', 'g', 's');";
         db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (3, 'gram', 'g', 's');";
+        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (3, 'pound', 'lb', 's');";
         db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (4, 'pound', 'lb', 's');";
+        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (4, 'liter', 'lt', 's');";
         db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (5, 'liter', 'lt', 's');";
+        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (5, 'milliliter', 'mL', 's');";
         db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (6, 'milliliter', 'mL', 's');";
+        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (6, 'quart', 'qt', 's');";
         db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (7, 'quart', 'qt', 's');";
+        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (7, 'box', 'box', 'es');";
         db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (8, 'box', 'box', 'es');";
+        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (8, 'bag', 'bag', 's');";
         db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (9, 'bag', 'bag', 's');";
-        db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (10, 'package', 'pkg', 's');";
+        sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (9, 'package', 'pkg', 's');";
         db.execSQL(sampleInsert);
 
     }

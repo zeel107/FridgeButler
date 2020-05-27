@@ -95,7 +95,8 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
         Product currentProduct = list.get(position);
         holder.imageView.setImageResource(currentProduct.getIconResource() );
         holder.foodNameView.setText(currentProduct.getName() );
-        holder.foodQuantityView.setText("Quantity: " + Integer.toString(currentProduct.getQuantity()) + " " + currentProduct.getUnit().getName());
+        holder.foodQuantityView.setText("Quantity: " + currentProduct.getQuantity() + "  (" + (int) currentProduct.getUnit_amount()
+                                                     + " " + currentProduct.getUnit().getAbbrev() + " ea.)");
         holder.expirationView.setText("Expires on "+ DatabaseHelper.date_toAppStr(currentProduct.getExpiration_date()) );
         // currentProduct.getUnit().getAbbrev();    // use this to get abbrev string
 
