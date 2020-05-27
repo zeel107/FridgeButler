@@ -1,120 +1,105 @@
 package com.example.foodtracker3;
 
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-
-import android.content.Context;
-
 import org.junit.Test;
 
 import java.util.Date;
+import java.util.GregorianCalendar;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
-public class UnitTest {
-
-    /*
+public class UnitTest
+{
     @Test
-    public void validateInputTest() {
-        AddFragment instance = new AddFragment();
-
-        boolean result = instance.validateInput();
-        assertEquals(true, result);
-    }
-
-     */
-    /*
-    @Test
-    public void addProductTest() {
-        DatabaseHelper instance = new DatabaseHelper(new Context());
-        boolean result = instance.addProduct(new Product(100, "Test", 1, new Date(1000), new Date(100000), false, 1, 0));
-        assertEquals(true, result);
-    }
-*/
-    @Test
-    public void date_toAppStrTest() {
+    public void date_toAppStrTest()
+    {
         Product instance = new Product();
-        Date date = new Date(2020, 10, 7);
-        String result = instance.date_toAppStr(date);
-        assertEquals("7/10/2020",result);
-    }
-
-    @Test
-    public void date_toDbStrTest() {
-        Product instance = new Product();
-
-        GregorianCalendar cal = new GregorianCalendar(2020, 10, 7);
+        GregorianCalendar cal = new GregorianCalendar(2020, 7 - 1, 10);
         long x = cal.getTimeInMillis();
         Date date = new Date(x);
 
-        String result = instance.date_toDbStr(date);
+        String result = DatabaseHelper.date_toAppStr(date);
+        assertEquals("07/10/2020",result);
+    }
+
+    @Test
+    public void date_toAppStrTestNull()
+    {
+        String result = DatabaseHelper.date_toAppStr(null);
+        assertEquals("", result);
+    }
+
+    @Test
+    public void date_toDbStrTest()
+    {
+        Product instance = new Product();
+
+        GregorianCalendar cal = new GregorianCalendar(2020, 10 - 1, 7);
+        long x = cal.getTimeInMillis();
+        Date date = new Date(x);
+
+        String result = DatabaseHelper.date_toDbStr(date);
         assertEquals("2020-10-07", result);
     }
 
     @Test
-    public void dbStr_toDateTest() {
+    public void date_toDbStrTestNull()
+    {
+        String result = DatabaseHelper.date_toDbStr(null);
+        assertEquals("", result);
+    }
+
+    @Test
+    public void dbStr_toDateTest()
+    {
         Product instance = new Product();
 
-        GregorianCalendar cal = new GregorianCalendar(2000, 10, 7);
+        GregorianCalendar cal = new GregorianCalendar(2000, 10 - 1, 7);
         long x = cal.getTimeInMillis();
         Date expected = new Date(x);
 
-        Date result = instance.dbStr_toDate("2000-10-07");
+        Date result = DatabaseHelper.dbStr_toDate("2000-10-07");
         assertEquals(expected, result);
     }
 
     @Test
-    public void appStr_toDateTest() {
+    public void dbStr_toDateTestNull()
+    {
+        Date result = DatabaseHelper.dbStr_toDate("");
+        assertNull(result);
+    }
+
+    @Test
+    public void dbStr_toDateTestNull2()
+    {
+        Date result = DatabaseHelper.dbStr_toDate("what");
+        assertNull(result);
+    }
+
+    @Test
+    public void appStr_toDateTest()
+    {
         Product instance = new Product();
 
-        GregorianCalendar cal = new GregorianCalendar(2000, 10, 7);
+        GregorianCalendar cal = new GregorianCalendar(2000, 7 - 1, 10);
         long x = cal.getTimeInMillis();
         Date expected = new Date(x);
 
-        Date result = instance.appStr_toDate("07/10/2000");
+        Date result = DatabaseHelper.appStr_toDate("07/10/2000");
         assertEquals(expected, result);
-
     }
 
     @Test
-    public void appStr_toDateTestNull() {
-
-        Date result = Product.appStr_toDate("what");
-        assertNull(result);
-
-    }
-
-    @Test
-    public void appStr_toDateTestNull2() {
-        Date result = Product.appStr_toDate(null);
+    public void appStr_toDateTestNull()
+    {
+        Date result = DatabaseHelper.appStr_toDate(null);
         assertNull(result);
     }
 
     @Test
-    public void dbStr_toDateTestNull() {
-        Date result = Product.dbStr_toDate("");
-        assertNull(result);
-    }
-
-    @Test
-    public void date_toAppStrTestNull() {
-        String result = Product.date_toAppStr(null);
+    public void appStr_toDateTestNull2()
+    {
+        Date result = DatabaseHelper.appStr_toDate("what");
         assertNull(result);
     }
 

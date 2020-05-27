@@ -2,9 +2,7 @@ package com.example.foodtracker3;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
-import android.text.InputType;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,15 +12,12 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-
-import com.santalu.maskedittext.MaskEditText;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -106,7 +101,7 @@ public class AddFragment extends Fragment {
                 if (validateInput() == false)   return;
 
                 Date pur = new Date();  // default purchaseDate value is current date
-                Date exp = Product.appStr_toDate(et_expirationDate.getText().toString());
+                Date exp = DatabaseHelper.appStr_toDate(et_expirationDate.getText().toString());
                 long unitId = units.get(sp_unit.getSelectedItemPosition()).getId();
                 long categoryId = categories.get(sp_category.getSelectedItemPosition()).getId();
 

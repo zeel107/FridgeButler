@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.util.Log;
-import android.view.View;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -120,7 +119,7 @@ public class ExpJobService extends JobService
     public void sendOnChannel1(Product currProduct)
     {
         String title = currProduct.getName() +  " EXPIRED!";
-        String message = currProduct.getName() + " has expired as of " + Product.date_toAppStr(currProduct.getExpiration_date()) + "!";
+        String message = currProduct.getName() + " has expired as of " + DatabaseHelper.date_toAppStr(currProduct.getExpiration_date()) + "!";
 
         //defines action when clicked on
         Intent activityIntent = new Intent(context, MainActivity.class);
@@ -157,7 +156,7 @@ public class ExpJobService extends JobService
     public void sendOnChannel2(Product currProduct)
     {
         String title = currProduct.getName() +  " expiring!";
-        String message = currProduct.getName() + " will expire on " + Product.date_toAppStr(currProduct.getExpiration_date()) + "!";
+        String message = currProduct.getName() + " will expire on " + DatabaseHelper.date_toAppStr(currProduct.getExpiration_date()) + "!";
 
         //defines action when clicked on
         Intent activityIntent = new Intent(context, MainActivity.class);
