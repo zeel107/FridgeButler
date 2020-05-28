@@ -5,7 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.os.Build;
 
-public class App extends Application
+public class AppNotify extends Application
 {
     public static final String expFood = "channel1";
     public static final String expDate_Warning = "channel2";

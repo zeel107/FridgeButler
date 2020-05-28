@@ -15,8 +15,8 @@ import androidx.core.app.NotificationManagerCompat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static com.example.foodtracker3.App.expDate_Warning;
-import static com.example.foodtracker3.App.expFood;
+import static com.example.foodtracker3.AppNotify.expDate_Warning;
+import static com.example.foodtracker3.AppNotify.expFood;
 
 public class ExpJobService extends JobService
 {
@@ -138,7 +138,7 @@ public class ExpJobService extends JobService
                 .build();
 
         Notification summaryNotification = new NotificationCompat.Builder(context,expFood)
-                .setSmallIcon(R.drawable.ic_error)
+                .setSmallIcon(R.drawable.ic_fridge)
                 .setStyle(new NotificationCompat.InboxStyle()
                         .addLine(title + " " + message)
                         .setBigContentTitle("Expired Warning")
@@ -146,7 +146,7 @@ public class ExpJobService extends JobService
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setColor(Color.RED)
                 .setGroup("expired_foods")
-                .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
+                .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_SUMMARY)
                 .setGroupSummary(true)
                 .build();
         notificationManager.notify((int) currProduct.getId(), notification); //NEED FIX FOR LONG AS INT
@@ -163,7 +163,7 @@ public class ExpJobService extends JobService
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, activityIntent, 0);
 
         Notification notification = new NotificationCompat.Builder(context, expDate_Warning)
-                .setSmallIcon(R.drawable.ic_watch)
+                .setSmallIcon(R.drawable.ic_warning)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -175,7 +175,7 @@ public class ExpJobService extends JobService
                 .build();
 
         Notification summaryNotification = new NotificationCompat.Builder(context, expDate_Warning)
-                .setSmallIcon(R.drawable.ic_warning)
+                .setSmallIcon(R.drawable.ic_fridge)
                 .setStyle(new NotificationCompat.InboxStyle()
                         .addLine(title + " " + message)
                         .setBigContentTitle("Expiration Warning")
@@ -183,7 +183,7 @@ public class ExpJobService extends JobService
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setColor(Color.YELLOW)
                 .setGroup("about_to_expire")
-                .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
+                .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_SUMMARY)
                 .setGroupSummary(true)
                 .build();
 
