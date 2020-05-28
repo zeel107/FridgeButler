@@ -297,7 +297,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 p.setExpiration_date(dbStr_toDate(cursor.getString(6)) );
                 p.setExpired(cursor.getInt(7) == 1);
                 p.setIdCategory(cursor.getInt(8));
-
                 p.setUnit(getUnit(p.getIdUnit()) );
                 p.setIconResource(R.drawable.ic_delete);
 

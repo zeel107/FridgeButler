@@ -39,6 +39,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
         public TextView foodNameView;
         public TextView foodQuantityView;
         public TextView expirationView;
+        public TextView foodCategoryView;
         public ConstraintLayout expandableLayout;
 
         public ViewHolder(@NonNull View itemView, final OnItemClickListener listener)
@@ -50,6 +51,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
             expirationView = itemView.findViewById(R.id.expirationText);
             expiredImageView = itemView.findViewById(R.id.expiredImageView);
             expandableLayout = itemView.findViewById(R.id.expandableLayout);
+            foodCategoryView = itemView.findViewById(R.id.foodCategoryText);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                @Override
@@ -97,6 +99,16 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
         holder.foodNameView.setText(currentProduct.getName() );
         holder.foodQuantityView.setText("Quantity: " + currentProduct.getQuantity() + "  (" + (int) currentProduct.getUnit_amount()
                                                      + " " + currentProduct.getUnit().getAbbrev() + " ea.)");
+        String objectName;
+        if(currentProduct.getCategory() == null)
+        {
+            objectName = "None";
+        }
+        else
+            {
+                objectName = currentProduct.getCategory().getName();
+            }
+        holder.foodCategoryView.setText("Category: " + objectName);
         holder.expirationView.setText("Expires on "+ DatabaseHelper.date_toAppStr(currentProduct.getExpiration_date()) );
         // currentProduct.getUnit().getAbbrev();    // use this to get abbrev string
 
