@@ -3,6 +3,8 @@ package com.example.foodtracker3;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
@@ -25,6 +27,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
     public interface OnItemClickListener {
         void onItemClick(int position);
         void onDeleteClick(int position);
+        void onEditClick(int position);
 
     }
 
@@ -41,6 +44,12 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
         public TextView expirationView;
         public TextView foodCategoryView;
         public ConstraintLayout expandableLayout;
+        public ImageView editImageView;
+        public Button cancelSaveButton;
+        public Button saveButton;
+        public EditText foodNameEditText;
+        public EditText foodQuantityEditText;
+        public EditText expirationEditText;
 
         public ViewHolder(@NonNull View itemView, final OnItemClickListener listener)
         {
@@ -51,7 +60,13 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
             expirationView = itemView.findViewById(R.id.expirationText);
             expiredImageView = itemView.findViewById(R.id.expiredImageView);
             expandableLayout = itemView.findViewById(R.id.expandableLayout);
+            editImageView = itemView.findViewById(R.id.editImageView);
             foodCategoryView = itemView.findViewById(R.id.foodCategoryText);
+            cancelSaveButton = itemView.findViewById(R.id.cancelSaveButton);
+            saveButton = itemView.findViewById(R.id.saveButton);
+            foodNameEditText = itemView.findViewById(R.id.foodNameEditText);
+            foodQuantityEditText = itemView.findViewById(R.id.foodQuantityEditText);
+            expirationEditText = itemView.findViewById(R.id.expirationEditText);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                @Override
@@ -71,6 +86,17 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
                         int position = getAdapterPosition();
                         if (position != RecyclerView.NO_POSITION) ;
                         listener.onDeleteClick(position);
+                    }
+                }
+            });
+
+            editImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION);
+                        listener.onEditClick(position);
                     }
                 }
             });
@@ -132,8 +158,10 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
             }
         }
 
+
         boolean isExpanded = currentProduct.getExpanded();
         holder.expandableLayout.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
+
 
     }
 

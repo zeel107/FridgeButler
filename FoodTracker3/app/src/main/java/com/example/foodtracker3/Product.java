@@ -1,5 +1,6 @@
 package com.example.foodtracker3;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -7,7 +8,7 @@ import java.util.Date;
 /*
     Class to represent a Product object.
  */
-public class Product
+public class Product implements Serializable
 {
     // Fields corresponding to 'Product' table attributes
     private long id;
@@ -26,6 +27,10 @@ public class Product
 
     private boolean expanded;
     private int iconResource;
+
+
+
+    private boolean edit;
 
     // constructors
     public Product() { }
@@ -47,6 +52,7 @@ public class Product
 
         this.iconResource = R.drawable.ic_delete;
         this.expanded = false;
+        this.edit = false;
     }
 
     // getters & setters
@@ -101,6 +107,10 @@ public class Product
     public boolean getExpanded() { return expanded; }
 
     public void setExpanded(boolean expanded) { this.expanded = expanded; }
+
+    public boolean isEdit() { return edit; }
+
+    public void setEdit(boolean edit) { this.edit = edit; }
 
     @Override
     public String toString()
