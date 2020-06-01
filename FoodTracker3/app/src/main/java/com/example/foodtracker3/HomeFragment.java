@@ -88,7 +88,7 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
                 editFrag.setArguments(bundle);
 
 
-                ft.replace(R.id.fragment_container, new EditFragment()).commit();
+                ft.replace(R.id.fragment_container, editFrag).commit();
             }
 
         });
@@ -105,8 +105,10 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
         if(list != Adapter.listFull)
         {
             int index = Adapter.listFull.indexOf(list.get(position));
-            System.out.println("This is the index: " + index);
-            Adapter.listFull.remove(index);
+            if(index != -1)
+            {
+                Adapter.listFull.remove(index);
+            }
         }
         list.remove(position);
         adapter.notifyItemRemoved(position);
