@@ -102,11 +102,12 @@ public class ExpJobService extends JobService
 
         for(int i = 0; i < pList.size(); i++)
         {
-            if(today.after(pList.get(i).getExpiration_date()))
+            boolean hasExpiration = (pList.get(i).getExpiration_date() != null);
+            if(hasExpiration && today.after(pList.get(i).getExpiration_date()))
             {     // if expires today, or already expired
                 sendOnChannel1(pList.get(i));
             }
-            else if(pList.get(i).getExpiration_date().getTime() - today.getTime() <= 345600000) // 4 days
+            else if(hasExpiration && pList.get(i).getExpiration_date().getTime() - today.getTime() <= 345600000) // 4 days
             {
                 sendOnChannel2(pList.get(i));
             }

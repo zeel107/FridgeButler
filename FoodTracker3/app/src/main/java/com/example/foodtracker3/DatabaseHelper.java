@@ -241,6 +241,38 @@ public class DatabaseHelper extends SQLiteOpenHelper
         }
     }
 
+    public boolean addCategory(Category cat)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put(COLUMN_CATEGORY_name, cat.getName());
+        cv.put(COLUMN_CATEGORY_description, cat.getDescription());
+
+        long insert = -1;
+        try
+        {
+            insert = db.insertOrThrow(TABLE_Category, null, cv);
+        }
+        catch (SQLException e)
+        {   // NOTE: if this line shows up as an error for you, Build --> Clean Project then Build --> Rebuild Project should fix it
+            if (com.example.foodtracker3.BuildConfig.DEBUG)        // Only show toast if we are debugging.
+            {
+                if (context != null)  Toast.makeText(context.get(), "addCategory(): " + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+            Log.e("DBH.addCategory()", e.getMessage(), e );           // Log the error
+        }
+
+        if (insert == -1)   return false;
+        else
+        {
+            cat.setId(insert);          // insert == rowID of newly inserted row.
+            this.categories.add(cat);
+            return true;                // https://www.sqlite.org/rowidtable.html
+        }
+
+    }
+
     // Delete one record from the Product table
     public boolean removeProduct(Product p)
     {
@@ -277,7 +309,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                         + P + COLUMN_PRODUCT_expiration_date + ", " + P + COLUMN_PRODUCT_expired + ", " + P + COLUMN_PRODUCT_idCategory +
 
             " FROM "    + TABLE_Product + " AS " + TABLE_ALIAS_Product +
-            " ORDER BY " + COLUMN_PRODUCT_expiration_date + ";" ;
+            " ORDER BY " + COLUMN_PRODUCT_expiration_date + " = NULL DESC, " + COLUMN_PRODUCT_expiration_date + " ASC;" ;
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(queryString, null);

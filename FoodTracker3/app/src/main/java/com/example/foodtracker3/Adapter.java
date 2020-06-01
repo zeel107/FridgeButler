@@ -115,13 +115,19 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
 
 
         Date today = new Date();
-        if(today.after(currentProduct.getExpiration_date())) {     // if expires today, or already expired
+        boolean hasExpiration = (currentProduct.getExpiration_date() != null);
+        if(hasExpiration && today.after(currentProduct.getExpiration_date()) )      // if expires today, or already expired
+        {
             holder.expiredImageView.setImageResource(R.drawable.ic_error_outline);
-        } else {
-
-            if(currentProduct.getExpiration_date().getTime() - today.getTime() <= 345600000) {        // 4 days
+        }
+        else
+        {
+            if(hasExpiration && currentProduct.getExpiration_date().getTime() - today.getTime() <= 345600000)   // 4 days
+            {
                 holder.expiredImageView.setImageResource(R.drawable.ic_warning);
-            } else {
+            }
+            else
+            {
                 holder.expiredImageView.setImageResource(0);
             }
         }
