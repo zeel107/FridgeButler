@@ -123,10 +123,11 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String categoryName = parent.getItemAtPosition(position).toString();
-        if(categoryName != "all")
-
+        if(categoryName != "all") {
             productList = dbh.getCategoryProducts(categoryName);
-        adapter.notifyDataSetChanged();
+            System.out.println("hi");
+        }
+        
     }
 
     @Override

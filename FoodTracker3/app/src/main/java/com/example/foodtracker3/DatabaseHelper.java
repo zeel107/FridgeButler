@@ -325,7 +325,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             ORDER BY expiration_date;        // ASCENDING by default == earliest expiration dates on top
          */
         String P = TABLE_ALIAS_Product + ".";
-        //String C = TABLE_ALIAS_Category + ".";
+        String C = TABLE_ALIAS_Category + ".";
 
         // Note: Table aliases are now unnecessary because we are only accessing a single table. I left them here in case that changes next sprint.
         String queryString = //[0]                           [1]                              [2]
@@ -335,10 +335,10 @@ public class DatabaseHelper extends SQLiteOpenHelper
                         //        [6]                                         [7]                                 [8]
                         + P + COLUMN_PRODUCT_expiration_date + ", " + P + COLUMN_PRODUCT_expired + ", " + P + COLUMN_PRODUCT_idCategory +
 
-                        " FROM "    + TABLE_Product + " AS " + TABLE_ALIAS_Product + " INNER JOIN " + TABLE_Category + " ON " + TABLE_Category + "." + COLUMN_CATEGORY_id + " = " +
-                        TABLE_Product + "." + COLUMN_PRODUCT_idCategory
-                        +" WHERE "  + TABLE_Category+ "." + COLUMN_CATEGORY_name + "=" + categoryName
-                        +" ORDER BY " + COLUMN_PRODUCT_expiration_date + ";" ;
+                        " FROM "    + TABLE_Product + " AS " + TABLE_ALIAS_Product + " INNER JOIN " +  TABLE_Category + " AS " + TABLE_ALIAS_Category + " ON " + C + COLUMN_CATEGORY_id + "=" +
+                          P + COLUMN_PRODUCT_idCategory
+                        +" WHERE "  + C + COLUMN_CATEGORY_name + "=" + "\"" + categoryName + "\""
+                        +" ORDER BY " + P + COLUMN_PRODUCT_expiration_date + ";" ;
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(queryString, null);
