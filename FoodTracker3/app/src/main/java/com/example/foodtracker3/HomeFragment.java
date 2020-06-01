@@ -14,9 +14,11 @@ import android.widget.Spinner;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class HomeFragment extends Fragment implements AdapterView.OnItemSelectedListener{
@@ -74,6 +76,19 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
                 Product currentProduct = productList.get(position);
                 currentProduct.setExpanded(!currentProduct.getExpanded());
                 adapter.notifyItemChanged(position);
+            }
+
+            @Override
+            public void onEditClick(int position) {
+                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                Product currentProduct = productList.get(position);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("edit_product", currentProduct);
+                EditFragment editFrag = new EditFragment();
+                editFrag.setArguments(bundle);
+
+
+                ft.replace(R.id.fragment_container, new EditFragment()).commit();
             }
 
         });
