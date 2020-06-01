@@ -127,7 +127,7 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
             productList = dbh.getCategoryProducts(categoryName);
             System.out.println("hi");
         }
-        
+
     }
 
     @Override
