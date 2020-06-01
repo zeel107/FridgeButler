@@ -117,17 +117,23 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
                 adapter.getFilter().filter(newText);
                 return false;
             }
+
         });
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String categoryName = parent.getItemAtPosition(position).toString();
+        ArrayList<Product> newList;
         if(categoryName != "all") {
-            productList = dbh.getCategoryProducts(categoryName);
+            newList = dbh.getCategoryProducts(categoryName);
             System.out.println("hi");
+        }else{
+            newList = dbh.getAllProducts();
         }
-
+        productList.clear();
+        productList.addAll(newList);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
