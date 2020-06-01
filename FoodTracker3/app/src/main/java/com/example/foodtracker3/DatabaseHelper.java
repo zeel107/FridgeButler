@@ -315,6 +315,67 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return returnList;
     }
 
+    public ArrayList<Product> getCategoryProducts(String categoryName)
+    {
+        // Build the SQL query. Note: we can find a more efficient & readable approach later.
+        /*
+            SELECT pro.id, pro.name, pro.quantity, pro.idUnit, pro.unit_amount, pro.purchase_date, pro.expiration_date, pro.expired, cat.name
+            FROM product AS pro, category AS cat
+            WHERE pro.idCategory = cat.id
+            ORDER BY expiration_date;        // ASCENDING by default == earliest expiration dates on top
+         */
+        String P = TABLE_ALIAS_Product + ".";
+        //String C = TABLE_ALIAS_Category + ".";
+
+        // Note: Table aliases are now unnecessary because we are only accessing a single table. I left them here in case that changes next sprint.
+        String queryString = //[0]                           [1]                              [2]
+                "SELECT "   + P + COLUMN_PRODUCT_id + ", " + P + COLUMN_PRODUCT_name + ", " + P + COLUMN_PRODUCT_quantity + ", "
+                        //        [3]                                [4]                                     [5]
+                        + P + COLUMN_PRODUCT_idUnit + ", " + P + COLUMN_PRODUCT_unit_amount + ", " + P + COLUMN_PRODUCT_purchase_date + ", "
+                        //        [6]                                         [7]                                 [8]
+                        + P + COLUMN_PRODUCT_expiration_date + ", " + P + COLUMN_PRODUCT_expired + ", " + P + COLUMN_PRODUCT_idCategory +
+
+                        " FROM "    + TABLE_Product + " AS " + TABLE_ALIAS_Product + " INNER JOIN " + TABLE_Category + " ON " + TABLE_Category + "." + COLUMN_CATEGORY_id + " = " +
+                        TABLE_Product + "." + COLUMN_PRODUCT_idCategory
+                        +" WHERE "  + TABLE_Category+ "." + COLUMN_CATEGORY_name + "=" + categoryName
+                        +" ORDER BY " + COLUMN_PRODUCT_expiration_date + ";" ;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(queryString, null);
+        ArrayList<Product> returnList = new ArrayList<>();
+
+        if (cursor.moveToFirst())
+        {
+            do
+            {
+                Product p = new Product();
+                p.setId(cursor.getInt(0));
+                p.setName(cursor.getString(1));
+                p.setQuantity(cursor.getInt(2));
+                p.setIdUnit(cursor.getInt(3));
+                p.setUnit_amount(cursor.getDouble(4));
+                p.setPurchase_date(dbStr_toDate(cursor.getString(5)) );
+                p.setExpiration_date(dbStr_toDate(cursor.getString(6)) );
+                p.setExpired(cursor.getInt(7) == 1);
+                p.setIdCategory(cursor.getInt(8));
+                p.setUnit(getUnit(p.getIdUnit()) );
+                p.setCategory(getCategory(p.getIdCategory()) );
+                p.setIconResource(R.drawable.ic_delete);
+
+                returnList.add(p);
+            } while (cursor.moveToNext());
+        }
+        else
+        {
+            // Query failed/returned no items?
+        }
+
+        // Close cursor and DB when finished
+        cursor.close();
+        db.close();
+        return returnList;
+    };
+
     // Retrieve a unit by ID from 'units' list
     public Unit getUnit(long id)
     {
