@@ -7,11 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,8 +35,11 @@ public class AddFragment extends Fragment {
     EditText et_productQuantity;
     EditText et_unitAmount;
     EditText et_expirationDate;
+    EditText et_dateAdded;
     Spinner sp_unit;
     Spinner sp_category;
+    TextView et_newCategory;
+    ImageView iv_cancelNewCategory;
 
     @Nullable
     @Override
@@ -50,8 +56,11 @@ public class AddFragment extends Fragment {
         et_productQuantity = view.findViewById(R.id.quantity_input);
         et_unitAmount = view.findViewById(R.id.unitAmount_input);
         et_expirationDate = view.findViewById(R.id.tv_expirationDate);
+        et_dateAdded = view.findViewById(R.id.tv_dateAdded);
         sp_unit = view.findViewById(R.id.unit_input);
         sp_category = view.findViewById(R.id.category_input);
+        et_newCategory = view.findViewById(R.id.et_newCategory);
+        iv_cancelNewCategory = view.findViewById(R.id.iv_cancelNewCategory);
 
         final DatabaseHelper dbh = new DatabaseHelper(getContext());      // is getContext() reliable, or will it sometimes return null? Research it more
 
@@ -71,24 +80,63 @@ public class AddFragment extends Fragment {
 
         // Categories setup
         final ArrayList<Category> categories = dbh.getCategories();
-        List<String> spList_categoryNames = new ArrayList<>();
+        final List<String> spList_categoryNames = new ArrayList<>();
 
         for (Category i : categories)
         {
             spList_categoryNames.add(i.getName());
         }
+        spList_categoryNames.add("(Create New Category)");
 
-        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(getContext(), R.layout.spinner_item, spList_categoryNames);
+        final ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(getContext(), R.layout.spinner_item, spList_categoryNames);
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sp_category.setAdapter(categoryAdapter);
         sp_category.setSelection(0);    // categories[0] == "None" (the default selection)
+
+        AdapterView.OnItemSelectedListener OnItemSelListener_Spinner = new AdapterView.OnItemSelectedListener()
+        {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
+            {
+                if (pos == sp_category.getCount() - 1)      // if selected "Create New Category"
+                {
+                    showNewCategory(true);
+                }
+            }
+
+            public void onNothingSelected(AdapterView<?> parent)
+            {
+
+            }
+        };
+
+        sp_category.setOnItemSelectedListener(OnItemSelListener_Spinner);
+
+        iv_cancelNewCategory.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                showNewCategory(false);
+            }
+        });
+
+        et_dateAdded.setText(DatabaseHelper.date_toAppStr(new Date()) );    // default text = the current date
+
+        et_dateAdded.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                showDatePickerDialog(et_dateAdded);
+            }
+        });
 
         et_expirationDate.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-               showDatePickerDialog();
+               showDatePickerDialog(et_expirationDate);
             }
         });
 
@@ -99,9 +147,24 @@ public class AddFragment extends Fragment {
             public void onClick(View v)
             {
                 if (validateInput() == false)   return;
+                if (et_newCategory.isEnabled())         // insert new category if necessary
+                {
+                    Category category = new Category(-1, et_newCategory.getText().toString(), "");
+                    if (dbh.addCategory(category))
+                    {
+                        categories.add(category);
+                        spList_categoryNames.add(spList_categoryNames.size() - 1, category.getName());
+                        categoryAdapter.notifyDataSetChanged();
+                    }
+                    else
+                    {
+                        Toast.makeText(v.getContext(), "Insert failed", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
 
-                Date pur = new Date();  // default purchaseDate value is current date
-                Date exp = DatabaseHelper.appStr_toDate(et_expirationDate.getText().toString());
+                Date addDate = DatabaseHelper.appStr_toDate(et_dateAdded.getText().toString());
+                Date expDate = DatabaseHelper.appStr_toDate(et_expirationDate.getText().toString());
                 long unitId = units.get(sp_unit.getSelectedItemPosition()).getId();
                 long categoryId = categories.get(sp_category.getSelectedItemPosition()).getId();
 
@@ -112,9 +175,9 @@ public class AddFragment extends Fragment {
                     Integer.parseInt(et_productQuantity.getText().toString()),
                     unitId,
                     Double.parseDouble(et_unitAmount.getText().toString()),
-                    pur,
-                    exp,
-                    pur.after(exp),             // Determine if item is already expired
+                    addDate,
+                    expDate,
+                    (expDate == null) ? false : addDate.after(expDate),             // Determine if item is already expired
                     categoryId,
                     dbh.getUnit(unitId),
                     dbh.getCategory(categoryId)
@@ -131,6 +194,8 @@ public class AddFragment extends Fragment {
                     et_expirationDate.setText("");
                     sp_unit.setSelection(0);
                     sp_category.setSelection(0);
+                    showNewCategory(false);
+                    et_productName.requestFocus();
                 }
                 else
                 {
@@ -168,8 +233,32 @@ public class AddFragment extends Fragment {
         return view;
     }
 
+    // Alternate between showing new category textbox and showing category spinner
+    private void showNewCategory(boolean show)
+    {
+        sp_category.setEnabled(!show);
+        et_newCategory.setEnabled(show);
+        iv_cancelNewCategory.setEnabled(show);
+
+        if (show)
+        {
+            sp_category.setVisibility(View.GONE);
+            et_newCategory.setVisibility(View.VISIBLE);
+            iv_cancelNewCategory.setVisibility(View.VISIBLE);
+            et_newCategory.requestFocus();
+        }
+        else        // cancel
+        {
+            et_newCategory.setVisibility(View.GONE);
+            et_newCategory.setText("");
+            iv_cancelNewCategory.setVisibility(View.GONE);
+            sp_category.setSelection(0);
+            sp_category.setVisibility(View.VISIBLE);
+        }
+    }
+
     // Creates Spinner-style DatePicker dialog
-    private void showDatePickerDialog()
+    private void showDatePickerDialog(final EditText editText)
     {
         DatePickerDialog expDateDialog = new DatePickerDialog
         (
@@ -181,8 +270,8 @@ public class AddFragment extends Fragment {
                 public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth)
                 {
                     String date = month + 1 + "/" + dayOfMonth + "/" + year;
-                    et_expirationDate.setText(date);
-                    if (!date.isEmpty())    et_expirationDate.setError(null);   // Reset input validation error icon
+                    editText.setText(date);
+                    //if (!date.isEmpty())    editText.setError(null);   // Reset input validation error icon
                 }
             },
              Calendar.getInstance().get(Calendar.YEAR),
@@ -212,13 +301,20 @@ public class AddFragment extends Fragment {
             valid = false;
         }
 
-        // Check expiration_date
+        // Check new category name
+        if (et_newCategory.isEnabled() && TextUtils.isEmpty(et_newCategory.getText().toString()) )
+        {
+            et_newCategory.setError("Category name cannot be blank.");
+            valid = false;
+        }
+
+        /* // Check expiration_date
         if (TextUtils.isEmpty(et_expirationDate.getText().toString()) )
         {
             et_expirationDate.setError("Expiration date cannot be blank.");
             valid = false;
         }
-        /* // Check date format (there's probably a more efficient way to do this)
+         // Check date format (there's probably a more efficient way to do this)
         else
         {
             String dateStr = et_expirationDate.getText().toString();
