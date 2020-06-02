@@ -309,7 +309,10 @@ public class DatabaseHelper extends SQLiteOpenHelper
                         + P + COLUMN_PRODUCT_expiration_date + ", " + P + COLUMN_PRODUCT_expired + ", " + P + COLUMN_PRODUCT_idCategory +
 
             " FROM "    + TABLE_Product + " AS " + TABLE_ALIAS_Product +
-            " ORDER BY " + COLUMN_PRODUCT_expiration_date + " = NULL DESC, " + COLUMN_PRODUCT_expiration_date + " ASC;" ;
+            " ORDER BY CASE " +
+                    "WHEN " + COLUMN_PRODUCT_expiration_date + " = '' THEN 2 " +
+                    "ELSE 1 " +
+            " END, " + COLUMN_PRODUCT_expiration_date + ";";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(queryString, null);
@@ -370,7 +373,10 @@ public class DatabaseHelper extends SQLiteOpenHelper
                         " FROM "    + TABLE_Product + " AS " + TABLE_ALIAS_Product + " INNER JOIN " +  TABLE_Category + " AS " + TABLE_ALIAS_Category + " ON " + C + COLUMN_CATEGORY_id + "=" +
                           P + COLUMN_PRODUCT_idCategory
                         +" WHERE "  + C + COLUMN_CATEGORY_name + "=" + "\"" + categoryName + "\""
-                        +" ORDER BY " + P + COLUMN_PRODUCT_expiration_date + ";" ;
+                        +" ORDER BY CASE " +
+                            "WHEN " + COLUMN_PRODUCT_expiration_date + " = '' THEN 2 " +
+                            "ELSE 1 " +
+                        " END, " + COLUMN_PRODUCT_expiration_date + ";";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(queryString, null);
