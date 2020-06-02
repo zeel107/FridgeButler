@@ -20,5 +20,4 @@
         android:background="?android:attr/windowBackground"
         app:itemIconTint="@color/colorPrimaryDark"
         />
-
 </RelativeLayout>

@@ -42,7 +42,7 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
         productList = dbh.getAllProducts();
         ArrayList<Category> categoryList = dbh.getCategories();
         ArrayList<String> categoryNameList = new ArrayList<>();
-        categoryNameList.add("All Categories");
+        categoryNameList.add("All");
         for(Category i: categoryList)
         {
             categoryNameList.add(i.getName());
@@ -105,10 +105,8 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
         if(list != Adapter.listFull)
         {
             int index = Adapter.listFull.indexOf(list.get(position));
-            if(index != -1)
-            {
-                Adapter.listFull.remove(index);
-            }
+            System.out.println("This is the index: " + index);
+            Adapter.listFull.remove(index);
         }
         list.remove(position);
         adapter.notifyItemRemoved(position);
@@ -142,7 +140,7 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String categoryName = parent.getItemAtPosition(position).toString();
         ArrayList<Product> newList;
-        if(categoryName != "All Categories") {
+        if(categoryName != "All") {
             newList = dbh.getCategoryProducts(categoryName);
         }else{
             newList = dbh.getAllProducts();

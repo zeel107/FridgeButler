@@ -241,36 +241,41 @@ public class DatabaseHelper extends SQLiteOpenHelper
         }
     }
 
-    public boolean addCategory(Category cat)
+    // Insert one record to the Product table
+    public boolean updateProduct(Product p)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
-        cv.put(COLUMN_CATEGORY_name, cat.getName());
-        cv.put(COLUMN_CATEGORY_description, cat.getDescription());
+        cv.put(COLUMN_PRODUCT_name, p.getName());
+        cv.put(COLUMN_PRODUCT_quantity, p.getQuantity());
+        cv.put(COLUMN_PRODUCT_idUnit, p.getIdUnit());
+        cv.put(COLUMN_PRODUCT_unit_amount, p.getUnit_amount());
+        cv.put(COLUMN_PRODUCT_purchase_date, date_toDbStr(p.getPurchase_date()) );
+        cv.put(COLUMN_PRODUCT_expiration_date, date_toDbStr(p.getExpiration_date()) );
+        cv.put(COLUMN_PRODUCT_expired, p.isExpired());
+        cv.put(COLUMN_PRODUCT_idCategory, p.getIdCategory());
 
-        long insert = -1;
+        int update = -1;
         try
         {
-            insert = db.insertOrThrow(TABLE_Category, null, cv);
+            update = db.update(TABLE_Product,  cv, null, null);
         }
         catch (SQLException e)
         {   // NOTE: if this line shows up as an error for you, Build --> Clean Project then Build --> Rebuild Project should fix it
-            if (com.example.foodtracker3.BuildConfig.DEBUG)        // Only show toast if we are debugging.
+            if (com.example.foodtracker3.BuildConfig.DEBUG)        // Only show toast if we are debugging. Try "BuildConfig.BUILD_TYPE.equals("debug")"
             {
-                if (context != null)  Toast.makeText(context.get(), "addCategory(): " + e.getMessage(), Toast.LENGTH_LONG).show();
+                if (context != null)  Toast.makeText(context.get(), "addOne(): " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
-            Log.e("DBH.addCategory()", e.getMessage(), e );           // Log the error
+            Log.e("DBH.addProduct()", e.getMessage(), e );           // Log the error
         }
 
-        if (insert == -1)   return false;
+        if (update == -1)   return false;
         else
         {
-            cat.setId(insert);          // insert == rowID of newly inserted row.
-            this.categories.add(cat);
-            return true;                // https://www.sqlite.org/rowidtable.html
+            p.setId(update);        // insert == rowID of newly inserted row. Not a good practice but it is safe in our case.
+            return true;            // https://www.sqlite.org/rowidtable.html
         }
-
     }
 
     // Delete one record from the Product table
@@ -309,10 +314,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                         + P + COLUMN_PRODUCT_expiration_date + ", " + P + COLUMN_PRODUCT_expired + ", " + P + COLUMN_PRODUCT_idCategory +
 
             " FROM "    + TABLE_Product + " AS " + TABLE_ALIAS_Product +
-            " ORDER BY CASE " +
-                    "WHEN " + COLUMN_PRODUCT_expiration_date + " = '' THEN 2 " +
-                    "ELSE 1 " +
-            " END, " + COLUMN_PRODUCT_expiration_date + ";";
+            " ORDER BY " + COLUMN_PRODUCT_expiration_date + ";" ;
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(queryString, null);
@@ -373,10 +375,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                         " FROM "    + TABLE_Product + " AS " + TABLE_ALIAS_Product + " INNER JOIN " +  TABLE_Category + " AS " + TABLE_ALIAS_Category + " ON " + C + COLUMN_CATEGORY_id + "=" +
                           P + COLUMN_PRODUCT_idCategory
                         +" WHERE "  + C + COLUMN_CATEGORY_name + "=" + "\"" + categoryName + "\""
-                        +" ORDER BY CASE " +
-                            "WHEN " + COLUMN_PRODUCT_expiration_date + " = '' THEN 2 " +
-                            "ELSE 1 " +
-                        " END, " + COLUMN_PRODUCT_expiration_date + ";";
+                        +" ORDER BY " + P + COLUMN_PRODUCT_expiration_date + ";" ;
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(queryString, null);

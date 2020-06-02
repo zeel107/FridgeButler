@@ -102,12 +102,11 @@ public class ExpJobService extends JobService
 
         for(int i = 0; i < pList.size(); i++)
         {
-            boolean hasExpiration = (pList.get(i).getExpiration_date() != null);
-            if(hasExpiration && today.after(pList.get(i).getExpiration_date()))
+            if(today.after(pList.get(i).getExpiration_date()))
             {     // if expires today, or already expired
                 sendOnChannel1(pList.get(i));
             }
-            else if(hasExpiration && pList.get(i).getExpiration_date().getTime() - today.getTime() <= 345600000) // 4 days
+            else if(pList.get(i).getExpiration_date().getTime() - today.getTime() <= 345600000) // 4 days
             {
                 sendOnChannel2(pList.get(i));
             }
@@ -120,7 +119,7 @@ public class ExpJobService extends JobService
     public void sendOnChannel1(Product currProduct)
     {
         String title = currProduct.getName() +  " EXPIRED!";
-        String message = "Expired as of " + DatabaseHelper.date_toAppStr(currProduct.getExpiration_date()) + "!";
+        String message = currProduct.getName() + " has expired as of " + DatabaseHelper.date_toAppStr(currProduct.getExpiration_date()) + "!";
 
         //defines action when clicked on
         Intent activityIntent = new Intent(context, MainActivity.class);
@@ -156,8 +155,8 @@ public class ExpJobService extends JobService
 
     public void sendOnChannel2(Product currProduct)
     {
-        String title = currProduct.getName() +  " Expiring!";
-        String message = "Expires on " + DatabaseHelper.date_toAppStr(currProduct.getExpiration_date()) + "!";
+        String title = currProduct.getName() +  " expiring!";
+        String message = currProduct.getName() + " will expire on " + DatabaseHelper.date_toAppStr(currProduct.getExpiration_date()) + "!";
 
         //defines action when clicked on
         Intent activityIntent = new Intent(context, MainActivity.class);
