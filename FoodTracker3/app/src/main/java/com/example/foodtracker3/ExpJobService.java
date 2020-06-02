@@ -120,7 +120,7 @@ public class ExpJobService extends JobService
     public void sendOnChannel1(Product currProduct)
     {
         String title = currProduct.getName() +  " EXPIRED!";
-        String message = currProduct.getName() + " has expired as of " + DatabaseHelper.date_toAppStr(currProduct.getExpiration_date()) + "!";
+        String message = "Expired as of " + DatabaseHelper.date_toAppStr(currProduct.getExpiration_date()) + "!";
 
         //defines action when clicked on
         Intent activityIntent = new Intent(context, MainActivity.class);
@@ -156,8 +156,8 @@ public class ExpJobService extends JobService
 
     public void sendOnChannel2(Product currProduct)
     {
-        String title = currProduct.getName() +  " expiring!";
-        String message = currProduct.getName() + " will expire on " + DatabaseHelper.date_toAppStr(currProduct.getExpiration_date()) + "!";
+        String title = currProduct.getName() +  " Expiring!";
+        String message = "Expires on " + DatabaseHelper.date_toAppStr(currProduct.getExpiration_date()) + "!";
 
         //defines action when clicked on
         Intent activityIntent = new Intent(context, MainActivity.class);
