@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity
         ComponentName componentName = new ComponentName(this, ExpJobService.class);
         JobInfo info = new JobInfo.Builder(123, componentName)
                 .setPersisted(true) //keeps job alive even on reboot
-                .setPeriodic(15 * 60 * 1000) //43200000 = 12h
+                .setPeriodic(43200000) //43200000 = 12h    15 * 60 * 1000 = 15min
                 .build();
 
         JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
