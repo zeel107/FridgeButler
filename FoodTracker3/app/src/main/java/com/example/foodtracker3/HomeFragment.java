@@ -150,6 +150,7 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
         productList.clear();
         productList.addAll(newList);
         adapter.notifyDataSetChanged();
+        Adapter.listFull = newList;
     }
 
     @Override
