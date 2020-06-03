@@ -25,6 +25,7 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
     Adapter adapter = null;
     DatabaseHelper dbh = null;
     ArrayList<Product> productList = null;
+    androidx.appcompat.widget.SearchView searchView = null;
 
     @Nullable
     @Override
@@ -120,7 +121,7 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
         super.onCreateOptionsMenu(menu, inflater);
 
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView)searchItem.getActionView();
+         searchView= (androidx.appcompat.widget.SearchView)searchItem.getActionView();
 
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener()
         {
@@ -131,6 +132,7 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
 
             @Override
             public boolean onQueryTextChange(String newText) {
+
                 adapter.getFilter().filter(newText);
                 return false;
             }
@@ -141,6 +143,7 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String categoryName = parent.getItemAtPosition(position).toString();
+        searchView.setQuery("", false);
         ArrayList<Product> newList;
         if(categoryName != "All Categories") {
             newList = dbh.getCategoryProducts(categoryName);
