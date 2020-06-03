@@ -143,7 +143,6 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String categoryName = parent.getItemAtPosition(position).toString();
-        searchView.setQuery("", false);
         ArrayList<Product> newList;
         if(categoryName != "All Categories") {
             newList = dbh.getCategoryProducts(categoryName);
@@ -154,6 +153,7 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
         productList.addAll(newList);
         adapter.notifyDataSetChanged();
         Adapter.listFull = newList;
+        searchView.setQuery("", false);
     }
 
     @Override
