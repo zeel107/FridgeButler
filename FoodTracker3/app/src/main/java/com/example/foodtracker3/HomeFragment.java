@@ -10,22 +10,27 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.annotation.Nullable;;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
+import androidx.appcompat.app.AppCompatActivity;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class HomeFragment extends Fragment implements AdapterView.OnItemSelectedListener{
+
+
+public class HomeFragment extends Fragment implements AdapterView.OnItemSelectedListener
+{
     Adapter adapter = null;
     DatabaseHelper dbh = null;
     ArrayList<Product> productList = null;
     androidx.appcompat.widget.SearchView searchView = null;
+    private int pos;
 
     @Nullable
     @Override
@@ -68,8 +73,12 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
 
         adapter.setOnItemClickListener(new Adapter.OnItemClickListener(){
             @Override
-            public void onDeleteClick(int position) {
-                removeItem(position, productList, adapter, dbh );
+            public void onDeleteClick(int position)
+            {
+               // removeItem(position, productList, adapter, dbh );
+                //*************************************************************************************
+                openDialog(position, productList, adapter, dbh );
+                //*************************************************************************************
             }
 
             @Override
@@ -160,4 +169,13 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
-}
+    //*************************************************************************************
+    public void openDialog(int position, ArrayList<Product> list, RecyclerView.Adapter adapter, DatabaseHelper dbh)
+    {
+        DeleteDialog dialog = new DeleteDialog(position, productList, adapter, dbh );
+        dialog.show(getFragmentManager(), "Delete dialog");
+        //pos = position;
+    }
+
+    //*************************************************************************************
+}//end HomeFragment
