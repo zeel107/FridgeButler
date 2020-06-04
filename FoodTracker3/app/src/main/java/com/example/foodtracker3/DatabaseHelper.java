@@ -158,17 +158,17 @@ public class DatabaseHelper extends SQLiteOpenHelper
         String sampleInsert;
         
         // Add sample categories for testing
-        sampleInsert = "INSERT INTO Category (id, name, description) VALUES (0, 'None', '');";
+        sampleInsert = "INSERT INTO Category (id, name, description) VALUES (0, 'Meat/Poultry', '');";
         db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Category (id, name, description) VALUES (1, 'Bag Snacks', 'Snacks that come in a bag.');";
+        sampleInsert = "INSERT INTO Category (id, name, description) VALUES (1, 'Fruits', 'Fresh fruit.');";
         db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Category (id, name, description) VALUES (2, 'Oral Hygiene', 'Products related to oral hygiene.');";
+        sampleInsert = "INSERT INTO Category (id, name, description) VALUES (2, 'Vegetables', 'Fresh vegetables');";
         db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Category (id, name, description) VALUES (3, 'Cereal', 'Breakfast cereals.');";
+        sampleInsert = "INSERT INTO Category (id, name, description) VALUES (3, 'Grains', 'Wholesome grains.');";
         db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Category (id, name, description) VALUES (4, 'Frozen Meals', 'Frozen entrees & side dishes.');";
+        sampleInsert = "INSERT INTO Category (id, name, description) VALUES (4, 'Dairy', 'yoghurt, cheese');";
         db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Category (id, name, description) VALUES (5, 'Fruit', 'Fresh fruit.');";
+        sampleInsert = "INSERT INTO Category (id, name, description) VALUES (5, 'Other', 'Miscellaneous');";
         db.execSQL(sampleInsert);
 
         // Add sample units
