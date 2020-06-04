@@ -179,7 +179,7 @@ public class EditFragment extends Fragment {
                     }
                 }
 
-                Date pur = new Date();  // default purchaseDate value is current date
+                Date pur = editProduct.getPurchase_date();      // can't edit, but still transfers over
                 Date exp = DatabaseHelper.appStr_toDate(et_expirationDate.getText().toString());
                 long unitId = units.get(sp_unit.getSelectedItemPosition()).getId();
                 long categoryId = categories.get(sp_category.getSelectedItemPosition()).getId();
@@ -204,7 +204,7 @@ public class EditFragment extends Fragment {
                     Toast.makeText(v.getContext(), "Delete failed", Toast.LENGTH_SHORT).show();
                 }*/
                 // Insert the record
-                if (dbh.updateProduct(p))
+                if (dbh.updateProduct(editProduct, p))
                 {
                     Toast.makeText(v.getContext(), "Record inserted", Toast.LENGTH_SHORT).show();
                     // Clear text boxes after successful insert

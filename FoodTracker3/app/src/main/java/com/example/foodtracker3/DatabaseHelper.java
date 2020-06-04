@@ -241,6 +241,17 @@ public class DatabaseHelper extends SQLiteOpenHelper
         }
     }
 
+    // code works, but it just feels wrong
+    public boolean updateProduct(Product prev, Product edit)
+    {
+        if(removeProduct(prev) && addProduct(edit)) {
+            return true;
+        }
+        return false;
+    }
+
+
+    /* This version didn't work, but it tried to utilize db.update
     // Insert one record to the Product table
     public boolean updateProduct(Product p)
     {
@@ -278,6 +289,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         }
     }
 
+     */
     // Delete one record from the Product table
     public boolean removeProduct(Product p)
     {
