@@ -35,7 +35,7 @@ public class InstrumentedTest
     {
         Date testDate = new Date();
         DatabaseHelper testDbh = DatabaseHelper.createTempDB(ApplicationProvider.getApplicationContext());
-        long testUnitId = 1;
+        int testUnitId = 1;
         long testCategoryId = 1;
 
         Product testProduct = new Product(

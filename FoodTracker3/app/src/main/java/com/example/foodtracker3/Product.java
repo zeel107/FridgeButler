@@ -1,8 +1,6 @@
 package com.example.foodtracker3;
 
 import java.io.Serializable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /*
@@ -14,9 +12,9 @@ public class Product implements Serializable
     private long id;
     private String name;
     private int quantity;
-    private long idUnit;
+    private int idUnit;
     private double unit_amount;
-    private Date purchase_date;
+    private Date add_date;
     private Date expiration_date;
     private boolean expired;
     private long idCategory;
@@ -28,21 +26,19 @@ public class Product implements Serializable
     private boolean expanded;
     private int iconResource;
 
-
-
     private boolean edit;
 
     // constructors
     public Product() { }
 
-    public Product(long id, String name, int quantity, long idUnit, double unit_amount,Date purchase_date,
+    public Product(long id, String name, int quantity, int idUnit, double unit_amount,Date add_date,
                    Date expiration_date, boolean expired, long idCategory, Unit unit, Category category) {
         this.id = id;
         this.name = name;
         this.quantity = quantity;
         this.idUnit = idUnit;
         this.unit_amount = unit_amount;
-        this.purchase_date = purchase_date;
+        this.add_date = add_date;
         this.expiration_date = expiration_date;
         this.expired = expired;
         this.idCategory = idCategory;
@@ -68,7 +64,7 @@ public class Product implements Serializable
 
     public void setQuantity(int quantity) { this.quantity = quantity; }
 
-    public long getIdUnit() { return idUnit; }
+    public int getIdUnit() { return idUnit; }
 
     public void setIdUnit(int idUnit) { this.idUnit = idUnit; }
 
@@ -80,9 +76,9 @@ public class Product implements Serializable
 
     public void setUnit_amount(double unit_amount) { this.unit_amount = unit_amount; }
 
-    public Date getPurchase_date() { return this.purchase_date; }
+    public Date getAdd_date() { return this.add_date; }
 
-    public void setPurchase_date(Date purchase_date) { this.purchase_date = purchase_date; }
+    public void setAdd_date(Date add_date) { this.add_date = add_date; }
 
     public Date getExpiration_date() { return this.expiration_date; }
 
@@ -121,7 +117,7 @@ public class Product implements Serializable
                 ", quantity=" + quantity +
                 ", idUnit=" + idUnit +
                 ", unit_amount=" + unit_amount +
-                ", purchase_date=" + purchase_date +
+                ", purchase_date=" + add_date +
                 ", expiration_date=" + expiration_date +
                 ", expired=" + expired +
                 ", idCategory=" + idCategory +

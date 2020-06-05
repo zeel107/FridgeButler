@@ -1,5 +1,7 @@
 package com.example.foodtracker3;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -71,14 +73,34 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
 
-        adapter.setOnItemClickListener(new Adapter.OnItemClickListener(){
+        adapter.setOnItemClickListener(new Adapter.OnItemClickListener()
+        {
             @Override
-            public void onDeleteClick(int position)
+            public void onDeleteClick(final int position)
             {
-               // removeItem(position, productList, adapter, dbh );
-                //*************************************************************************************
-                openDialog(position, productList, adapter, dbh );
-                //*************************************************************************************
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                //builder.setTitle("Attention!")
+                        builder.setMessage("Do you want to delete the selected item?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i)
+                            {
+                                removeItem(position, productList, adapter, dbh);
+                                dialogInterface.dismiss();
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i)
+                            {
+                                dialogInterface.cancel();
+                            }
+                        });
+
+                AlertDialog alert = builder.create();
+                alert.show();
             }
 
             @Override
@@ -94,11 +116,10 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
                 Product currentProduct = productList.get(position);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("edit_product", currentProduct);
-                EditFragment editFrag = new EditFragment();
-                editFrag.setArguments(bundle);
+                AddFragment addFrag = new AddFragment();
+                addFrag.setArguments(bundle);
 
-
-                ft.replace(R.id.fragment_container, editFrag).commit();
+                ft.replace(R.id.fragment_container, addFrag).commit();
             }
 
         });
@@ -169,13 +190,5 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
-    //*************************************************************************************
-    public void openDialog(int position, ArrayList<Product> list, RecyclerView.Adapter adapter, DatabaseHelper dbh)
-    {
-        DeleteDialog dialog = new DeleteDialog(position, productList, adapter, dbh );
-        dialog.show(getFragmentManager(), "Delete dialog");
-        //pos = position;
-    }
 
-    //*************************************************************************************
 }//end HomeFragment

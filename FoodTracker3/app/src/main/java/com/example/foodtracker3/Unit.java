@@ -5,14 +5,14 @@ package com.example.foodtracker3;
  */
 public class Unit
 {
-    private long id;            // consider changing to short int, place cap on max custom units
+    private int id;            // consider changing to short int, place cap on max custom units
     private String name;
     private String abbrev;
 
     // constructors
     public Unit() { }
 
-    public Unit(long id, String name, String abbrev)
+    public Unit(int id, String name, String abbrev)
     {
         this.id = id;
         this.name = name;
@@ -20,9 +20,9 @@ public class Unit
     }
 
     // getters & setters
-    public long getId() { return id; }
+    public int getId() { return id; }
 
-    public void setId(long id) { this.id = id; }
+    public void setId(int id) { this.id = id; }
 
     public String getName() { return name; }
 
