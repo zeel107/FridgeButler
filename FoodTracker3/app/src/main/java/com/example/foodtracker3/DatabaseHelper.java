@@ -157,7 +157,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         String sampleInsert;
         
         // Add sample categories for testing
-        sampleInsert = "INSERT INTO Category (id, name, description) VALUES (0, 'Meat/Poultry', '');";
+        sampleInsert = "INSERT INTO Category (id, name, description) VALUES (0, 'None', '');";
         db.execSQL(sampleInsert);
         sampleInsert = "INSERT INTO Category (id, name, description) VALUES (1, 'Meat', '');";
         db.execSQL(sampleInsert);
