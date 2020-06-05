@@ -175,7 +175,7 @@ public class AddFragment extends Fragment {
                                 {
                                     Toast.makeText(getContext(), "Delete failed", Toast.LENGTH_SHORT).show();
                                 }
-                                dialog.cancel();
+                                dialog.dismiss();
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
