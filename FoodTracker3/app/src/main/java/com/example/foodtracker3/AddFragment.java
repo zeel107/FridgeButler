@@ -3,6 +3,7 @@ package com.example.foodtracker3;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -187,6 +188,18 @@ public class AddFragment extends Fragment {
                         });
                 AlertDialog alert = builder.create();
                 alert.show();
+//***********************************************************************************************************
+                // Get the alert dialog buttons reference
+                Button positiveButton = alert.getButton(AlertDialog.BUTTON_POSITIVE);
+                Button negativeButton = alert.getButton(AlertDialog.BUTTON_NEGATIVE);
+
+                // Change the alert dialog buttons text and background color
+                positiveButton.setTextColor(Color.parseColor("#FF0B8B42"));
+                positiveButton.setBackgroundColor(Color.parseColor("#FFE1FCEA"));
+
+                negativeButton.setTextColor(Color.parseColor("#FFFF0400"));
+                negativeButton.setBackgroundColor(Color.parseColor("#FFFCB9B7"));
+//***********************************************************************************************************
             }
         });
 

@@ -16,12 +16,12 @@
         <item name="android:datePickerMode">spinner</item>
     </style>
 
-    <style name="CustomAddButton" parent="Widget.AppCompat.Button">
+    <style name="CustomGoldButton" parent="Widget.AppCompat.Button">
         <item name="android:background">@drawable/custom_gold_button</item>
         <item name="android:textColor">#BFA64B</item>
     </style>
 
-    <style name="CustomEditButton" parent="Widget.AppCompat.Button">
+    <style name="CustomPinkButton" parent="Widget.AppCompat.Button">
         <item name="android:background">@drawable/custom_pink_button</item>
         <item name="android:textColor">#BC3D6E</item>
     </style>
