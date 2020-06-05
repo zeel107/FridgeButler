@@ -157,7 +157,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         String sampleInsert;
         
         // Add sample categories for testing
-        sampleInsert = "INSERT INTO Category (id, name, description) VALUES (0, 'None', '');";
+        sampleInsert = "INSERT INTO Category (id, name, description) VALUES (0, 'Meat/Poultry', '');";
         db.execSQL(sampleInsert);
         sampleInsert = "INSERT INTO Category (id, name, description) VALUES (1, 'Meat', '');";
         db.execSQL(sampleInsert);
@@ -338,9 +338,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             this.categories.add(cat);
             return true;                // https://www.sqlite.org/rowidtable.html
         }
-
     }
-
 
     // Retrieve a list of all products
     public ArrayList<Product> getAllProducts()

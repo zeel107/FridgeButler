@@ -10,21 +10,27 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.annotation.Nullable;;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
+import androidx.appcompat.app.AppCompatActivity;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class HomeFragment extends Fragment implements AdapterView.OnItemSelectedListener{
+
+
+public class HomeFragment extends Fragment implements AdapterView.OnItemSelectedListener
+{
     Adapter adapter = null;
     DatabaseHelper dbh = null;
     ArrayList<Product> productList = null;
+    androidx.appcompat.widget.SearchView searchView = null;
+    private int pos;
 
     @Nullable
     @Override
@@ -67,8 +73,12 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
 
         adapter.setOnItemClickListener(new Adapter.OnItemClickListener(){
             @Override
-            public void onDeleteClick(int position) {
-                removeItem(position, productList, adapter, dbh );
+            public void onDeleteClick(int position)
+            {
+               // removeItem(position, productList, adapter, dbh );
+                //*************************************************************************************
+                openDialog(position, productList, adapter, dbh );
+                //*************************************************************************************
             }
 
             @Override
@@ -119,7 +129,7 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
         super.onCreateOptionsMenu(menu, inflater);
 
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView)searchItem.getActionView();
+         searchView= (androidx.appcompat.widget.SearchView)searchItem.getActionView();
 
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener()
         {
@@ -130,6 +140,7 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
 
             @Override
             public boolean onQueryTextChange(String newText) {
+
                 adapter.getFilter().filter(newText);
                 return false;
             }
@@ -149,10 +160,21 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
         productList.clear();
         productList.addAll(newList);
         adapter.notifyDataSetChanged();
+        Adapter.listFull = newList;
+        searchView.setQuery("", false);
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
-}
+    //*************************************************************************************
+    public void openDialog(int position, ArrayList<Product> list, RecyclerView.Adapter adapter, DatabaseHelper dbh)
+    {
+        DeleteDialog dialog = new DeleteDialog(position, productList, adapter, dbh );
+        dialog.show(getFragmentManager(), "Delete dialog");
+        //pos = position;
+    }
+
+    //*************************************************************************************
+}//end HomeFragment
