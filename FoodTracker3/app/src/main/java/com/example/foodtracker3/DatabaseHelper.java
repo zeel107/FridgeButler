@@ -20,9 +20,8 @@ import java.util.Date;
 
 public class DatabaseHelper extends SQLiteOpenHelper
 {
-    // (ES) - May not be an ideal location for these constants, but it's fine.
     // Note: use WeakReference to prevent memory leaks. This reference won't prevent the context from
-    // being sent to the garbage collector, if user switches views etc.
+    // being sent to the garbage collector, if user switches views, etc.
     WeakReference<Context> context;
     ArrayList<Unit> units;
     ArrayList<Category> categories;
@@ -40,7 +39,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     private static final String     COLUMN_PRODUCT_quantity         = "quantity";
     private static final String     COLUMN_PRODUCT_idUnit           = "idUnit";
     private static final String     COLUMN_PRODUCT_unit_amount      = "unit_amount";
-    private static final String     COLUMN_PRODUCT_purchase_date    = "purchase_date";
+    private static final String     COLUMN_PRODUCT_purchase_date    = "add_date";
     private static final String     COLUMN_PRODUCT_expiration_date  = "expiration_date";
     private static final String     COLUMN_PRODUCT_expired          = "expired";
     private static final String     COLUMN_PRODUCT_idCategory       = "idCategory";
@@ -132,14 +131,14 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 + COLUMN_PRODUCT_purchase_date      + " DATE, "                 // Note: DATE == TEXT
                 + COLUMN_PRODUCT_expiration_date    + " DATE, "
                 + COLUMN_PRODUCT_expired            + " BOOLEAN, "              // Note: BOOLEAN == INTEGER
-                + COLUMN_PRODUCT_idCategory         + " INTEGER REFERENCES " + TABLE_Category + "(" + COLUMN_CATEGORY_id + ") "
+                + COLUMN_PRODUCT_idCategory         + " INTEGER REFERENCES " + TABLE_Category + "(" + COLUMN_CATEGORY_id + ") ON DELETE SET DEFAULT"
             + ");";
         db.execSQL(createTableStatement);
 
         // Create 'Category' table
         createTableStatement = "CREATE TABLE IF NOT EXISTS " + TABLE_Category
             + " ("
-                + COLUMN_CATEGORY_id            + " INTEGER PRIMARY KEY AUTOINCREMENT, "            // ES - removed NOT NULL
+                + COLUMN_CATEGORY_id            + " INTEGER PRIMARY KEY AUTOINCREMENT DEFAULT 0, "            // ES - removed NOT NULL
                 + COLUMN_CATEGORY_name          + " TEXT, "
                 + COLUMN_CATEGORY_description   + " TEXT "
             + ");" ;
@@ -160,20 +159,20 @@ public class DatabaseHelper extends SQLiteOpenHelper
         // Add sample categories for testing
         sampleInsert = "INSERT INTO Category (id, name, description) VALUES (0, 'None', '');";
         db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Category (id, name, description) VALUES (1, 'Bag Snacks', 'Snacks that come in a bag.');";
+        sampleInsert = "INSERT INTO Category (id, name, description) VALUES (1, 'Meat', '');";
         db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Category (id, name, description) VALUES (2, 'Oral Hygiene', 'Products related to oral hygiene.');";
+        sampleInsert = "INSERT INTO Category (id, name, description) VALUES (2, 'Fruits', '');";
         db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Category (id, name, description) VALUES (3, 'Cereal', 'Breakfast cereals.');";
+        sampleInsert = "INSERT INTO Category (id, name, description) VALUES (3, 'Vegetables', '');";
         db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Category (id, name, description) VALUES (4, 'Frozen Meals', 'Frozen entrees & side dishes.');";
+        sampleInsert = "INSERT INTO Category (id, name, description) VALUES (4, 'Grains', '');";
         db.execSQL(sampleInsert);
-        sampleInsert = "INSERT INTO Category (id, name, description) VALUES (5, 'Fruit', 'Fresh fruit.');";
+        sampleInsert = "INSERT INTO Category (id, name, description) VALUES (5, 'Dairy', '');";
+        db.execSQL(sampleInsert);
+        sampleInsert = "INSERT INTO Category (id, name, description) VALUES (6, 'Other', '');";
         db.execSQL(sampleInsert);
 
         // Add sample units
-        //sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (0, 'n/a', '', '');";
-        //db.execSQL(sampleInsert);
         sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (0, 'count', 'ct', '');";
         db.execSQL(sampleInsert);
         sampleInsert = "INSERT INTO Unit (id, name, abbrev, plural) VALUES (1, 'ounce', 'oz', 's');";
@@ -197,6 +196,13 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
     }
 
+    @Override
+    public void onConfigure(SQLiteDatabase db)
+    {
+        // Enable foreign keys
+        db.setForeignKeyConstraintsEnabled(true);
+    }
+
     // Called if the DB version number changes. It prevents previous user's apps from breaking when you change DB design
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
@@ -214,7 +220,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         cv.put(COLUMN_PRODUCT_quantity, p.getQuantity());
         cv.put(COLUMN_PRODUCT_idUnit, p.getIdUnit());
         cv.put(COLUMN_PRODUCT_unit_amount, p.getUnit_amount());
-        cv.put(COLUMN_PRODUCT_purchase_date, date_toDbStr(p.getPurchase_date()) );
+        cv.put(COLUMN_PRODUCT_purchase_date, date_toDbStr(p.getAdd_date()) );
         cv.put(COLUMN_PRODUCT_expiration_date, date_toDbStr(p.getExpiration_date()) );
         cv.put(COLUMN_PRODUCT_expired, p.isExpired());
         cv.put(COLUMN_PRODUCT_idCategory, p.getIdCategory());
@@ -241,49 +247,35 @@ public class DatabaseHelper extends SQLiteOpenHelper
         }
     }
 
-    // Insert one record to the Product table
-    public boolean updateProduct(Product p)
+    // Update an existing product
+    public boolean updateProduct(Product prod)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
-        cv.put(COLUMN_PRODUCT_name, p.getName());
-        cv.put(COLUMN_PRODUCT_quantity, p.getQuantity());
-        cv.put(COLUMN_PRODUCT_idUnit, p.getIdUnit());
-        cv.put(COLUMN_PRODUCT_unit_amount, p.getUnit_amount());
-        cv.put(COLUMN_PRODUCT_purchase_date, date_toDbStr(p.getPurchase_date()) );
-        cv.put(COLUMN_PRODUCT_expiration_date, date_toDbStr(p.getExpiration_date()) );
-        cv.put(COLUMN_PRODUCT_expired, p.isExpired());
-        cv.put(COLUMN_PRODUCT_idCategory, p.getIdCategory());
+        cv.put(COLUMN_PRODUCT_name, prod.getName());
+        cv.put(COLUMN_PRODUCT_quantity, prod.getQuantity());
+        cv.put(COLUMN_PRODUCT_idUnit, prod.getIdUnit());
+        cv.put(COLUMN_PRODUCT_unit_amount, prod.getUnit_amount());
+        cv.put(COLUMN_PRODUCT_purchase_date, date_toDbStr(prod.getAdd_date()) );
+        cv.put(COLUMN_PRODUCT_expiration_date, date_toDbStr(prod.getExpiration_date()) );
+        cv.put(COLUMN_PRODUCT_expired, prod.isExpired());
+        cv.put(COLUMN_PRODUCT_idCategory, prod.getIdCategory());
 
-        int update = -1;
-        try
-        {
-            update = db.update(TABLE_Product,  cv, null, null);
-        }
-        catch (SQLException e)
-        {   // NOTE: if this line shows up as an error for you, Build --> Clean Project then Build --> Rebuild Project should fix it
-            if (com.example.foodtracker3.BuildConfig.DEBUG)        // Only show toast if we are debugging. Try "BuildConfig.BUILD_TYPE.equals("debug")"
-            {
-                if (context != null)  Toast.makeText(context.get(), "addOne(): " + e.getMessage(), Toast.LENGTH_LONG).show();
-            }
-            Log.e("DBH.addProduct()", e.getMessage(), e );           // Log the error
-        }
+        String whereClause = COLUMN_PRODUCT_id + " = " + prod.getId();
 
-        if (update == -1)   return false;
-        else
-        {
-            p.setId(update);        // insert == rowID of newly inserted row. Not a good practice but it is safe in our case.
-            return true;            // https://www.sqlite.org/rowidtable.html
-        }
+        int rowsAffected = db.update(TABLE_Product,  cv, whereClause, null);
+
+        if (rowsAffected > 0)   return true;
+        else                    return false;       // if no rows were affected, update has failed
     }
 
     // Delete one record from the Product table
-    public boolean removeProduct(Product p)
+    public boolean removeProduct(Product prod)
     {
         SQLiteDatabase db = this.getWritableDatabase();
 
-        String whereClause = COLUMN_PRODUCT_id + " = " + p.getId() + ";";
+        String whereClause = COLUMN_PRODUCT_id + " = " + prod.getId() + ";";
 
         int rowsAffected = db.delete(TABLE_Product, whereClause, null);
 
@@ -291,6 +283,32 @@ public class DatabaseHelper extends SQLiteOpenHelper
         else                       return false;
     }
 
+    /**
+     * Delete a category record from Category table
+     * @param cat the category being deleted
+     * @return whether the delete was successful or not
+     */
+    public boolean removeCategory(Category cat)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String whereClause = COLUMN_CATEGORY_id + " = " + cat.getId() + ";";
+
+        int rowsAffected = db.delete(TABLE_Category, whereClause, null);
+
+        if (rowsAffected > 0)
+        {
+            categories.remove(cat);
+            return true;    // One row should've been affected by the DELETE
+        }
+        else                       return false;
+    }
+
+    /**
+     * Insert a category record to the Category table
+     * @param cat the category being inserted
+     * @return whether the insert was successful or not
+     */
     public boolean addCategory(Category cat)
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -365,7 +383,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 p.setQuantity(cursor.getInt(2));
                 p.setIdUnit(cursor.getInt(3));
                 p.setUnit_amount(cursor.getDouble(4));
-                p.setPurchase_date(dbStr_toDate(cursor.getString(5)) );
+                p.setAdd_date(dbStr_toDate(cursor.getString(5)) );
                 p.setExpiration_date(dbStr_toDate(cursor.getString(6)) );
                 p.setExpired(cursor.getInt(7) == 1);
                 p.setIdCategory(cursor.getInt(8));
@@ -426,7 +444,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 p.setQuantity(cursor.getInt(2));
                 p.setIdUnit(cursor.getInt(3));
                 p.setUnit_amount(cursor.getDouble(4));
-                p.setPurchase_date(dbStr_toDate(cursor.getString(5)) );
+                p.setAdd_date(dbStr_toDate(cursor.getString(5)) );
                 p.setExpiration_date(dbStr_toDate(cursor.getString(6)) );
                 p.setExpired(cursor.getInt(7) == 1);
                 p.setIdCategory(cursor.getInt(8));
@@ -500,14 +518,18 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return this.units;
     }
 
-    // Retrieve a category by ID from 'categories' list.
-    // Note: when user is allowed to create and delete their own categories, will
-    // change this to hash map using category ID as key-- because we won't be able to rely on
-    // the index in this array being the correct category.
+    // Retrieve a category by ID from 'categories' list by brute force search.
     public Category getCategory(long id)
     {
         if (categories == null)     getCategories();
-        return categories.get((int)id);
+
+        int i;
+        for (i = 0; i < categories.size(); i++)
+        {
+            if (categories.get(i).getId() == id)  break;
+        }
+
+        return categories.get(i);
     }
 
     // Retrieve a list of all categories

@@ -84,11 +84,10 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
                 Product currentProduct = productList.get(position);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("edit_product", currentProduct);
-                EditFragment editFrag = new EditFragment();
-                editFrag.setArguments(bundle);
+                AddFragment addFrag = new AddFragment();
+                addFrag.setArguments(bundle);
 
-
-                ft.replace(R.id.fragment_container, editFrag).commit();
+                ft.replace(R.id.fragment_container, addFrag).commit();
             }
 
         });
