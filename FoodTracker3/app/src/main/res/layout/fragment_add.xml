@@ -76,7 +76,7 @@
             app:layout_constraintHorizontal_bias="0.1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/quantityTextInputLayout"
-            app:layout_constraintVertical_bias="0.1">
+            app:layout_constraintVertical_bias="0.12">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/tv_dateAdded"
@@ -119,7 +119,7 @@
             app:layout_constraintBottom_toTopOf="@+id/add_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/category_text"
-            app:layout_constraintVertical_bias="0.317" />
+            app:layout_constraintVertical_bias="0.1" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/unitAmountInputLayout"
@@ -162,22 +162,22 @@
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.1" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/nameTextInputLayout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Name"
             android:layout_margin="20dp"
+            android:hint="Name"
             app:boxStrokeColor="@color/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title_text"
-            app:layout_constraintVertical_bias="0.1">
+            app:layout_constraintVertical_bias="0.075">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/name_input"
@@ -222,7 +222,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="180dp"
             android:layout_height="wrap_content"
-            android:hint="Expiration Date"
+            android:hint="Expiration Date             "
 
             app:boxStrokeColor="@color/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -230,7 +230,7 @@
             app:layout_constraintHorizontal_bias="0.6"
             app:layout_constraintStart_toEndOf="@+id/dateInputLayout"
             app:layout_constraintTop_toBottomOf="@+id/unitAmountInputLayout"
-            app:layout_constraintVertical_bias="0.1">
+            app:layout_constraintVertical_bias="0.12">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/tv_expirationDate"
@@ -239,7 +239,6 @@
                 android:clickable="true"
                 android:focusable="false"
                 android:gravity="center_horizontal|center_vertical"
-                android:hint=""
                 android:inputType="none"
                 android:longClickable="false"
                 android:text='@{editProduct == null ? "" : com.example.foodtracker3.DatabaseHelper.date_toAppStr(editProduct.expiration_date) }'
@@ -258,9 +257,10 @@
             android:visibility='@{(editProduct == null) ? View.GONE : View.VISIBLE}'
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.275"
+            app:layout_constraintHorizontal_bias="0.284"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/category_text" />
+            app:layout_constraintTop_toBottomOf="@+id/category_text"
+            app:layout_constraintVertical_bias="0.69" />
 
         <Button
             android:id="@+id/add_button"
@@ -274,7 +274,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.47"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/category_text" />
+            app:layout_constraintTop_toBottomOf="@+id/category_text"
+            app:layout_constraintVertical_bias="0.694" />
 
         <Button
             android:id="@+id/save_button"
@@ -288,7 +289,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.671"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/category_text" />
+            app:layout_constraintTop_toBottomOf="@+id/category_text"
+            app:layout_constraintVertical_bias="0.694" />
 
         <Spinner
             android:id="@+id/unit_input"
