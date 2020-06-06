@@ -78,7 +78,7 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
             @Override
             public void onDeleteClick(final int position)
             {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.MyDialogStyle);
                 //builder.setTitle("Attention!")
                         builder.setMessage("Do you want to delete the selected item?")
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener()

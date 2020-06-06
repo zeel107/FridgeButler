@@ -20,7 +20,7 @@ public class SplashScreenActivity extends AppCompatActivity
                 .withFullScreen()
                 .withTargetActivity(MainActivity.class)
                 .withSplashTimeOut(2000) //3 seconds timeout
-                .withBackgroundColor(Color.parseColor("#46403D"))
+                .withBackgroundColor(Color.parseColor("#ACB0BA"))
                 .withBeforeLogoText("WELCOME")
                 .withAfterLogoText("Food inventorying made easy!")
                 .withLogo(R.mipmap.ic_launcher_round);

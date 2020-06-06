@@ -156,7 +156,7 @@ public class AddFragment extends Fragment {
             @Override
             public void onClick(View v)
             {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.MyDialogStyle);
                 builder.setMessage("Delete category '" + (String)sp_category.getSelectedItem() + "'?")
                         .setCancelable(false)
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener()
@@ -186,20 +186,9 @@ public class AddFragment extends Fragment {
                                 dialog.cancel();
                             }
                         });
+
                 AlertDialog alert = builder.create();
                 alert.show();
-//***********************************************************************************************************
-                // Get the alert dialog buttons reference
-                Button positiveButton = alert.getButton(AlertDialog.BUTTON_POSITIVE);
-                Button negativeButton = alert.getButton(AlertDialog.BUTTON_NEGATIVE);
-
-                // Change the alert dialog buttons text and background color
-                positiveButton.setTextColor(Color.parseColor("#FF0B8B42"));
-                positiveButton.setBackgroundColor(Color.parseColor("#FFE1FCEA"));
-
-                negativeButton.setTextColor(Color.parseColor("#FFFF0400"));
-                negativeButton.setBackgroundColor(Color.parseColor("#FFFCB9B7"));
-//***********************************************************************************************************
             }
         });
 
