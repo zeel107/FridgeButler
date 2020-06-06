@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -272,7 +273,6 @@ public class AddFragment extends Fragment {
                     et_productName.getText().clear();
                     et_productQuantity.setText("1");
                     et_unitAmount.setText("1");
-                    et_expirationDate.setText("");
                     sp_unit.setSelection(0);
                     sp_category.setSelection(0);
                     showNewCategory(false);

@@ -241,7 +241,7 @@
                 android:gravity="center_horizontal|center_vertical"
                 android:inputType="none"
                 android:longClickable="false"
-                android:text='@{editProduct == null ? "" : com.example.foodtracker3.DatabaseHelper.date_toAppStr(editProduct.expiration_date) }'
+                android:text='@{editProduct == null ? currentDate : com.example.foodtracker3.DatabaseHelper.date_toAppStr(editProduct.expiration_date) }'
                 android:textColor="@android:color/black"
                 android:textColorHint="?android:attr/textColorHintInverse"
                 android:textSize="20sp" />
