@@ -67,9 +67,9 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/dateInputLayout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="130dp"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
-            android:hint="Date Added        "
+            android:hint="Date Added               "
             app:boxStrokeColor="@color/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -107,6 +107,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/expirationInputLayout"
             app:layout_constraintVertical_bias="0.147" />
+
 
         <Spinner
             android:id="@+id/category_input"
@@ -241,7 +242,7 @@
                 android:gravity="center_horizontal|center_vertical"
                 android:inputType="none"
                 android:longClickable="false"
-                android:text='@{editProduct == null ? currentDate : com.example.foodtracker3.DatabaseHelper.date_toAppStr(editProduct.expiration_date) }'
+                android:text='@{editProduct == null ? " " : (editProduct.expiration_date == null) ? " ": DatabaseHelper.date_toAppStr(editProduct.expiration_date) }'
                 android:textColor="@android:color/black"
                 android:textColorHint="?android:attr/textColorHintInverse"
                 android:textSize="20sp" />

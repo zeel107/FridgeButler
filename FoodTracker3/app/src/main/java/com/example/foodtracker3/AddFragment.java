@@ -273,6 +273,7 @@ public class AddFragment extends Fragment {
                     et_productName.getText().clear();
                     et_productQuantity.setText("1");
                     et_unitAmount.setText("1");
+
                     sp_unit.setSelection(0);
                     sp_category.setSelection(0);
                     showNewCategory(false);
@@ -280,6 +281,7 @@ public class AddFragment extends Fragment {
                 }
                 else if (success && EDIT_MODE)
                 {
+                    et_expirationDate.setText(" ");
                     Toast.makeText(v.getContext(), "Item updated.", Toast.LENGTH_SHORT).show();
                     getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();     // new home fragment
                 }
