@@ -50,12 +50,10 @@
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
 
-                android:layout_marginTop="34dp"
+                android:layout_marginTop="8dp"
                 android:padding="2dp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/foodNameText"
-                app:layout_constraintVertical_bias="0.529"
+                app:layout_constraintTop_toBottomOf="@+id/foodNameText"
                 app:srcCompat="@drawable/ic_error_outline" />
 
             <TextView
@@ -69,8 +67,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/expiredImageView"
-                app:layout_constraintTop_toTopOf="@+id/expiredImageView"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintTop_toTopOf="@+id/expiredImageView" />
 
             <EditText
                 android:id="@+id/expirationEditText"
