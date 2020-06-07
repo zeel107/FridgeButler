@@ -3,8 +3,6 @@ package com.example.foodtracker3;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
-import android.graphics.Color;
-import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -35,7 +33,17 @@ import java.util.Date;
 import java.util.List;
 
 
-
+/**
+ * The Add Fragment is rendered in the Main Activity on click of the Add Navigation item.
+ *
+ *
+ * @author Andrew Dineen
+ * @author Aidan Fallstorm
+ * @author Rick Patneaude
+ * @author Eli Storlie
+ * @author Marco Villafana
+ * @version 1.0.0 Jun 7, 2020
+ * */
 public class AddFragment extends Fragment {
 
     boolean EDIT_MODE;
@@ -58,6 +66,13 @@ public class AddFragment extends Fragment {
 
     @Nullable
     @Override
+    /**
+     * This method creates and inflates the view when the Add Fragment is loaded into the MainActivity view port.
+     * @param inflater the layout inflater for inflating the view.
+     * @param container the container that will contain the inflated content- the view port.
+     * @param savedInstanceState to load previous instances of the view
+     * @return the resulting view.
+     * */
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
         Bundle bundle = getArguments();
@@ -127,7 +142,12 @@ public class AddFragment extends Fragment {
         /* SET DEFAULT VALUES */
         sp_unit.setSelection((EDIT_MODE) ? editProduct.getIdUnit() : 0);    // unitAbbrevs[0] == "ct"
         sp_category.setSelection((EDIT_MODE) ? categories.indexOf(dbh.getCategory(editProduct.getIdCategory()) ) : 0);          // categories[0] == "None"
-
+        /**
+         * Defines what to do when a category drop down menu item is selected.
+         * @param parent the parent view.
+         * @param view the current view.
+         * @param position the list position of the item selected.
+         * */
         sp_category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
@@ -151,7 +171,9 @@ public class AddFragment extends Fragment {
 
             }
         });
-
+        /**
+         * This method houses the click listener for the category delete button. Sets an on click listener object on the main adapter.
+         * */
         iv_deleteCategory.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -192,7 +214,6 @@ public class AddFragment extends Fragment {
                 alert.show();
             }
         });
-
         iv_cancelNewCategory.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -202,6 +223,10 @@ public class AddFragment extends Fragment {
             }
         });
 
+        /**
+         *Shows date picker dialog when the Date Added input field is clicked.
+         *
+         * */
         et_dateAdded.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -210,7 +235,9 @@ public class AddFragment extends Fragment {
                 showDatePickerDialog(et_dateAdded);
             }
         });
-
+        /**
+         *Shows date picker dialog when the Expiration Date input field is clicked.
+         * */
         et_expirationDate.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -219,7 +246,10 @@ public class AddFragment extends Fragment {
                showDatePickerDialog(et_expirationDate);
             }
         });
-
+        /**
+         * The click event listener for the add button. Adds the record to the database and updates the appropriate tables.
+         *
+         * */
         View.OnClickListener onClick_addUpdate = new View.OnClickListener()
         {
             @Override
@@ -295,6 +325,9 @@ public class AddFragment extends Fragment {
         btn_add.setOnClickListener(onClick_addUpdate);
         btn_save.setOnClickListener(onClick_addUpdate);
 
+        /**
+         * What to do when the cancel button is clicked. render a new home fragment.
+         * */
         btn_cancel.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -335,7 +368,7 @@ public class AddFragment extends Fragment {
 
     /**
      * Show/hide toggle between the category spinner and the newCategory EditText box.
-     * @param show
+     * @param show whether the new category should be shown or not.
      */
     private void showNewCategory(boolean show)
     {
@@ -361,7 +394,7 @@ public class AddFragment extends Fragment {
 
     /**
      * Show/hide toggle for the delete category icon.
-     * @param show
+     * @param show whether the category should be shown or not.
      */
     private void showDeleteCategory(boolean show)
     {
@@ -397,7 +430,7 @@ public class AddFragment extends Fragment {
 
     /**
      * Check controls for invalid input.
-     * @return
+     * @return whether or not the input is valid
      */
     public boolean validateInput()
     {
