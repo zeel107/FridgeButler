@@ -43,7 +43,7 @@ public class ExpJobService extends JobService
         //***************************************************************************************************
         notificationManager = NotificationManagerCompat.from(this);
         //***************************************************************************************************
-        Log.d(TAG, "job started");
+        Log.d(TAG, "##-JOB STARTED-##");
         doBackgroundWork(params);
 
         return true;
@@ -56,7 +56,7 @@ public class ExpJobService extends JobService
             public void run()
             {
 
-                for (int i = 0; i < 5; i++)
+               /*for (int i = 0; i < 5; i++)
                 {
                     Log.d(TAG, "run: " + i);
                     if (jobCancelled)
@@ -72,7 +72,7 @@ public class ExpJobService extends JobService
                     {
                         e.printStackTrace();
                     }
-                }
+                }*/
 //***************************************************************************************************
                 if (jobCancelled)
                 {
@@ -82,7 +82,7 @@ public class ExpJobService extends JobService
                 expDateChecker(productList);
 
 //***************************************************************************************************
-                Log.d(TAG, "Job finished");
+                Log.d(TAG, "##-JOB FINISHED-##");
                 jobFinished(params, false);
             }
         }).start();

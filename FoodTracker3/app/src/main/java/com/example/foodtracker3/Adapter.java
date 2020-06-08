@@ -153,7 +153,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
     public void onBindViewHolder(@NonNull ViewHolder holder, int position)
     {
         Product currentProduct = list.get(position);
-        holder.imageView.setImageResource(currentProduct.getIconResource() );
+        holder.imageView.setImageResource(R.drawable.ic_delete2 );
         holder.foodNameView.setText(currentProduct.getName() );
         holder.foodQuantityView.setText("Quantity: " + currentProduct.getQuantity() + "  (" + (int) currentProduct.getUnit_amount()
                                                      + " " + currentProduct.getUnit().getAbbrev() + " ea.)");

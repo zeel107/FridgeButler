@@ -46,7 +46,7 @@ public class Product implements Serializable
         this.unit = unit;
         this.category = category;
 
-        this.iconResource = R.drawable.ic_delete;
+        this.iconResource = R.drawable.ic_delete2;
         this.expanded = false;
         this.edit = false;
     }
