@@ -21,5 +21,7 @@
         android:background="@android:color/white"
         app:itemIconTint="@color/ColorHomeIcon"
         app:itemTextColor="#BC3D6E"
-        app:menu="@menu/bottom_navigation" />
+        app:menu="@menu/bottom_navigation"
+        app:itemIconSize="@dimen/bottom_navigation_icon_size"
+        />
 </RelativeLayout>
