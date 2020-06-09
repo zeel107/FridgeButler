@@ -5,19 +5,32 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.os.Build;
 
+/**
+ * This class creates notification channels, to be used in the ExpJobService class at the beginning
+ * of the application
+ *
+ * @author Marco Villafana
+ * @version 1.0.0 Jun 7, 2020
+ */
 public class AppNotify extends Application
 {
     public static final String expFood = "channel1";
     public static final String expDate_Warning = "channel2";
 
+    /**
+     * Method creates calls createNotificationChannels and creates 2 notification channels
+     * a the start of the application
+     */
     @Override
     public void onCreate()
     {
         super.onCreate();
-
         createNotificationChannels();
     }//method onCreate
 
+    /**
+     * Method creates 2 customized notification channels
+     */
     public void createNotificationChannels()
     {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)

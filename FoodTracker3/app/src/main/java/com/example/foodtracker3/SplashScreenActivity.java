@@ -8,9 +8,18 @@ import android.view.View;
 
 import gr.net.maroulis.library.EasySplashScreen;
 
+/**
+ * This class creates a splash screen and applies the given setting
+ *
+ * @author Marco Villafana
+ * @version 1.0.0 Jun 7, 2020
+ */
 public class SplashScreenActivity extends AppCompatActivity
 {
-
+    /**
+     * method creates a splash screen with the given settings applied
+     * @param savedInstanceState hold the saved state of the application
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {

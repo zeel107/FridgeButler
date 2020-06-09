@@ -44,7 +44,8 @@ import java.util.List;
  * @author Marco Villafana
  * @version 1.0.0 Jun 7, 2020
  * */
-public class AddFragment extends Fragment {
+public class AddFragment extends Fragment
+{
 
     boolean EDIT_MODE;
     // View control objects --- Defining them here instead of in onCreateView(), so they can be accessed by validateInput() method.

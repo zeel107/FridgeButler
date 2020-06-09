@@ -51,7 +51,9 @@ public class MainActivity extends AppCompatActivity
                 }//method onNavigationItemSelected
             };
 
-//**********************************************************************************************************************************
+    /**
+     * Method schedules a customized job that will execute every 12 hours
+     */
     public void scheduleJob()
     {
         ComponentName componentName = new ComponentName(this, ExpJobService.class);
@@ -72,11 +74,14 @@ public class MainActivity extends AppCompatActivity
         }
     }//method schedulejob
 
+    /**
+     * Method cancels the job using the JOB_SCHEDULER_SERVICE
+     */
     public void cancelJob()
     {
         JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
         scheduler.cancel(123);
         Log.d(TAG, "Job cancelled");
     }//method cancelJob
-//**********************************************************************************************************************************
+
 }//end MainActivity
