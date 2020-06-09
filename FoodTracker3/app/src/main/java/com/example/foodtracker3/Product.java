@@ -2,6 +2,7 @@ package com.example.foodtracker3;
 
 import java.io.Serializable;
 import java.util.Date;
+
 /**
  * The Product objects are tied to entries in the database.
  * Product objects are used to work with UI, and contain all the necessary information to update entries in the database.
@@ -14,7 +15,6 @@ import java.util.Date;
  * @author Marco Villafana
  * @version 1.0.0 Jun 7, 2020
  */
-
 public class Product implements Serializable
 {
     // Fields corresponding to 'Product' table attributes
@@ -41,7 +41,8 @@ public class Product implements Serializable
     public Product() { }
 
     /**
-     * All information comes from an entry in the "Product" table from the database.
+     * Parameterized constructor which initializes a Product object.
+     * Information corresponds to an entry in the "Product" database table.
      * @param id The key to an entry in the "Product" database table
      * @param name From "Product"
      * @param quantity From "Product"

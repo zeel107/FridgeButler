@@ -28,10 +28,10 @@ public class SplashScreenActivity extends AppCompatActivity
         EasySplashScreen config = new EasySplashScreen(SplashScreenActivity.this)
                 .withFullScreen()
                 .withTargetActivity(MainActivity.class)
-                .withSplashTimeOut(2000) //3 seconds timeout
+                .withSplashTimeOut(1500) //3 seconds timeout (reduced)
                 .withBackgroundColor(Color.parseColor("#ACB0BA"))
                 .withBeforeLogoText("WELCOME")
-                .withAfterLogoText("Food inventorying made easy!")
+                .withAfterLogoText("Food inventory made easy!")
                 .withLogo(R.mipmap.ic_launcher_round);
 
         config.getBeforeLogoTextView().setTextColor(Color.WHITE);

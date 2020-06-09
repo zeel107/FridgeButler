@@ -8,6 +8,9 @@ import java.util.GregorianCalendar;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+/**
+ * Class containing app unit tests.
+ */
 public class UnitTest
 {
     @Test

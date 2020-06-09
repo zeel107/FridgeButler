@@ -33,6 +33,7 @@ public class InstrumentedTest
     @Test
     public void addProductTest()
     {
+        // Setup
         Date testDate = new Date();
         DatabaseHelper testDbh = DatabaseHelper.createTempDB(ApplicationProvider.getApplicationContext());
         int testUnitId = 1;
@@ -51,20 +52,27 @@ public class InstrumentedTest
                 , testDbh.getUnit(testUnitId)
                 , testDbh.getCategory(testCategoryId));
 
+        // Test
         boolean result = testDbh.addProduct(testProduct);
-        testDbh.close();
         assertEquals(true, result);
+
+        // Teardown
+        testDbh.close();
     }
 
     @Test
-    public void addProductTestEmpty()       // look into this further -- should this be allowed?
+    public void addProductTestEmpty()
     {
+        // Setup
         DatabaseHelper testDbh = DatabaseHelper.createTempDB(ApplicationProvider.getApplicationContext());
         Product testProduct = new Product();
 
+        // Test
         boolean result = testDbh.addProduct(testProduct);
-        testDbh.close();
         assertEquals(true, result);
+
+        // Teardown
+        testDbh.close();
     }
 
     @Test
@@ -76,12 +84,12 @@ public class InstrumentedTest
         testProduct.setId(999);
         dbh.addProduct(testProduct);
 
+        // Test
         boolean result = dbh.removeProduct(testProduct);
-
-        dbh.close();
         assertEquals(true, result);
-    }
 
-    // figure out how to test validateInput()
+        // Teardown
+        dbh.close();
+    }
 }
 

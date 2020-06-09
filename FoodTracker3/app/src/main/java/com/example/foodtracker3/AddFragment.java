@@ -46,9 +46,9 @@ import java.util.List;
  * */
 public class AddFragment extends Fragment
 {
+    boolean EDIT_MODE;      // Flag to differentiate between adding and editing
 
-    boolean EDIT_MODE;
-    // View control objects --- Defining them here instead of in onCreateView(), so they can be accessed by validateInput() method.
+    // View control objects
     Button btn_add;
     Button btn_save;
     Button btn_cancel;
@@ -92,7 +92,6 @@ public class AddFragment extends Fragment
         // Inflate the xml which gives us a view
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_add, container, false);
         binding.setEditProduct(editProduct);
-        binding.setCurrentDate(DatabaseHelper.date_toAppStr(new Date()) );      // for 'Date Added' default value
         View view = binding.getRoot();
 
         btn_add = binding.addButton;

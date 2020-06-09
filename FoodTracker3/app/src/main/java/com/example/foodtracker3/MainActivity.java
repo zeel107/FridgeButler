@@ -2,6 +2,7 @@ package com.example.foodtracker3;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
@@ -9,7 +10,6 @@ import android.content.ComponentName;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -27,7 +27,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity
 {
-    private static final String TAG = "MainAct_Notifi_Job";
+    private static final String TAG_MainActivity = "MainAct_Notifi_Job";
+    private static final String TAG_AddFragment = "AddFragment";
+    private static final String TAG_HomeFragment = "HomeFragment";
 
     /**
      * Runs on opening the app.  Opens home fragment
@@ -60,14 +62,16 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem menuItem)
                 {
+                    Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
                     switch(menuItem.getItemId())
                     {
                         case R.id.nav_list:
-                            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+                            if (fragment instanceof HomeFragment)   break;     // don't create new one if we are already on Home fragment
+                            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment(), TAG_HomeFragment).commit();
                             break;
                         case R.id.nav_add:
-                            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AddFragment()).commit();
-
+                            if (fragment instanceof AddFragment)    break;       // don't create new one if we are already on Add fragment
+                            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AddFragment(),TAG_AddFragment).commit();
                             break;
                     }
                     return true;
@@ -90,10 +94,10 @@ public class MainActivity extends AppCompatActivity
 
         if (resultCode == JobScheduler.RESULT_SUCCESS)
         {
-            Log.d(TAG, "Job scheduled");
+            Log.d(TAG_MainActivity, "Job scheduled");
         }
         else {
-            Log.d(TAG, "Job scheduling failed");
+            Log.d(TAG_MainActivity, "Job scheduling failed");
         }
     }//method schedulejob
 
@@ -104,7 +108,7 @@ public class MainActivity extends AppCompatActivity
     {
         JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
         scheduler.cancel(123);
-        Log.d(TAG, "Job cancelled");
+        Log.d(TAG_MainActivity, "Job cancelled");
     }//method cancelJob
 
 }//end MainActivity
