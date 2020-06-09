@@ -39,7 +39,7 @@
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.944"
+            app:layout_constraintHorizontal_bias="0.97"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/category_text"
             app:layout_constraintVertical_bias="0.089999974"
@@ -47,8 +47,10 @@
 
         <EditText
             android:id="@+id/et_newCategory"
-            android:layout_width="280dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="60dp"
             android:ems="10"
             android:enabled="false"
             android:hint="@string/create_new_category"
@@ -70,12 +72,13 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
             android:hint="@string/date_added"
             app:boxStrokeColor="@color/colorPrimary"
-            app:hintAnimationEnabled="true"
+            app:hintAnimationEnabled="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.059"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/quantityTextInputLayout"
             app:layout_constraintVertical_bias="0.122">
@@ -95,28 +98,27 @@
                 android:textSize="20sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
+
         <TextView
             android:id="@+id/category_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
             android:text="@string/category"
             android:textColor="@color/colorAccent"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/expirationInputLayout"
-            app:layout_constraintVertical_bias="0.147" />
-
+            app:layout_constraintVertical_bias="0.146" />
 
         <Spinner
             android:id="@+id/category_input"
             style="@android:style/Widget.Material.Spinner.Underlined"
-            android:layout_width="310dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="55dp"
             android:spinnerMode="dropdown"
             android:textColor="@android:color/black"
             app:layout_constraintBottom_toTopOf="@+id/add_button"
@@ -124,32 +126,35 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/category_text"
-            app:layout_constraintVertical_bias="0.1" />
+            app:layout_constraintVertical_bias="0.113" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/unitAmountInputLayout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="@string/unit_text"
-            app:hintAnimationEnabled="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginEnd="10dp"
+            android:hint="Unit Amt."
             app:boxStrokeColor="@color/colorPrimary"
+            app:hintAnimationEnabled="false"
             app:layout_constraintBottom_toBottomOf="@+id/quantityTextInputLayout"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.1"
+
+            app:layout_constraintEnd_toStartOf="@+id/unit_input"
+
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/quantityTextInputLayout"
-
             app:layout_constraintTop_toBottomOf="@+id/nameTextInputLayout"
-
             app:layout_constraintVertical_bias="1.0">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/unitAmount_input"
                 android:layout_width="match_parent"
-                android:minEms="5"
                 android:layout_height="match_parent"
                 android:inputType="number"
-                android:maxLength="5"
+                android:maxLength="4"
+                android:minEms="4"
+                android:selectAllOnFocus="true"
                 android:text='@{(editProduct == null) ? "1" : java.lang.Integer.toString((int)editProduct.unit_amount)}'
                 android:textColor="@android:color/black" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -177,7 +182,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
             android:hint="@string/name"
-            app:hintAnimationEnabled="true"
+            app:hintAnimationEnabled="false"
             app:boxStrokeColor="@color/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -191,6 +196,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textNoSuggestions|textVisiblePassword"
+                android:selectAllOnFocus="true"
                 android:maxLength="30"
                 android:text='@{(editProduct == null) ? "" : editProduct.name}'
                 android:textColor="@android:color/black" />
@@ -202,13 +208,14 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="@string/quantity"
+            android:layout_marginLeft="20dp"
 
+            android:hint="@string/quantity"
             app:boxStrokeColor="@color/colorPrimary"
-            app:hintAnimationEnabled="true"
+            app:hintAnimationEnabled="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.052"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/nameTextInputLayout"
             app:layout_constraintVertical_bias="0.101">
@@ -217,9 +224,10 @@
                 android:id="@+id/quantity_input"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:ems="5"
+                android:ems="4"
                 android:inputType="number"
-                android:maxLength="5"
+                android:maxLength="4"
+                android:selectAllOnFocus="true"
                 android:text='@{(editProduct == null) ? "1" : java.lang.Integer.toString(editProduct.quantity)}'
                 android:textColor="@android:color/black" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -229,13 +237,16 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+
+            android:layout_marginEnd="20dp"
+
             android:hint="@string/expiration_date"
             app:boxStrokeColor="@color/colorPrimary"
-
-            app:hintAnimationEnabled="true"
+            app:hintAnimationEnabled="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.36"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/dateInputLayout"
             app:layout_constraintTop_toBottomOf="@+id/unitAmountInputLayout"
             app:layout_constraintVertical_bias="0.12">
@@ -303,18 +314,21 @@
         <Spinner
             android:id="@+id/unit_input"
             style="@android:style/Widget.Material.Spinner.Underlined"
-            android:layout_width="110dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
 
-
+            android:layout_marginEnd="20dp"
+            android:dropDownWidth="70dp"
+            android:minWidth="105dp"
             android:spinnerMode="dropdown"
             android:textColor="@android:color/black"
             app:layout_constraintBottom_toTopOf="@+id/expirationInputLayout"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.4"
-            app:layout_constraintStart_toEndOf="@+id/unitAmountInputLayout"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/nameTextInputLayout"
-            app:layout_constraintVertical_bias="0.68" />
+            app:layout_constraintVertical_bias="0.69" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
