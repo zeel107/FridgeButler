@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<TextView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/customHomeSpinnerItemTextView"
 
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:textSize="18sp"
     android:gravity="left"
-    android:textColor="@android:color/white"
+    android:paddingStart="4dp"
+    android:paddingLeft="4dp"
     android:paddingTop="4dp"
     android:paddingBottom="2dp"
-    android:paddingLeft="4dp"
-    android:paddingStart="4dp" />
+    android:textColor="@color/colorAccent"
+    android:textSize="18sp" />

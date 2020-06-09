@@ -1,11 +1,5 @@
 package com.example.foodtracker3;
 
-import java.util.Comparator;
-import java.util.function.Function;
-import java.util.function.ToDoubleFunction;
-import java.util.function.ToIntFunction;
-import java.util.function.ToLongFunction;
-
 /*
     Class to represent a Category.
  */
@@ -36,16 +30,4 @@ public class Category
     public String getDescription() { return description; }
 
     public void setDescription(String description) { this.description = description; }
-}
-
-// For searching by category ID
-class CategoryComparator implements Comparator<Category>
-{
-    @Override
-    public int compare(Category cat1, Category cat2)
-    {
-        if (cat1.getId() > cat2.getId())        return 1;
-        else if (cat1.getId() == cat2.getId())  return 0;
-        else                                    return -1;
-    }
 }

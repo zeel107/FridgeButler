@@ -15,4 +15,26 @@
     <style name="MyDatePickerStyle" parent="@android:style/Widget.Material.DatePicker">
         <item name="android:datePickerMode">spinner</item>
     </style>
+
+    <style name="CustomGoldButton" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/custom_gold_button</item>
+        <item name="android:textColor">#BFA64B</item>
+    </style>
+
+    <style name="CustomPinkButton" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/custom_pink_button</item>
+        <item name="android:textColor">#BC3D6E</item>
+    </style>
+
+    <style name="MyDialogStyle" parent="android:Theme.Material.Light.Dialog.NoActionBar">
+        <item name="android:buttonBarPositiveButtonStyle">@style/MyButtonsStyle</item>
+        <item name="android:buttonBarNegativeButtonStyle">@style/MyButtonsStyle</item>
+        <item name="android:colorBackground">#FFFFFF</item>
+    </style>
+
+    <style name="MyButtonsStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">#4286DA</item>
+    </style>
+
+
 </resources>

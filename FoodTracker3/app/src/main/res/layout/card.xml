@@ -31,10 +31,11 @@
 
             <TextView
                 android:id="@+id/foodNameText"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="12dp"
+                android:maxLines="2"
                 android:text="Line1"
                 android:textColor="@android:color/black"
                 android:textSize="20sp"
@@ -49,27 +50,24 @@
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
 
-                android:layout_marginTop="34dp"
+                android:layout_marginTop="8dp"
                 android:padding="2dp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/foodNameText"
-                app:layout_constraintVertical_bias="0.466"
+                app:layout_constraintTop_toBottomOf="@+id/foodNameText"
                 app:srcCompat="@drawable/ic_error_outline" />
 
             <TextView
                 android:id="@+id/expirationText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="4dp"
+                android:padding="0dp"
                 android:text="Line 3"
                 android:textSize="15sp"
                 app:layout_constraintBottom_toBottomOf="@+id/expiredImageView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/expiredImageView"
-                app:layout_constraintTop_toTopOf="@+id/expiredImageView"
-                app:layout_constraintVertical_bias="1.0" />
+                app:layout_constraintTop_toTopOf="@+id/expiredImageView" />
 
             <EditText
                 android:id="@+id/expirationEditText"
@@ -110,7 +108,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/imageView"
                 app:srcCompat="@drawable/ic_edit_black" />
 
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -120,67 +117,70 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:layout_editor_absoluteX="16dp">
 
-            <TextView
-                android:id="@+id/foodQuantityText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                <TextView
+                    android:id="@+id/foodQuantityText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
 
-                android:layout_marginStart="52dp"
-                android:layout_marginTop="112dp"
-                android:text="Line 2"
-                android:textSize="15sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                    android:layout_marginStart="52dp"
+                    android:layout_marginTop="112dp"
+                    android:text="Line 2"
+                    android:textSize="15sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <EditText
-                android:id="@+id/foodQuantityEditText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                <EditText
+                    android:id="@+id/foodQuantityEditText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
 
-                android:layout_marginStart="52dp"
-                android:layout_marginTop="112dp"
-                android:text="Line 2"
-                android:textSize="15sp"
-                android:visibility="gone"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                    android:layout_marginStart="52dp"
+                    android:layout_marginTop="112dp"
+                    android:text="Line 2"
+                    android:textSize="15sp"
+                    android:visibility="gone"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/foodCategoryText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                <TextView
+                    android:id="@+id/foodCategoryText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
 
-                android:layout_marginTop="7dp"
-                android:text="Line 3"
-                android:textSize="15sp"
-                app:layout_constraintStart_toStartOf="@+id/foodQuantityText"
-                app:layout_constraintTop_toBottomOf="@+id/foodQuantityText" />
+                    android:layout_marginTop="7dp"
+                    android:text="Line 3"
+                    android:textSize="15sp"
+                    app:layout_constraintStart_toStartOf="@+id/foodQuantityText"
+                    app:layout_constraintTop_toBottomOf="@+id/foodQuantityText" />
 
 
-            <Button
-                android:id="@+id/cancelSaveButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="Cancel"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/saveButton"
-                app:layout_constraintEnd_toStartOf="@+id/saveButton" />
+                <Button
+                    android:id="@+id/cancelSaveButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text="Cancel"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/saveButton"
+                    app:layout_constraintEnd_toStartOf="@+id/saveButton" />
 
-            <Button
-                android:id="@+id/saveButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Save"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                <Button
+                    android:id="@+id/saveButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Save"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 
 </androidx.cardview.widget.CardView>

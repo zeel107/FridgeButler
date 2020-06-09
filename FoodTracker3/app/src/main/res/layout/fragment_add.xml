@@ -22,7 +22,7 @@
             android:layout_height="40dp"
             android:layout_marginTop="11dp"
             android:tooltipText="@string/cancel"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/et_newCategory"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -56,7 +56,7 @@
             android:hint="@string/create_new_category"
             android:inputType="textNoSuggestions|textVisiblePassword"
             android:maxLength="30"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:textSize="20sp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -99,48 +99,63 @@
                 android:textSize="20sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:id="@+id/dateAdded_text"
-            android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/dateInputLayout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="@string/date_added"
-            android:textColor="@android:color/white"
-            android:textSize="20sp"
+            android:hint="Date Added               "
+            app:boxStrokeColor="@color/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.026"
+            app:layout_constraintHorizontal_bias="0.1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/quantity_input"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/quantityTextInputLayout"
+            app:layout_constraintVertical_bias="0.12">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tv_dateAdded"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="false"
+                android:gravity="center_horizontal|center_vertical"
+                android:inputType="none"
+                android:longClickable="false"
+                android:text='@{(editProduct == null) ?  currentDate : DatabaseHelper.date_toAppStr(editProduct.add_date) }'
+                android:textColor="@android:color/black"
+                android:textColorHint="?android:attr/textColorHintInverse"
+                android:textSize="20sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
 
         <TextView
             android:id="@+id/category_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
             android:text="@string/category"
-            android:textColor="@android:color/white"
+            android:textColor="@color/colorAccent"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.475"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_expirationDate"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/expirationInputLayout"
+            app:layout_constraintVertical_bias="0.147" />
+
 
         <Spinner
             android:id="@+id/category_input"
             style="@android:style/Widget.Material.Spinner.Underlined"
             android:layout_width="310dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginStart="48dp"
             android:spinnerMode="dropdown"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/expirationDate_text"
-            app:layout_constraintHorizontal_bias="1.0"
+            android:textColor="@android:color/black"
+            app:layout_constraintBottom_toTopOf="@+id/add_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/category_text"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.1" />
 
 
         <com.google.android.material.textfield.TextInputLayout
@@ -173,16 +188,16 @@
             android:id="@+id/title_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/coiny"
+            android:fontFamily="@font/archivo_black"
             android:text="@{(editProduct == null) ? @string/add_title : @string/edit_title}"
-            android:textColor="@android:color/holo_blue_light"
+            android:textColor="@color/ColorHomeIcon"
             android:textSize="30sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.1" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/nameTextInputLayout"
@@ -270,69 +285,65 @@
                 android:textSize="20sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/tv_expirationDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:clickable="true"
-            android:focusable="false"
-            android:gravity="center_horizontal|center_vertical"
-            android:text='@{editProduct == null ? "" : com.example.foodtracker3.DatabaseHelper.date_toAppStr(editProduct.expiration_date) }'
-            android:hint="@string/date_hint"
-            android:inputType="none"
-            android:longClickable="false"
-            android:textColor="#FFFFFF"
-            android:textColorHint="?android:attr/textColorHintInverse"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.768"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/expirationDate_text"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <Button
-            android:id="@+id/add_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="88dp"
-            android:text="@string/add"
-            android:visibility='@{(editProduct == null) ? View.VISIBLE : View.GONE}'
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/category_text"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <Button
-            android:id="@+id/save_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="88dp"
-            android:text="@string/save"
-            android:visibility='@{(editProduct == null) ? View.GONE : View.VISIBLE}'
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.665"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/category_text"
-            app:layout_constraintVertical_bias="0.0" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tv_expirationDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="false"
+                android:gravity="center_horizontal|center_vertical"
+                android:inputType="none"
+                android:longClickable="false"
+                android:text='@{editProduct == null ? " " : (editProduct.expiration_date == null) ? " ": DatabaseHelper.date_toAppStr(editProduct.expiration_date) }'
+                android:textColor="@android:color/black"
+                android:textColorHint="?android:attr/textColorHintInverse"
+                android:textSize="20sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/cancel_button"
+            style="@style/CustomPinkButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="88dp"
+
             android:text="@string/cancel"
             android:visibility='@{(editProduct == null) ? View.GONE : View.VISIBLE}'
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.349"
+            app:layout_constraintHorizontal_bias="0.284"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/category_text"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.69" />
+
+        <Button
+            android:id="@+id/add_button"
+            style="@style/CustomGoldButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="@string/add"
+            android:visibility='@{(editProduct == null) ? View.VISIBLE : View.GONE}'
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.47"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/category_text"
+            app:layout_constraintVertical_bias="0.694" />
+
+        <Button
+            android:id="@+id/save_button"
+            style="@style/CustomGoldButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="@string/save"
+            android:visibility='@{(editProduct == null) ? View.GONE : View.VISIBLE}'
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.671"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/category_text"
+            app:layout_constraintVertical_bias="0.694" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/unitInputLayout"

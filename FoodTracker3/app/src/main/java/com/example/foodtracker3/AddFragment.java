@@ -34,7 +34,17 @@ import java.util.Date;
 import java.util.List;
 
 
-
+/**
+ * The Add Fragment is rendered in the Main Activity on click of the Add Navigation item.
+ *
+ *
+ * @author Andrew Dineen
+ * @author Aidan Fallstorm
+ * @author Rick Patneaude
+ * @author Eli Storlie
+ * @author Marco Villafana
+ * @version 1.0.0 Jun 7, 2020
+ * */
 public class AddFragment extends Fragment {
 
     boolean EDIT_MODE;
@@ -58,6 +68,13 @@ public class AddFragment extends Fragment {
 
     @Nullable
     @Override
+    /**
+     * This method creates and inflates the view when the Add Fragment is loaded into the MainActivity view port.
+     * @param inflater the layout inflater for inflating the view.
+     * @param container the container that will contain the inflated content- the view port.
+     * @param savedInstanceState to load previous instances of the view
+     * @return the resulting view.
+     * */
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
         Bundle bundle = getArguments();
@@ -130,7 +147,6 @@ public class AddFragment extends Fragment {
         //sp_unit.setSelection((EDIT_MODE) ? editProduct.getIdUnit() : 0);    // unitAbbrevs[0] == "ct"
 
         sp_category.setSelection((EDIT_MODE) ? categories.indexOf(dbh.getCategory(editProduct.getIdCategory()) ) : 0);          // categories[0] == "None"
-
         /**
          * Defines what to do when a category drop down menu item is selected.
          * @param parent the parent view.
@@ -178,7 +194,7 @@ public class AddFragment extends Fragment {
             @Override
             public void onClick(View v)
             {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.MyDialogStyle);
                 builder.setMessage("Delete category '" + (String)sp_category.getSelectedItem() + "'?")
                         .setCancelable(false)
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener()
@@ -208,11 +224,11 @@ public class AddFragment extends Fragment {
                                 dialog.cancel();
                             }
                         });
+
                 AlertDialog alert = builder.create();
                 alert.show();
             }
         });
-
         iv_cancelNewCategory.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -313,6 +329,7 @@ public class AddFragment extends Fragment {
                 }
                 else if (success)       // EDIT_MODE
                 {
+                    et_expirationDate.setText(" ");
                     Toast.makeText(v.getContext(), "Item updated.", Toast.LENGTH_SHORT).show();
                     getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();     // new home fragment
                 }
@@ -369,7 +386,7 @@ public class AddFragment extends Fragment {
 
     /**
      * Show/hide toggle between the category spinner and the newCategory EditText box.
-     * @param show
+     * @param show whether the new category should be shown or not.
      */
     private void showNewCategory(boolean show)
     {
@@ -395,7 +412,7 @@ public class AddFragment extends Fragment {
 
     /**
      * Show/hide toggle for the delete category icon.
-     * @param show
+     * @param show whether the category should be shown or not.
      */
     private void showDeleteCategory(boolean show)
     {
@@ -431,7 +448,7 @@ public class AddFragment extends Fragment {
 
     /**
      * Check controls for invalid input.
-     * @return
+     * @return whether or not the input is valid
      */
     public boolean validateInput()
     {

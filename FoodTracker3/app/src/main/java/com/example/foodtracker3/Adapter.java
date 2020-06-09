@@ -17,24 +17,42 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
+/**
+ * When initialized, the Adapter class acts as a controller, or a bridge between the UI components such as the recycler view,
+ * and backend components such as the Home Fragment data manipulation logic.
+ *
+ * @author Andrew Dineen
+ * @author Aidan Fallstorm
+ * @author Rick Patneaude
+ * @author Eli Storlie
+ * @author Marco Villafana
+ * @version 1.0.0 Jun 7, 2020
+ * */
 public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements Filterable
 {
     public ArrayList<Product> list;
     public static ArrayList<Product> listFull;
     private OnItemClickListener listener;
 
+    /**
+     * Classes that implement must use the following classes.
+     * */
     public interface OnItemClickListener {
         void onItemClick(int position);
         void onDeleteClick(int position);
         void onEditClick(int position);
 
     }
-
+    /**
+     * Initializes on click listener.
+     * */
     public void setOnItemClickListener(OnItemClickListener listener){
         this.listener = listener;
     }
 
+    /**
+     * Holds the Object UI components.
+     * */
     public class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView imageView;
         public ImageView DeleteImage;
@@ -50,7 +68,11 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
         public EditText foodNameEditText;
         public EditText foodQuantityEditText;
         public EditText expirationEditText;
-
+        /**
+         * Retrieves UI components using the view parameter, and adds some event listeners to them
+         * @param itemView the view required to access the components.
+         * @param listener listener that handles the overall event loop.
+         * */
         public ViewHolder(@NonNull View itemView, final OnItemClickListener listener)
         {
             super(itemView);
@@ -110,6 +132,11 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
 
     @NonNull
     @Override
+    /**
+     * Defines what to do when the ViewHolder is created. Inflates the view, passes it to the view holder, and returns the view holder.
+     * @param parent The parent ViewGroup
+     * @param viewType The ViewHolder view type.
+     * */
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
     {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.card, parent, false);
@@ -117,6 +144,11 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
         return evh;
     }
 
+    /**
+     * Defines what to do with the view holder which was passed the view.
+     * @param holder The view holder returned by onCreateViewHolder.
+     * @param position The position of the current product.
+     * */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position)
     {
@@ -173,6 +205,9 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
     {
         return filter;
     }
+    /**
+     * Defines a new filter based on the search box input.
+     * */
     private Filter filter = new Filter()
     {
         protected FilterResults performFiltering(CharSequence constraint)
@@ -195,7 +230,12 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
             results.values = filteredList;
             return results;
         }
-        protected void publishResults(CharSequence contraint, FilterResults results)
+        /**
+         * Updates the recycler view to contain only the filtered items
+         * @param constraint the filter constraint
+         * @param results the filter results
+         * */
+        protected void publishResults(CharSequence constraint, FilterResults results)
         {
             list.clear();
             list.addAll((List)results.values);
