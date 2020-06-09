@@ -22,7 +22,7 @@ public class SplashScreenActivity extends AppCompatActivity
                 .withSplashTimeOut(2000) //3 seconds timeout
                 .withBackgroundColor(Color.parseColor("#46403D"))
                 .withBeforeLogoText("WELCOME")
-                .withAfterLogoText("Food inventorying made easy!")
+                .withAfterLogoText("Food inventory made easy!")
                 .withLogo(R.mipmap.ic_launcher_round);
 
         config.getBeforeLogoTextView().setTextColor(Color.WHITE);

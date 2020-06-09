@@ -343,7 +343,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
     // Retrieve a list of all products
     public ArrayList<Product> getAllProducts()
     {
-         // Build the SQL query. Note: we can find a more efficient & readable approach later.
         /*
             SELECT pro.id, pro.name, pro.quantity, pro.idUnit, pro.unit_amount, pro.purchase_date, pro.expiration_date, pro.expired, cat.name
             FROM product AS pro, category AS cat
@@ -360,7 +359,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
                         + P + COLUMN_PRODUCT_idUnit + ", " + P + COLUMN_PRODUCT_unit_amount + ", " + P + COLUMN_PRODUCT_purchase_date + ", "
                     //        [6]                                         [7]                                 [8]
                         + P + COLUMN_PRODUCT_expiration_date + ", " + P + COLUMN_PRODUCT_expired + ", " + P + COLUMN_PRODUCT_idCategory +
-
             " FROM "    + TABLE_Product + " AS " + TABLE_ALIAS_Product +
             " ORDER BY CASE " +
                     "WHEN " + COLUMN_PRODUCT_expiration_date + " = '' THEN 2 " +
@@ -587,7 +585,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
         try
         {
-            dateStr = dateFormat.format(date);
+            if (date != null)       dateStr = dateFormat.format(date);
         }
         catch (NullPointerException e)
         {
@@ -604,7 +602,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         SimpleDateFormat dateFormat = new SimpleDateFormat(DB_DATE_FORMAT);
         try
         {
-            dateStr = dateFormat.format(date);
+            if (date != null)       dateStr = dateFormat.format(date);
         }
         catch (NullPointerException e)
         {
@@ -622,7 +620,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
         try
         {
-            date = dateFormat.parse(dateStr);
+            if (!dateStr.isEmpty())     dateFormat.parse(dateStr);
         }
         catch (ParseException | NullPointerException e)
         {
@@ -640,14 +638,14 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
         try
         {
-            date = dateFormat.parse(dateStr);
+            if (!dateStr.isEmpty())     date = dateFormat.parse(dateStr);
         }
         catch (ParseException | NullPointerException e)
         {
             e.printStackTrace();
         }
 
-        return date;                    // Note: May return null if DB date string is mis-formatted
+        return date;                    // Note: May return null if app date string is mis-formatted
     }
 
 }

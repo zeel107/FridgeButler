@@ -13,4 +13,5 @@
     <string name="expiration_date">Expiration Date</string>
     <string name="add">Add</string>
     <string name="save">Save</string>
+    <string name="unit">Unit</string>
 </resources>

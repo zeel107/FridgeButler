@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -46,7 +47,8 @@ public class AddFragment extends Fragment {
     EditText et_unitAmount;
     EditText et_expirationDate;
     EditText et_dateAdded;
-    Spinner sp_unit;
+    AutoCompleteTextView sp_unit;
+    //Spinner sp_unit;
     Spinner sp_category;
     TextView et_newCategory;
     ImageView iv_cancelNewCategory;
@@ -93,26 +95,28 @@ public class AddFragment extends Fragment {
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING); // fix keyboard/button issue (now button will stay put)
 
-        final DatabaseHelper dbh = new DatabaseHelper(getContext());      // is getContext() reliable, or will it sometimes return null? Research it more
+        final DatabaseHelper dbh = new DatabaseHelper(getContext());
 
         /* UNITS SETUP */
         final ArrayList<Unit> units = dbh.getUnits();
-        List<String> spList_unitAbbrevs = new ArrayList<>();
+        final List<String>[] spList_unitAbbrevs = new List[]{new ArrayList<>()};
 
-        for (Unit i : units)    // Add unit abbreviation strings to spinner list
+        for (Unit i : units)    // Add unit abbreviation strings to spinner adapter list
         {
-            spList_unitAbbrevs.add(i.getAbbrev());
+            spList_unitAbbrevs[0].add(i.getAbbrev());
         }
 
-        ArrayAdapter<String> unitAdapter = new ArrayAdapter<>(getContext(), R.layout.spinner_item, spList_unitAbbrevs);
+        ArrayAdapter<String> unitAdapter = new ArrayAdapter<>(getContext(), R.layout.spinner_item, spList_unitAbbrevs[0]);
         unitAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sp_unit.setAdapter(unitAdapter);
+        sp_unit.setText(spList_unitAbbrevs[0].get(0), false);      // set default unit selection to index 0
+        final int[] unit_currentSelection = {0};        // sketchy looking workaround suggested by the IDE
 
         /* CATEGORIES SETUP */
         final ArrayList<Category> categories = dbh.getCategories();
         final List<String> spList_categoryNames = new ArrayList<>();
 
-        for (Category i : categories)
+        for (Category i : categories)       // Add category names to spinner adapter list
         {
             spList_categoryNames.add(i.getName());
         }
@@ -123,9 +127,16 @@ public class AddFragment extends Fragment {
         sp_category.setAdapter(categoryAdapter);
 
         /* SET DEFAULT VALUES */
-        sp_unit.setSelection((EDIT_MODE) ? editProduct.getIdUnit() : 0);    // unitAbbrevs[0] == "ct"
+        //sp_unit.setSelection((EDIT_MODE) ? editProduct.getIdUnit() : 0);    // unitAbbrevs[0] == "ct"
+
         sp_category.setSelection((EDIT_MODE) ? categories.indexOf(dbh.getCategory(editProduct.getIdCategory()) ) : 0);          // categories[0] == "None"
 
+        /**
+         * Defines what to do when a category drop down menu item is selected.
+         * @param parent the parent view.
+         * @param view the current view.
+         * @param position the list position of the item selected.
+         * */
         sp_category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
@@ -150,6 +161,18 @@ public class AddFragment extends Fragment {
             }
         });
 
+        sp_unit.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                unit_currentSelection[0] = (int) id;
+            }
+        });
+
+        /**
+         * This method houses the click listener for the category delete button. Sets an on click listener object on the main adapter.
+         * */
         iv_deleteCategory.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -199,6 +222,9 @@ public class AddFragment extends Fragment {
             }
         });
 
+        /**
+         * Shows date picker dialog when the Date Added input field is clicked.
+         * */
         et_dateAdded.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -208,6 +234,9 @@ public class AddFragment extends Fragment {
             }
         });
 
+        /**
+         * Shows date picker dialog when the Expiration Date input field is clicked.
+         * */
         et_expirationDate.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -217,12 +246,16 @@ public class AddFragment extends Fragment {
             }
         });
 
+        /**
+         * Add/Save button click event listener. Inserts new/updates existing database record.
+         * */
         View.OnClickListener onClick_addUpdate = new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
                 if (validateInput() == false)   return;
+
                 if (et_newCategory.isEnabled())         // insert new category if necessary
                 {
                     Category category = new Category(-1, et_newCategory.getText().toString(), "");
@@ -241,7 +274,7 @@ public class AddFragment extends Fragment {
 
                 Date addDate = DatabaseHelper.appStr_toDate(et_dateAdded.getText().toString());
                 Date expDate = DatabaseHelper.appStr_toDate(et_expirationDate.getText().toString());
-                int unitId = units.get(sp_unit.getSelectedItemPosition()).getId();
+                //int unitId = units.get(unit_currentSelection[0]).getId();
                 long categoryId = categories.get(sp_category.getSelectedItemPosition()).getId();
 
                 Product prod = new Product
@@ -249,13 +282,13 @@ public class AddFragment extends Fragment {
                                 (EDIT_MODE) ? editProduct.getId() : -1,
                                 et_productName.getText().toString(),
                                 Integer.parseInt(et_productQuantity.getText().toString()),
-                                unitId,
+                                unit_currentSelection[0],
                                 Double.parseDouble(et_unitAmount.getText().toString()),
                                 addDate,
                                 expDate,
                                 (expDate == null) ? false : addDate.after(expDate),             // Determine if item is already expired
                                 categoryId,
-                                dbh.getUnit(unitId),
+                                dbh.getUnit(unit_currentSelection[0]),
                                 dbh.getCategory(categoryId)
                         );
 
@@ -263,27 +296,29 @@ public class AddFragment extends Fragment {
                 if (EDIT_MODE)      success = dbh.updateProduct(prod);
                 else                success = dbh.addProduct(prod);
 
-                if (success && !EDIT_MODE)
+                if (success && !EDIT_MODE)      // Clear text boxes after successful insert
                 {
                     Toast.makeText(v.getContext(), "Item inserted.", Toast.LENGTH_SHORT).show();
-                    // Clear text boxes after successful insert
-                    et_productName.getText().clear();
-                    et_productQuantity.setText("1");
-                    et_unitAmount.setText("1");
-                    et_expirationDate.setText("");
-                    sp_unit.setSelection(0);
+                    binding.invalidateAll();
+
+                    //et_productName.getText().clear();
+                   // et_productQuantity.setText("1");
+                    //et_unitAmount.setText("1");
+
+                    sp_unit.setText(spList_unitAbbrevs[0].get(0), false);      // set unit selection to index 0
+                    unit_currentSelection[0] = 0;           // reset unit selection
                     sp_category.setSelection(0);
                     showNewCategory(false);
                     et_productName.requestFocus();
                 }
-                else if (success && EDIT_MODE)
+                else if (success)       // EDIT_MODE
                 {
                     Toast.makeText(v.getContext(), "Item updated.", Toast.LENGTH_SHORT).show();
                     getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();     // new home fragment
                 }
                 else
                 {
-                    Toast.makeText(v.getContext(), "Operation failed.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(v.getContext(), (EDIT_MODE ? "Update" : "Insert" + " failed."), Toast.LENGTH_SHORT).show();
                 }
             }
         };
@@ -291,6 +326,9 @@ public class AddFragment extends Fragment {
         btn_add.setOnClickListener(onClick_addUpdate);
         btn_save.setOnClickListener(onClick_addUpdate);
 
+        /**
+         * Cancel button click event listener. Renders a new home fragment, exiting the edit view.
+         * */
         btn_cancel.setOnClickListener(new View.OnClickListener()
         {
             @Override
