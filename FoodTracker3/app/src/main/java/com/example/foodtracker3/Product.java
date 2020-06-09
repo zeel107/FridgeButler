@@ -2,10 +2,19 @@ package com.example.foodtracker3;
 
 import java.io.Serializable;
 import java.util.Date;
-
-/*
-    Class to represent a Product object.
+/**
+ * The Product objects are tied to entries in the database.
+ * Product objects are used to work with UI, and contain all the necessary information to update entries in the database.
+ * Implements Serializable so the class can be compatible with Bundles
+ *
+ * @author Andrew Dineen
+ * @author Aidan Fallstorm
+ * @author Rick Patneaude
+ * @author Eli Storlie
+ * @author Marco Villafana
+ * @version 1.0.0 Jun 7, 2020
  */
+
 public class Product implements Serializable
 {
     // Fields corresponding to 'Product' table attributes
@@ -31,6 +40,20 @@ public class Product implements Serializable
     // constructors
     public Product() { }
 
+    /**
+     * All information comes from an entry in the "Product" table from the database.
+     * @param id The key to an entry in the "Product" database table
+     * @param name From "Product"
+     * @param quantity From "Product"
+     * @param idUnit The key to an entry in the "Unit" database table
+     * @param unit_amount From "Product"
+     * @param add_date From "Product"
+     * @param expiration_date From "Product"
+     * @param expired From "Product"
+     * @param idCategory The key to an entry in the "Categroy" database table
+     * @param unit Derived from idUnit
+     * @param category Derived from idCategory
+     */
     public Product(long id, String name, int quantity, int idUnit, double unit_amount,Date add_date,
                    Date expiration_date, boolean expired, long idCategory, Unit unit, Category category) {
         this.id = id;

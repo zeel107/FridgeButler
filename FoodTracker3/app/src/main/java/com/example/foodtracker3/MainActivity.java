@@ -13,11 +13,26 @@ import android.view.View;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+/**
+ * The main activity of the UI that runs on opening the app.  Has a navigation bar at the bottom.
+ * The add and home fragments are contained inside of the main activity.
+ *
+ * @author Andrew Dineen
+ * @author Aidan Fallstorm
+ * @author Rick Patneaude
+ * @author Eli Storlie
+ * @author Marco Villafana
+ * @version 1.0.0 Jun 7, 2020
+ */
 
 public class MainActivity extends AppCompatActivity
 {
     private static final String TAG = "MainAct_Notifi_Job";
 
+    /**
+     * Runs on opening the app.  Opens home fragment
+     * @param savedInstanceState Reload from saved instance
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -31,9 +46,17 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    /**
+     * Set up the navigation bar
+     */
     private BottomNavigationView.OnNavigationItemSelectedListener navigationListener =
             new BottomNavigationView.OnNavigationItemSelectedListener()
             {
+                /**
+                 * Button listener for the navigation bar
+                 * @param menuItem Used to determine which fragment to open
+                 * @return true
+                 */
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem menuItem)
                 {
