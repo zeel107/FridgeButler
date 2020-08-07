@@ -32,6 +32,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     WeakReference<Context> context;     // Prevent potential memory leaks
     ArrayList<Unit> units;
     ArrayList<Category> categories;
+    private SQLiteDatabase db;
 
     private static final String DB_DATE_FORMAT = "yyyy-MM-dd";
     private static final String APP_DATE_FORMAT = "MM/dd/yyyy";
@@ -66,6 +67,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     private static final String     COLUMN_UNIT_plural  = "plural";
 
 
+
     /**
      * Default constructor.
      * @param context The current context.
@@ -73,9 +75,11 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public DatabaseHelper(@Nullable Context context)
     {
         super(context, DB_NAME, null, 1);
+        this.db = this.getReadableDatabase();
         this.context = new WeakReference<Context>(context);
         this.units = this.getUnits();
         this.categories = this.getCategories();
+        //this.db.inTransaction() = false;
     }
 
     /**
@@ -87,9 +91,11 @@ public class DatabaseHelper extends SQLiteOpenHelper
     private DatabaseHelper(@Nullable Context context, String alternateDbName)
     {
         super(context, alternateDbName, null, 1);
+        this.db = this.getReadableDatabase();
         this.context = new WeakReference<Context>(context);
         this.units = this.getUnits();
         this.categories = this.getCategories();
+        //this.db.inTransaction() = false;
     }
 
     /**
@@ -131,7 +137,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         createTableStatement = "CREATE TABLE IF NOT EXISTS " + TABLE_Category
                 + " ("
                 + COLUMN_CATEGORY_id            + " INTEGER PRIMARY KEY AUTOINCREMENT DEFAULT 0, "            // ES - removed NOT NULL
-                + COLUMN_CATEGORY_name          + " TEXT, "
+                + COLUMN_CATEGORY_name          + " TEXT UNIQUE, "
                 + COLUMN_CATEGORY_description   + " TEXT "
                 + ");" ;
         db.execSQL(createTableStatement);
@@ -212,13 +218,37 @@ public class DatabaseHelper extends SQLiteOpenHelper
     }
 
     /**
+     * Opens a writable SQLiteDatabase instance and begins a transaction. This database instance will remain open
+     * until endTransaction(bool success) is called. Changes made during the transaction will only be committed
+     * if endTransaction(true) is called; otherwise, they will be rolled back.
+     */
+    public void beginTransaction()
+    {
+        this.getWritableDatabase().beginTransaction();
+    }
+
+    /**
+     *
+     * @param success
+     */
+    public void endTransaction(boolean success)
+    {
+        SQLiteDatabase db = getWritableDatabase();
+        if (success)
+        {
+            db.setTransactionSuccessful();
+        }
+        db.endTransaction();
+    }
+
+    /**
      * Insert a product into {@value #TABLE_Product} database table.
      * @param prod The product object being inserted.
      * @return TRUE if insert was successful, FALSE if not.
      */
     public boolean addProduct(Product prod)
     {
-        SQLiteDatabase db = this.getWritableDatabase();
+        if (!db.isOpen() || db.isReadOnly())   db = getWritableDatabase();
         ContentValues cv = new ContentValues();
 
         cv.put(COLUMN_PRODUCT_name, prod.getName());
@@ -236,7 +266,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             insert = db.insertOrThrow(TABLE_Product, null, cv);
         }
         catch (SQLException e)
-        {   // if error, Clean & Rebuild Project
+        {   // if compile error, Clean & Rebuild Project
             if (com.example.foodtracker3.BuildConfig.DEBUG)        // Only show toast if we are debugging.
             {
                 if (context != null)  Toast.makeText(context.get(), "addOne(): " + e.getMessage(), Toast.LENGTH_LONG).show();
@@ -244,8 +274,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
             Log.e("DBH.addProduct()", e.getMessage(), e );           // Log the error
         }
 
-        db.close();     // close database when finished
-
+        if (!db.inTransaction()) db.close();     // Close db instance (unless we're in a transaction)
+        
         if (insert == -1)   return false;
         else
         {
@@ -261,7 +291,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
      */
     public boolean updateProduct(Product prod)
     {
-        SQLiteDatabase db = this.getWritableDatabase();
+        //SQLiteDatabase db = getWritableDatabase();
+        if (!db.isOpen() || db.isReadOnly())   db = getWritableDatabase();
         ContentValues cv = new ContentValues();
 
         cv.put(COLUMN_PRODUCT_name, prod.getName());
@@ -276,7 +307,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         String whereClause = COLUMN_PRODUCT_id + " = " + prod.getId();
 
         int rowsAffected = db.update(TABLE_Product,  cv, whereClause, null);
-        db.close();     // close database when finished
+        if (!db.inTransaction()) db.close();     // Close db instance (unless we're in a transaction)
 
         if (rowsAffected > 0)   return true;        // One row should've been affected by the UPDATE
         else                    return false;
@@ -289,12 +320,13 @@ public class DatabaseHelper extends SQLiteOpenHelper
      */
     public boolean removeProduct(Product prod)
     {
-        SQLiteDatabase db = this.getWritableDatabase();
+        //SQLiteDatabase db = getWritableDatabase();
+        if (!db.isOpen() || db.isReadOnly())   db = getWritableDatabase();
 
         String whereClause = COLUMN_PRODUCT_id + " = " + prod.getId() + ";";
 
         int rowsAffected = db.delete(TABLE_Product, whereClause, null);
-        db.close();     // Close database when finished
+        if (!db.inTransaction()) db.close();     // Close db instance (unless we're in a transaction)
 
         if (rowsAffected > 0)      return true;    // One row should've been affected by the DELETE
         else                       return false;
@@ -307,16 +339,17 @@ public class DatabaseHelper extends SQLiteOpenHelper
      */
     public boolean removeCategory(Category cat)
     {
-        SQLiteDatabase db = this.getWritableDatabase();
+        //SQLiteDatabase db = getWritableDatabase();
+        if (!db.isOpen() || db.isReadOnly())   db = getWritableDatabase();
 
         String whereClause = COLUMN_CATEGORY_id + " = " + cat.getId() + ";";
 
         int rowsAffected = db.delete(TABLE_Category, whereClause, null);
-        db.close();     // Close database when finished
+        if (!db.inTransaction()) db.close();     // Close db instance (unless we're in a transaction)
 
         if (rowsAffected > 0)       // One row should've been affected by the DELETE
         {
-            categories.remove(cat);
+            categories.remove(cat);     // Also remove the category from our ArrayList so mirrors the db table
             return true;
         }
         else                       return false;
@@ -329,7 +362,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
      */
     public boolean addCategory(Category cat)
     {
-        SQLiteDatabase db = this.getWritableDatabase();
+        //SQLiteDatabase db = getWritableDatabase();
+        if (!db.isOpen() || db.isReadOnly())   db = getWritableDatabase();
         ContentValues cv = new ContentValues();
 
         cv.put(COLUMN_CATEGORY_name, cat.getName());
@@ -349,13 +383,13 @@ public class DatabaseHelper extends SQLiteOpenHelper
             Log.e("DBH.addCategory()", e.getMessage(), e );           // Log the error
         }
 
-        db.close();     // Close database when finished
+        if (!db.inTransaction()) db.close();     // Close db instance (unless we're in a transaction)
 
         if (insert == -1)   return false;
         else
         {
             cat.setId(insert);          // insert == rowID of newly inserted row.
-            this.categories.add(cat);
+            this.categories.add(cat);   // Also add the category to our ArrayList so that it mirrors the db table
             return true;                // https://www.sqlite.org/rowidtable.html
         }
     }
@@ -385,7 +419,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 " ORDER BY CASE " +
                     "WHEN " + COLUMN_PRODUCT_expiration_date + " = '' THEN (2) ELSE (1) END, " + P + COLUMN_PRODUCT_expiration_date + ";";
 
-        SQLiteDatabase db = this.getReadableDatabase();
+        if (!db.isOpen())   db = getReadableDatabase();
         Cursor cursor = db.rawQuery(queryString, null);
         ArrayList<Product> returnList = new ArrayList<>();
 
@@ -415,8 +449,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
         }
 
-        cursor.close();         // Close cursor and database when finished
-        db.close();
+        cursor.close();         // Close cursor
+        if (!db.inTransaction()) db.close();     // Close db instance (unless we're in a transaction)
         return returnList;
     }
 
@@ -450,7 +484,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             " ORDER BY CASE" +
             " WHEN " + COLUMN_PRODUCT_expiration_date + " = '' THEN (2) ELSE (1) END, " + P + COLUMN_PRODUCT_expiration_date + ";";
 
-        SQLiteDatabase db = this.getReadableDatabase();
+        if (!db.isOpen())   db = getReadableDatabase();
         Cursor cursor = db.rawQuery(queryString, null);
         ArrayList<Product> returnList = new ArrayList<>();
 
@@ -480,8 +514,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
         }
 
-        cursor.close();         // Close cursor and database when finished
-        db.close();
+        cursor.close();         // Close cursor
+        if (!db.inTransaction()) db.close();     // Close db instance (unless we're in a transaction)
         return returnList;
     };
 
@@ -514,7 +548,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 " FROM "        + TABLE_Unit +
                 " ORDER BY "    + COLUMN_UNIT_id + ";" ;
 
-        SQLiteDatabase db = this.getReadableDatabase();
+        if (!db.isOpen())   db = getReadableDatabase();
         Cursor cursor = db.rawQuery(queryString, null);
         ArrayList<Unit> unitList = new ArrayList<>();
 
@@ -536,8 +570,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
         }
 
-        cursor.close();         // Close cursor and database when finished
-        db.close();
+        cursor.close();         // Close cursor
+        if (!db.inTransaction()) db.close();     // Close db instance (unless we're in a transaction)
 
         this.units = unitList;
         return this.units;
@@ -553,7 +587,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         if (categories == null)     getCategories();
 
         int pos;
-        for (pos = 0; pos < categories.size(); pos++)
+        for (pos = 0; pos < categories.size(); pos++)       // Brute force- should change it to binary search. Or make 'categories' a map.
         {
             if (categories.get(pos).getId() == id)  break;
         }
@@ -562,7 +596,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     }
 
     /**
-     * Retrieve all categories from the {@value #TABLE_Category} database table.
+     * Retrieve all categories from the {@value #TABLE_Category} database table, and update this.categories to match it.
      * @return An ArrayList with containing ALL of the categories.
      */
     public ArrayList<Category> getCategories()
@@ -579,7 +613,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             " FROM "        + TABLE_Category +
             " ORDER BY "    + COLUMN_UNIT_id + ";" ;
 
-        SQLiteDatabase db = this.getReadableDatabase();
+        if (!db.isOpen())   db = getReadableDatabase();
         Cursor cursor = db.rawQuery(queryString, null);
         ArrayList<Category> categoryList = new ArrayList<>();
 
@@ -600,11 +634,29 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
         }
 
-        cursor.close();         // Close cursor and database connection when finished
-        db.close();
+        cursor.close();         // Close cursor
+        if (!db.inTransaction()) db.close();     // Close db instance (unless we're in a transaction)
 
         this.categories = categoryList;
         return this.categories;
+    }
+
+    /**
+     * Getter for 'db' SQLiteDatabase field.
+     * @return The value of this.db.
+     */
+    public SQLiteDatabase getDb()
+    {
+        return db;
+    }
+
+    /**
+     * Setting for 'db' SQLiteDatabase field.
+     * @param db The SQLiteDatabase object to be assigned to this.db.
+     */
+    public void setDb(SQLiteDatabase db)        // ES - change this later
+    {
+        this.db = db;
     }
 
     /*

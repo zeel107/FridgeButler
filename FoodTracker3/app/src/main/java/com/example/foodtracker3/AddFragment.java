@@ -253,73 +253,83 @@ public class AddFragment extends Fragment
         View.OnClickListener onClick_addUpdate = new View.OnClickListener()
         {
             @Override
-            public void onClick(View v)
-            {
-                if (validateInput() == false)   return;
-                if (et_newCategory.isEnabled())         // insert new category if necessary
+            public void onClick(View v) {
+                if (validateInput() == false) return;
+                boolean success = true;
+
+                if (et_newCategory.isEnabled())         // If we are inserting a new category
                 {
                     Category category = new Category(-1, et_newCategory.getText().toString(), "");
-                    if (dbh.addCategory(category))
+                    dbh.setDb(dbh.getWritableDatabase());   // ES - This is a quickfix and should be changed, it feels clunky.
+                    dbh.getDb().beginTransaction();         // performing multiple queries - use transaction for atomicity
+                    success = dbh.addCategory(category);
+                    if (success)
                     {
-                        categories.add(category);
                         spList_categoryNames.add(spList_categoryNames.size() - 1, category.getName());
                         categoryAdapter.notifyDataSetChanged();
                     }
                     else
                     {
                         Toast.makeText(v.getContext(), "Insert failed", Toast.LENGTH_SHORT).show();
-                        return;
                     }
                 }
 
-                Date addDate = DatabaseHelper.appStr_toDate(et_dateAdded.getText().toString());
-                Date expDate = DatabaseHelper.appStr_toDate(et_expirationDate.getText().toString());
-                int unitId = units.get(sp_unit.getSelectedItemPosition()).getId();
-                long categoryId = categories.get(sp_category.getSelectedItemPosition()).getId();
+                if (success)
+                {
+                    Date addDate = DatabaseHelper.appStr_toDate(et_dateAdded.getText().toString());
+                    Date expDate = DatabaseHelper.appStr_toDate(et_expirationDate.getText().toString());
+                    int unitId = units.get(sp_unit.getSelectedItemPosition()).getId();
+                    long categoryId = categories.get(sp_category.getSelectedItemPosition()).getId();
 
-                Product prod = new Product
+                    Product prod = new Product
                         (
-                                (EDIT_MODE) ? editProduct.getId() : -1,
-                                et_productName.getText().toString(),
-                                Integer.parseInt(et_productQuantity.getText().toString()),
-                                unitId,
-                                Double.parseDouble(et_unitAmount.getText().toString()),
-                                addDate,
-                                expDate,
-                                (expDate == null) ? false : addDate.after(expDate),             // Determine if item is already expired
-                                categoryId,
-                                dbh.getUnit(unitId),
-                                dbh.getCategory(categoryId)
+                            (EDIT_MODE) ? editProduct.getId() : -1,
+                            et_productName.getText().toString(),
+                            Integer.parseInt(et_productQuantity.getText().toString()),
+                            unitId,
+                            Double.parseDouble(et_unitAmount.getText().toString()),
+                            addDate,
+                            expDate,
+                            (expDate == null) ? false : addDate.after(expDate),             // Determine if item is already expired
+                            categoryId,
+                            dbh.getUnit(unitId),
+                            dbh.getCategory(categoryId)
                         );
 
-                boolean success;
-                if (EDIT_MODE)      success = dbh.updateProduct(prod);
-                else                success = dbh.addProduct(prod);
+                    if (EDIT_MODE) success = dbh.updateProduct(prod);
+                    else success = dbh.addProduct(prod);
 
-                if (success && !EDIT_MODE)
-                {
-                    Toast.makeText(v.getContext(), "Item inserted.", Toast.LENGTH_SHORT).show();
-                    // Clear text boxes after successful insert
-                    et_productName.getText().clear();
-                    et_productQuantity.setText("1");
-                    et_unitAmount.setText("1");
+                    if (success && !EDIT_MODE) {
+                        Toast.makeText(v.getContext(), "Item inserted.", Toast.LENGTH_SHORT).show();
+                        // Clear text boxes after successful insert
+                        et_productName.getText().clear();
+                        et_productQuantity.setText("1");
+                        et_unitAmount.setText("1");
 
-                    sp_unit.setSelection(0);
-                    sp_category.setSelection(0);
-                    showNewCategory(false);
-                    et_productName.requestFocus();
-                }
-                else if (success && EDIT_MODE)
+                        sp_unit.setSelection(0);
+                        sp_category.setSelection(0);
+                        showNewCategory(false);
+                        et_productName.requestFocus();
+                    }
+                    else if (success && EDIT_MODE)
+                    {
+                        et_expirationDate.setText(" ");
+                        Toast.makeText(v.getContext(), "Item updated.", Toast.LENGTH_SHORT).show();
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();     // new home fragment
+                    }
+                    else
+                    {
+                        Toast.makeText(v.getContext(), ((EDIT_MODE) ? "Update" : "Insert") + " failed.", Toast.LENGTH_SHORT).show();
+                    }
+                }   // if(success)
+
+                if (dbh.getDb().isOpen() && dbh.getDb().inTransaction())
                 {
-                    et_expirationDate.setText(" ");
-                    Toast.makeText(v.getContext(), "Item updated.", Toast.LENGTH_SHORT).show();
-                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();     // new home fragment
+                    if (success)    dbh.getDb().setTransactionSuccessful();
+                    dbh.getDb().endTransaction();
+                    dbh.getDb().close();        // close db instance - for now. later, leave db open and set an idle time-out period.
                 }
-                else
-                {
-                    Toast.makeText(v.getContext(), "Operation failed.", Toast.LENGTH_SHORT).show();
-                }
-            }
+            } // onClick()
         };
 
         btn_add.setOnClickListener(onClick_addUpdate);
