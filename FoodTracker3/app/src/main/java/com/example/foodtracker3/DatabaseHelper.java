@@ -218,30 +218,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
     }
 
     /**
-     * Opens a writable SQLiteDatabase instance and begins a transaction. This database instance will remain open
-     * until endTransaction(bool success) is called. Changes made during the transaction will only be committed
-     * if endTransaction(true) is called; otherwise, they will be rolled back.
-     */
-    public void beginTransaction()
-    {
-        this.getWritableDatabase().beginTransaction();
-    }
-
-    /**
-     *
-     * @param success
-     */
-    public void endTransaction(boolean success)
-    {
-        SQLiteDatabase db = getWritableDatabase();
-        if (success)
-        {
-            db.setTransactionSuccessful();
-        }
-        db.endTransaction();
-    }
-
-    /**
      * Insert a product into {@value #TABLE_Product} database table.
      * @param prod The product object being inserted.
      * @return TRUE if insert was successful, FALSE if not.
